@@ -1,0 +1,83 @@
+---
+title: "Combining_Data_Files"
+author: "andrew-s-thompson"
+date: "2024-08-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The Data Output system had a limit of 50,000 records output in one file. This means that the output files did not all contain required data. They were downloaded in parts, and when those parts were just file 1/2 and 2/2, they were easily copy/paste combined as .csv files. However, the files that were more separated will be combined here in R. 
+
+Unless the source data changes, the files should not need to be modified, and therefore this code is only to be used in that situation, because it has already created the outputs. 
+
+```{r file_input}
+
+animal_products_2018_2020 <- read.csv("NASS_DATA/animal_products_2018-2020.csv")
+animal_products_2021_2023 <- read.csv("NASS_DATA/animal_products_2021-2023.csv")
+## View(animal_products_2018_2020)
+## View(animal_products_2021_2023)
+
+crops_2018 <- read.csv("NASS_DATA/crops_2018.csv")
+crops_2019 <- read.csv("NASS_DATA/crops_2019.csv")
+crops_2020 <- read.csv("NASS_DATA/crops_2020.csv")
+crops_2021 <- read.csv("NASS_DATA/crops_2021.csv")
+crops_2022 <- read.csv("NASS_DATA/crops_2022.csv")
+crops_2023 <- read.csv("NASS_DATA/crops_2023.csv")
+
+demographics_2019 <- read.csv("NASS_DATA/demographics_2019.csv")
+demographics_2020 <- read.csv("NASS_DATA/demographics_2020.csv")
+demographics_2021 <- read.csv("NASS_DATA/demographics_2021.csv")
+demographics_2022 <- read.csv("NASS_DATA/demographics_2022.csv")
+demographics_2023 <- read.csv("NASS_DATA/demographics_2023.csv")
+
+economics_2018_2023 <- read.csv("NASS_DATA/economics_2018-2023.csv")
+
+environmental_2018_2023 <- read.csv("NASS_DATA/environmental_2018-2023.csv")
+
+```
+
+## Output Files as dataframe by type
+
+# In a new folder, the files will be output, one for each sector using this code:
+
+```{r combine_dataframes, echo=TRUE}
+
+animal_products <- rbind(animal_products_2018_2020, animal_products_2021_2023)
+
+crops <- rbind(crops_2018, crops_2019, crops_2020, crops_2021, crops_2022, crops_2023)
+
+demographics <- rbind(demographics_2019, demographics_2020, demographics_2021, demographics_2022, demographics_2023)
+
+# Verify that legths are something realistic, and combined and  rbind is an effective function
+#length(demographics_2019$State) + length(demographics_2020$State) + length(demographics_2021$State) + length(demographics_2022$State) + length(demographics_2023$State) == length(demographics$State)
+
+economics <- economics_2018_2023
+
+environmental <- environmental_2018_2023
+
+
+```
+
+From what I checked, column headers (first row of csv) are not read in as data, and will not appear in the dataframes except as headers.
+
+This code outputs the 5 files, combined from their originals to the DATA_FILES Folder
+
+```{r output_files}
+
+write.csv(animal_products, "DATA_FILES/animal_products.csv")
+write.csv(crops, "DATA_FILES/crops.csv")
+write.csv(demographics, "DATA_FILES/demographics.csv")
+write.csv(economics, "DATA_FILES/economics.csv")
+write.csv(environmental, "DATA_FILES/environmental.csv")
+
+```
+
+
+Unless the source data changes, the files should not need to be modified, and therefore this code is only to be used in that situation, because it has already created the outputs. 
+
+
+
