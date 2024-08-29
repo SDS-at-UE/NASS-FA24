@@ -68,16 +68,17 @@ This code outputs the 5 files, combined from their originals to the DATA_FILES F
 
 ```{r output_files}
 
-write.csv(animal_products, "DATA_FILES/animal_products.csv")
-write.csv(crops, "DATA_FILES/crops.csv")
-write.csv(demographics, "DATA_FILES/demographics.csv")
-write.csv(economics, "DATA_FILES/economics.csv")
-write.csv(environmental, "DATA_FILES/environmental.csv")
+write.csv(animal_products, "DATA_FILES/animal_products.csv", row.names = FALSE)
+write.csv(crops, "DATA_FILES/crops.csv", row.names = FALSE)
+write.csv(demographics, "DATA_FILES/demographics.csv", row.names = FALSE)
+write.csv(economics, "DATA_FILES/economics.csv", row.names = FALSE)
+write.csv(environmental, "DATA_FILES/environmental.csv", row.names = FALSE)
 
 ```
 
 
 Unless the source data changes, the files should not need to be modified, and therefore this code is only to be used in that situation, because it has already created the outputs. 
 
+In the very end, I went through the .csv files and changed the CV (%) so that there would not be a percentage sign, because symbols are not generally permissible in R object names.
 
 

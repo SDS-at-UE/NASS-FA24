@@ -1,0 +1,74 @@
+---
+title: "exploratory_data_analysis"
+author: "andrew-s-thompson"
+date: "2024-08-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(psych)
+```
+
+## Animal Products
+
+Analysis on the animal_products.csv file:
+
+```{r animal_products, echo=FALSE}
+animal_products = read.csv("DATA_FILES/animal_products.csv")
+describe(animal_products, omit = TRUE)
+
+```
+
+## Crops
+
+Analysis on the crops.csv file:
+
+```{r crops, echo=FALSE}
+crops = read.csv("DATA_FILES/crops.csv")
+crops = crops[, !(colnames(crops) %in% c("X", "watershed_code"))]
+crops_details  = crops %>% 
+  describe(omit = TRUE, IQR = TRUE)
+  
+
+crops_details[,c("n", "median", "min", "max", 'range', "IQR")]
+
+replace(crops$CV...., "(D)", NA, inplace = TRUE)
+crops
+
+```
+
+## Demographics
+
+Analysis on the demographics.csv file:
+
+```{r demographics, echo=FALSE}
+demographics = read.csv("DATA_FILES/demographics.csv")
+describe(demographics, omit = TRUE)
+
+```
+
+## economics
+
+Analysis on the economics.csv file:
+
+```{r economics, echo=FALSE}
+economics = read.csv("DATA_FILES/economics.csv")
+describe(economics, omit = TRUE)
+
+```
+
+## environmental
+
+Analysis on the environmental.csv file:
+
+```{r environmental, echo=FALSE}
+environmental = read.csv("DATA_FILES/environmental.csv")
+describe(environmental, omit = TRUE)
+
+```
+
+
+
+
