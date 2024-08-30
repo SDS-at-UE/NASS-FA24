@@ -60,6 +60,13 @@ economics <- economics_2018_2023
 environmental <- environmental_2018_2023
 
 
+# FIX SOME COLUMN LABELLING
+
+head(animal_products)
+
+names(animal_products)[names(animal_products) == 'old.var.name'] <- 'new.var.name'
+
+
 ```
 
 From what I checked, column headers (first row of csv) are not read in as data, and will not appear in the dataframes except as headers.

@@ -17,7 +17,18 @@ Analysis on the animal_products.csv file:
 
 ```{r animal_products, echo=FALSE}
 animal_products = read.csv("DATA_FILES/animal_products.csv")
-describe(animal_products, omit = TRUE)
+
+names(animal_products)[names(animal_products) == 'CV....'] <- 'CV'
+animal_products = animal_products[, !(colnames(animal_products) %in% c("X", "watershed_code"))]
+animal_products_details  = animal_products %>% 
+  describe(omit = TRUE, IQR = TRUE)
+  
+
+animal_products_details[,c("n", "median", "min", "max", 'range', "IQR")]
+
+# remove non-numeric values from CV
+animal_products$CV = as.numeric(replace(animal_products$CV, animal_products$CV %in% c("(D)", "(H)", "(L)"), NA))
+
 
 ```
 
@@ -27,16 +38,17 @@ Analysis on the crops.csv file:
 
 ```{r crops, echo=FALSE}
 crops = read.csv("DATA_FILES/crops.csv")
+names(crops)[names(crops) == 'CV....'] <- 'CV'
 crops = crops[, !(colnames(crops) %in% c("X", "watershed_code"))]
-crops_details  = crops %>% 
+crops_details = crops %>% 
   describe(omit = TRUE, IQR = TRUE)
   
 
 crops_details[,c("n", "median", "min", "max", 'range', "IQR")]
 
-replace(crops$CV...., "(D)", NA, inplace = TRUE)
-crops
-
+# remove non-numeric values from CV
+crops$CV = as.numeric(replace(crops$CV, crops$CV %in% c("(D)", "(H)", "(L)"), NA))
+                   
 ```
 
 ## Demographics
@@ -45,7 +57,17 @@ Analysis on the demographics.csv file:
 
 ```{r demographics, echo=FALSE}
 demographics = read.csv("DATA_FILES/demographics.csv")
-describe(demographics, omit = TRUE)
+
+names(demographics)[names(demographics) == 'CV....'] <- 'CV'
+demographics = demographics[, !(colnames(demographics) %in% c("X", "watershed_code"))]
+demographics_details  = demographics %>% 
+  describe(omit = TRUE, IQR = TRUE)
+  
+
+demographics_details[,c("n", "median", "min", "max", 'range', "IQR")]
+
+# remove non-numeric values from CV
+demographics$CV = as.numeric(replace(demographics$CV, demographics$CV %in% c("(D)", "(H)", "(L)"), NA))
 
 ```
 
@@ -55,7 +77,18 @@ Analysis on the economics.csv file:
 
 ```{r economics, echo=FALSE}
 economics = read.csv("DATA_FILES/economics.csv")
-describe(economics, omit = TRUE)
+
+names(economics)[names(economics) == 'CV....'] <- 'CV'
+economics = economics[, !(colnames(economics) %in% c("X", "watershed_code"))]
+economics_details  = economics %>% 
+  describe(omit = TRUE, IQR = TRUE)
+  
+
+economics_details[,c("n", "median", "min", "max", 'range', "IQR")]
+
+# remove non-numeric values from CV
+economics$CV = as.numeric(replace(economics$CV, economics$CV %in% c("(D)", "(H)", "(L)"), NA))
+
 
 ```
 
@@ -65,7 +98,18 @@ Analysis on the environmental.csv file:
 
 ```{r environmental, echo=FALSE}
 environmental = read.csv("DATA_FILES/environmental.csv")
-describe(environmental, omit = TRUE)
+
+names(environmental)[names(environmental) == 'CV....'] <- 'CV'
+environmental = environmental[, !(colnames(environmental) %in% c("X", "watershed_code"))]
+environmental_details  = environmental %>% 
+  describe(omit = TRUE, IQR = TRUE)
+  
+
+environmental_details[,c("n", "median", "min", "max", 'range', "IQR")]
+
+# remove non-numeric values from CV
+environmental$CV = as.numeric(replace(environmental$CV, environmental$CV %in% c("(D)", "(H)", "(L)"), NA))
+
 
 ```
 

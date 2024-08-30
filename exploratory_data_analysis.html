@@ -360,72 +360,38 @@ display: none;
 <div id="animal-products" class="section level2">
 <h2>Animal Products</h2>
 <p>Analysis on the animal_products.csv file:</p>
-<pre><code>##                vars     n     mean       sd median  trimmed      mad  min   max
-## X                 1 49409 24705.00 14263.29  24705 24705.00 18313.08    1 49409
-## Year              3 49409  2021.18     1.47   2022  2021.37     0.00 2018  2023
-## State.ANSI        8 49409    23.26     5.25     26    23.32     4.45   17    29
-## watershed_code   15 49409     0.00     0.00      0     0.00     0.00    0     0
-##                range  skew kurtosis    se
-## X              49408  0.00    -1.20 64.17
-## Year               5 -1.06    -0.17  0.01
-## State.ANSI        12 -0.12    -1.83  0.02
-## watershed_code     0   NaN      NaN  0.00</code></pre>
+<pre><code>##                n median  min  max range IQR
+## Year       49409   2022 2018 2023     5   2
+## State.ANSI 49409     26   17   29    12  11</code></pre>
+<pre><code>## Warning: NAs introduced by coercion</code></pre>
 </div>
 <div id="crops" class="section level2">
 <h2>Crops</h2>
 <p>Analysis on the crops.csv file:</p>
-<pre><code>##                vars      n     mean       sd median  trimmed      mad  min
-## X                 1 188507 94254.00 54417.43  94254 94254.00 69870.49    1
-## Year              3 188507  2020.65     1.63   2021  2020.68     1.48 2018
-## State.ANSI        8 188507    22.86     5.04     26    22.83     4.45   17
-## watershed_code   15 188507     0.00     0.00      0     0.00     0.00    0
-##                   max  range  skew kurtosis     se
-## X              188507 188506  0.00     -1.2 125.34
-## Year             2023      5 -0.19     -1.4   0.00
-## State.ANSI         29     12 -0.05     -1.8   0.01
-## watershed_code      0      0   NaN      NaN   0.00</code></pre>
+<pre><code>##                 n median  min  max range IQR
+## Year       188507   2021 2018 2023     5   3
+## State.ANSI 188507     26   17   29    12   8</code></pre>
 </div>
 <div id="demographics" class="section level2">
 <h2>Demographics</h2>
 <p>Analysis on the demographics.csv file:</p>
-<pre><code>##                vars     n     mean       sd  median  trimmed      mad  min
-## X                 1 85234 42617.50 24605.08 42617.5 42617.50 31591.98    1
-## Year              3 85234  2022.00     0.10  2022.0  2022.00     0.00 2019
-## State.ANSI        8 85234    22.56     5.13    26.0    22.45     4.45   17
-## watershed_code   15 85234     0.00     0.00     0.0     0.00     0.00    0
-##                  max range   skew kurtosis    se
-## X              85234 85233   0.00    -1.20 84.28
-## Year            2023     4 -23.23   675.43  0.00
-## State.ANSI        29    12   0.09    -1.82  0.02
-## watershed_code     0     0    NaN      NaN  0.00</code></pre>
+<pre><code>##                n median  min  max range IQR
+## Year       85234   2022 2019 2023     4   0
+## State.ANSI 85234     26   17   29    12  11</code></pre>
 </div>
 <div id="economics" class="section level2">
 <h2>economics</h2>
 <p>Analysis on the economics.csv file:</p>
-<pre><code>##                vars     n     mean       sd median trimmed      mad  min   max
-## X                 1 81937 40969.00 23653.32  40969 40969.0 30369.58    1 81937
-## Year              3 81937  2021.78     0.88   2022  2022.0     0.00 2018  2023
-## State.ANSI        8 81937    22.52     5.14     26    22.4     4.45   17    29
-## watershed_code   15 81937     0.00     0.00      0     0.0     0.00    0     0
-##                range  skew kurtosis    se
-## X              81936  0.00    -1.20 82.63
-## Year               5 -3.76    12.69  0.00
-## State.ANSI        12  0.11    -1.82  0.02
-## watershed_code     0   NaN      NaN  0.00</code></pre>
+<pre><code>##                n median  min  max range IQR
+## Year       81937   2022 2018 2023     5   0
+## State.ANSI 81937     26   17   29    12  11</code></pre>
 </div>
 <div id="environmental" class="section level2">
 <h2>environmental</h2>
 <p>Analysis on the environmental.csv file:</p>
-<pre><code>##                vars     n    mean      sd median trimmed     mad  min   max
-## X                 1 19114 9557.50 5517.88 9557.5 9557.50 7084.60    1 19114
-## Year              3 19114 2020.53    1.73 2021.0 2020.54    2.97 2018  2023
-## State.ANSI        8 19114   26.73    1.28   26.0   26.53    0.00   26    29
-## watershed_code   15 19114    0.00    0.00    0.0    0.00    0.00    0     0
-##                range  skew kurtosis    se
-## X              19113  0.00    -1.20 39.91
-## Year               5 -0.06    -1.34  0.01
-## State.ANSI         3  1.20    -0.55  0.01
-## watershed_code     0   NaN      NaN  0.00</code></pre>
+<pre><code>##                n median  min  max range IQR
+## Year       19114   2021 2018 2023     5   3
+## State.ANSI 19114     26   26   29     3   0</code></pre>
 </div>
 
 
