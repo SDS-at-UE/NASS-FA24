@@ -22,13 +22,14 @@ names(animal_products)[names(animal_products) == 'CV....'] <- 'CV'
 animal_products = animal_products[, !(colnames(animal_products) %in% c("X", "watershed_code"))]
 animal_products_details  = animal_products %>% 
   describe(omit = TRUE, IQR = TRUE)
-  
+
 
 animal_products_details[,c("n", "median", "min", "max", 'range', "IQR")]
 
 # remove non-numeric values from CV
 animal_products$CV = as.numeric(replace(animal_products$CV, animal_products$CV %in% c("(D)", "(H)", "(L)"), NA))
 
+print(colnames(animal_products))
 
 ```
 
@@ -48,7 +49,9 @@ crops_details[,c("n", "median", "min", "max", 'range', "IQR")]
 
 # remove non-numeric values from CV
 crops$CV = as.numeric(replace(crops$CV, crops$CV %in% c("(D)", "(H)", "(L)"), NA))
-                   
+             
+print(colnames(crops))
+      
 ```
 
 ## Demographics
@@ -68,6 +71,8 @@ demographics_details[,c("n", "median", "min", "max", 'range', "IQR")]
 
 # remove non-numeric values from CV
 demographics$CV = as.numeric(replace(demographics$CV, demographics$CV %in% c("(D)", "(H)", "(L)"), NA))
+
+print(colnames(demographics))
 
 ```
 
@@ -89,6 +94,7 @@ economics_details[,c("n", "median", "min", "max", 'range', "IQR")]
 # remove non-numeric values from CV
 economics$CV = as.numeric(replace(economics$CV, economics$CV %in% c("(D)", "(H)", "(L)"), NA))
 
+print(colnames(economics))
 
 ```
 
@@ -110,6 +116,7 @@ environmental_details[,c("n", "median", "min", "max", 'range', "IQR")]
 # remove non-numeric values from CV
 environmental$CV = as.numeric(replace(environmental$CV, environmental$CV %in% c("(D)", "(H)", "(L)"), NA))
 
+print(colnames(environmental))
 
 ```
 
