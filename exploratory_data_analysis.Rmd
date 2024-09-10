@@ -15,7 +15,7 @@ library(psych)
 
 Analysis on the animal_products.csv file:
 
-```{r animal_products, echo=FALSE}
+```{r Animal_products, echo=FALSE}
 animal_products = read.csv("DATA_FILES/animal_products.csv")
 
 names(animal_products)[names(animal_products) == 'CV....'] <- 'CV'
@@ -37,7 +37,7 @@ print(colnames(animal_products))
 
 Analysis on the crops.csv file:
 
-```{r crops, echo=FALSE}
+```{r Crops, echo=FALSE}
 crops = read.csv("DATA_FILES/crops.csv")
 names(crops)[names(crops) == 'CV....'] <- 'CV'
 crops = crops[, !(colnames(crops) %in% c("X", "watershed_code"))]
@@ -58,7 +58,7 @@ print(colnames(crops))
 
 Analysis on the demographics.csv file:
 
-```{r demographics, echo=FALSE}
+```{r Demographics, echo=FALSE}
 demographics = read.csv("DATA_FILES/demographics.csv")
 
 names(demographics)[names(demographics) == 'CV....'] <- 'CV'
@@ -76,11 +76,11 @@ print(colnames(demographics))
 
 ```
 
-## economics
+## Economics
 
 Analysis on the economics.csv file:
 
-```{r economics, echo=FALSE}
+```{r Economics, echo=FALSE}
 economics = read.csv("DATA_FILES/economics.csv")
 
 names(economics)[names(economics) == 'CV....'] <- 'CV'
@@ -98,11 +98,11 @@ print(colnames(economics))
 
 ```
 
-## environmental
+## Environmental
 
 Analysis on the environmental.csv file:
 
-```{r environmental, echo=FALSE}
+```{r Environmental, echo=FALSE}
 environmental = read.csv("DATA_FILES/environmental.csv")
 
 names(environmental)[names(environmental) == 'CV....'] <- 'CV'
