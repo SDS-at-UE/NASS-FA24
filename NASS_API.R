@@ -21,7 +21,7 @@ for(state in c("IN", "OH", "IL", "MI", "KY", "MO")){
 # Set up the parameters
 params <- list(
   sector_desc = "CROPS",
-  year = 2002,
+  year = 2017,
   state_alpha = state, 
   agg_level_desc = "COUNTY")
   data <- nassqs(params)
@@ -29,7 +29,7 @@ params <- list(
 
 }
 
-write.csv(df, "DATA_FILES/2002_county_crops", row.names = FALSE)
+write.csv(df, "DATA_FILES/2017_county_crops.csv", row.names = FALSE)
 
 
 
