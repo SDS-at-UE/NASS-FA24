@@ -18,3 +18,9 @@ print("saved")
 
 head(combined)
 table(combined$county_code)
+
+get(load("DATA_FILES/ALL_COUNTY_DATA.RData"))
+
+table(combined$sector_desc)
+
+
