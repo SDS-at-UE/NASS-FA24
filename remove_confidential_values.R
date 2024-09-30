@@ -14,8 +14,6 @@ combined$CV = as.numeric(replace(combined$Value, combined$Value %in% c("(D)", "(
 save(combined, file = "DATA_FILES/ALL_COUNTY_DATA.RData")
 print("saved")
 
-
-
 head(combined)
 table(combined$county_code)
 
