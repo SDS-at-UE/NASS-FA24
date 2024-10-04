@@ -220,8 +220,12 @@ ui <- navbarPage(leafletjs, theme = shinytheme("cosmo"),
                          fluidRow(
                            column(2),
                            column(8,
-                                  h5("Plot of acres and operations in the selected county"),
+                                  h5("Plot of Acres in the selected county"),
                                   plotOutput("plot_acres"),
+                                  br(),
+                                  br(),
+                                  h5("Plot of Operations in the selected county"),
+                                  plotOutput("plot_operations"),
                                   br(),
                                   br(),
                                   h5("Sales Plot in the selected county"),
@@ -539,7 +543,7 @@ server <- function(input, output,session) {
   
   output$tab1 <- DT::renderDataTable({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      head(county_data())
+      print(county_data())
       
     }
     
@@ -555,7 +559,7 @@ server <- function(input, output,session) {
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
       
       Data_harvest <- county_data() %>% 
-        select(YEAR, "corn_county_harvest_survey_acres" ,
+        select(YEAR, "corn_county_harvest_survey_acres",
                "corn_county_harvest_census_acres",
 #               "corn_county_harvest_census_operation",
 #               "corn_county_harvest_survey_operation"
@@ -576,16 +580,51 @@ server <- function(input, output,session) {
       # Create side-by-side bar graph
       ggplot(subset(long_data, Value != 0), aes(x = as.numeric(YEAR), y = Value, color = Variable)) +
         geom_line() +  # "dodge" places bars side by side
-        labs(title = "Number of Harvest Survey Acres ",
+        labs(title = paste0("Number of Harvest Survey Acres in ", dates()$county_state),
+             x = "Year", 
+             y = "Value") +
+        theme_minimal() +
+        scale_y_continuous(labels = scales::comma) +
+        scale_fill_brewer(palette = "Set2") 
+     
+      }
+  })
+  
+  output$plot_operations <- renderPlot({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      
+      Data_harvest <- county_data() %>% 
+        select(YEAR,
+               #"corn_county_harvest_survey_acres",
+               #"corn_county_harvest_census_acres",
+               "corn_county_harvest_census_operation",
+               "corn_county_harvest_survey_operation"
+        ) %>% 
+        group_by(YEAR) %>% 
+        summarise(#survey_acres = sum(corn_county_harvest_survey_acres, na.rm = T),
+                  survey_operation = sum(corn_county_harvest_survey_operation, na.rm = T),
+                  #census_acres = sum(corn_county_harvest_census_acres, na.rm = T),
+                  census_operation = sum(corn_county_harvest_census_operation, na.rm = T),
+        )
+      
+      # Reshape data to long format
+      long_data <- Data_harvest %>%
+        pivot_longer(cols = c(survey_operation, census_operation), 
+                     names_to = "Variable", 
+                     values_to = "Value")
+      print(long_data)
+      
+      # Create side-by-side bar graph
+      ggplot(subset(long_data, Value != 0), aes(x = as.numeric(YEAR), y = Value, color = Variable)) +
+        geom_line() +  # "dodge" places bars side by side
+        labs(title = paste0("Number of Harvest Operations in ", dates()$county_state),
              x = "Year", 
              y = "Value") +
         theme_minimal() +
         scale_y_continuous(labels = scales::comma) +
         scale_fill_brewer(palette = "Set2") 
       
-      
-     
-      }
+    }
   })
   
   
