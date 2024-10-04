@@ -220,6 +220,10 @@ ui <- navbarPage(leafletjs, theme = shinytheme("cosmo"),
                          fluidRow(
                            column(2),
                            column(8,
+                                  h5("Plot of acres and operations in the selected county"),
+                                  plotOutput("plot_acres"),
+                                  br(),
+                                  br(),
                                   h5("Sales Plot in the selected county"),
                                   plotOutput("plot_sales"),
                                   br(),
@@ -553,6 +557,44 @@ server <- function(input, output,session) {
       Data_harvest <- county_data() %>% 
         select(YEAR, "corn_county_harvest_survey_acres" ,
                "corn_county_harvest_census_acres",
+#               "corn_county_harvest_census_operation",
+#               "corn_county_harvest_survey_operation"
+               ) %>% 
+        group_by(YEAR) %>% 
+        summarise(survey_acres = sum(corn_county_harvest_survey_acres, na.rm = T),
+#                  survey_operation = sum(corn_county_harvest_survey_operation, na.rm = T),
+                  census_acres = sum(corn_county_harvest_census_acres, na.rm = T),
+#                  census_operation = sum(corn_county_harvest_census_operation, na.rm = T),
+                  )
+      
+      # Reshape data to long format
+      long_data <- Data_harvest %>%
+        pivot_longer(cols = c(survey_acres, census_acres), 
+                     names_to = "Variable", 
+                     values_to = "Value")
+      
+      # Create side-by-side bar graph
+      ggplot(subset(long_data, Value != 0), aes(x = as.numeric(YEAR), y = Value, color = Variable)) +
+        geom_line() +  # "dodge" places bars side by side
+        labs(title = "Number of Harvest Survey Acres ",
+             x = "Year", 
+             y = "Value") +
+        theme_minimal() +
+        scale_y_continuous(labels = scales::comma) +
+        scale_fill_brewer(palette = "Set2") 
+      
+      
+     
+      }
+  })
+  
+  
+  output$plot_sales <- renderPlot({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      
+      Data_harvest <- county_data() %>% 
+        select(YEAR, "corn_county_harvest_survey_acres" ,
+               "corn_county_harvest_census_acres",
                "corn_county_harvest_census_operation",
                "corn_county_harvest_survey_operation") %>% 
         group_by(YEAR) %>% 
@@ -577,12 +619,7 @@ server <- function(input, output,session) {
         scale_y_continuous(labels = scales::comma) +
         scale_fill_brewer(palette = "Set2") 
       
-      }
-  })
-  
-  
-  output$plot_sales <- renderPlot({
-    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      
       
     }
   })
@@ -658,7 +695,8 @@ server <- function(input, output,session) {
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
       
       ggplot()+
-        geom_point()
+        geom_point() + 
+        geom_line(x_intercept = 0)
     }
   })
   
