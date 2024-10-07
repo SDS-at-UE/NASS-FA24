@@ -20,3 +20,24 @@ unique(selected_crop_data$GROUP_DESC)
 unique(selected_crop_data[selected_crop_data$GROUP_DESC == "FIELD CROPS",]$COMMODITY_DESC)
 
 
+survey_corn_selected <- selected_crop_data %>%
+  filter(SOURCE_DESC == 'SURVEY')
+
+census_corn_selected <- selected_crop_data %>%
+  filter(SOURCE_DESC == 'CENSUS')
+
+survey_corn_data <- survey_corn_selected %>% 
+  filter(GROUP_DESC == "FIELD CROPS",
+         COMMODITY_DESC == 'CORN')
+
+census_corn_data <- census_corn_selected %>% 
+  filter(GROUP_DESC == "FIELD CROPS",
+         COMMODITY_DESC == 'CORN')
+
+state_survey_corn_data <- survey_corn_data %>% 
+  
+
+
+
+
+
