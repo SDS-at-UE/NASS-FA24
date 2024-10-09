@@ -197,9 +197,9 @@ ui <- navbarPage(leafletjs, theme = shinytheme("cosmo"),
                                                 c("PRODUCTION", "YIELD", "AREA PLANTED", "AREA HARVESTED", "SALES"),
                                                 selected = "AREA HARVESTED"),
                                     
-                                    selectInput(inputId = "source", "Choose a SOURCE_DESC", 
-                                                c("","CENSUS", "SURVEY"),
-                                                selected = NULL),
+#                                    selectInput(inputId = "source", "Choose a SOURCE_DESC", 
+#                                                c("","CENSUS", "SURVEY"),
+#                                                selected = NULL),
                                     
                                     # selectInput(inputId = "unit", "Choose a UNIT_DESC",
                                     #             c("ACRES", "OPERATIONS"),
@@ -271,7 +271,7 @@ server <- function(input, output,session) {
   
   #c("PRODUCTION", "YIELD", "AREA PLANTED", "AREA HARVESTED", "SALES")
   output$unit <- renderUI({
-    if(length(strsplit(as.character(req(input$source)), ""))!=0){ #"CENSUS", "SURVEY"
+    if(length(strsplit(as.character(req(input$stat)), ""))!=0){ #"CENSUS", "SURVEY"
       if(input$stat == 'AREA HARVESTED'){
         x = c("","ACRES_harvested", "OPERATIONS_harvested")
         selectInput(inputId = "unit", label ="Choose a UNIT_DESC",
@@ -364,7 +364,7 @@ server <- function(input, output,session) {
   
   reactive_data <-  reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      if(as.character(input$source) == "CENSUS"){
+#      if(as.character(input$source) == "CENSUS"){
         switch(input$unit,
                ACRES_harvested = data_new4()$corn_county_harvest_census_acres,
                OPERATIONS_harvested = data_new4()$corn_county_harvest_census_operation,
@@ -378,20 +378,7 @@ server <- function(input, output,session) {
                Dollar_sales = data_new4()$corn_county_sales_census_dollor
                
         )
-      }else if(as.character(input$source) == "SURVEY"){
-        switch(input$unit,
-               ACRES_harvested = data_new4()$corn_county_harvest_survey_acres,
-               OPERATIONS_harvested = data_new4()$corn_county_harvest_survey_operation,
-               ACRES_plated = data_new4()$corn_county_planted_survey_acre,
-               BU_production = data_new4()$corn_county_production_survey_bu,
-               TONS_production = data_new4()$corn_county_production_survey_ton,
-               LB_production = data_new4()$corn_county_production_survey_lb,
-               BU_ACRE_yield = data_new4()$corn_county_yield_survey_bu_acre,
-               TONS_ACRE_yield = data_new4()$corn_county_yield_survey_ton_acre,
-               OPERATIONS_sales = data_new4()$corn_county_sales_survey_operation,
-               Dollar_sales = data_new4()$corn_county_sales_survey_dollor
-        )
-      }
+#      }
       
     }
      
@@ -399,7 +386,7 @@ server <- function(input, output,session) {
   
   reactive_stat <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      if(as.character(input$source) == "CENSUS"){
+#      if(as.character(input$source) == "CENSUS"){
         switch(input$unit,
                ACRES_harvested = dates()$corn_county_harvest_census_acres,
                OPERATIONS_harvested = dates()$corn_county_harvest_census_operation,
@@ -412,21 +399,22 @@ server <- function(input, output,session) {
                OPERATIONS_sales = dates()$corn_county_sales_census_operation,
                Dollar_sales = dates()$corn_county_sales_census_dollor
         )
-      }else if(as.character(input$source) == "SURVEY"){
-        switch(input$unit,
-               ACRES_harvested = dates()$corn_county_harvest_survey_acres,
-               OPERATIONS_harvested = dates()$corn_county_harvest_survey_operation,
-               ACRES_plated = dates()$corn_county_planted_survey_acre,
-               BU_production = dates()$corn_county_production_survey_bu,
-               TONS_production = dates()$corn_county_production_survey_ton,
-               LB_production = dates()$corn_county_production_survey_lb,
-               BU_ACRE_yield = dates()$corn_county_yield_survey_bu_acre,
-               TONS_ACRE_yield = dates()$corn_county_yield_survey_ton_acre,
-               OPERATIONS_sales = dates()$corn_county_sales_survey_operation,
-               Dollar_sales = dates()$corn_county_sales_survey_dollor
-        )
       }
-    }
+#    else if(as.character(input$source) == "SURVEY"){
+#        switch(input$unit,
+#               ACRES_harvested = dates()$corn_county_harvest_survey_acres,
+#               OPERATIONS_harvested = dates()$corn_county_harvest_survey_operation,
+#               ACRES_plated = dates()$corn_county_planted_survey_acre,
+##               BU_production = dates()$corn_county_production_survey_bu,
+#               TONS_production = dates()$corn_county_production_survey_ton,
+#               LB_production = dates()$corn_county_production_survey_lb,
+#               BU_ACRE_yield = dates()$corn_county_yield_survey_bu_acre,
+#               TONS_ACRE_yield = dates()$corn_county_yield_survey_ton_acre,
+#               OPERATIONS_sales = dates()$corn_county_sales_survey_operation,
+#               Dollar_sales = dates()$corn_county_sales_survey_dollor
+#        )
+#      }
+#    }
      
   })
   
@@ -458,7 +446,7 @@ server <- function(input, output,session) {
   
   popup_msg <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      if(as.character(input$source) == "CENSUS"){
+#      if(as.character(input$source) == "CENSUS"){
         str_c("<strong>", dates()$county_state, #", ", dates()$State,
               "</strong><br /><strong>", dates()$YEAR, "</strong>",
               "<br /> ACRES_harvested: ", dates()$corn_county_harvest_census_acres,
@@ -472,20 +460,21 @@ server <- function(input, output,session) {
               "<br /> OPERATIONS_sales: ",  dates()$corn_county_sales_census_operation,
               "<br /> Dollar_sales: ",  dates()$corn_county_sales_census_dollor)
         
-      }else if(as.character(input$source) == "SURVEY"){
-        str_c("<strong>", dates()$county_state, #", ", dates()$State,
-              "</strong><br /><strong>", dates()$YEAR, "</strong>",
-              "<br /> ACRES_harvested: ",  dates()$corn_county_harvest_survey_acres,
-              "<br /> ACRES_harvested: ",  dates()$corn_county_harvest_survey_operation,
-              "<br /> ACRES_plated: ",  dates()$corn_county_planted_survey_acre,
-              "<br /> BU_production: ",  dates()$corn_county_production_survey_bu,
-              "<br /> TONS_production: ",  dates()$corn_county_production_survey_ton,
-              "<br /> LB_production: ",  dates()$corn_county_production_survey_lb,
-              "<br /> BU_ACRE_yield: ",  dates()$corn_county_yield_survey_bu_acre,
-              "<br /> TONS_ACRE_yield: ",  dates()$corn_county_yield_survey_ton_acre,
-              "<br /> OPERATIONS_sales: ",  dates()$corn_county_sales_survey_operation,
-              "<br /> Dollar_sales: ",  dates()$corn_county_sales_survey_dollor)
-      }
+#      }
+#      else if(as.character(input$source) == "SURVEY"){
+#        str_c("<strong>", dates()$county_state, #", ", dates()$State,
+#              "</strong><br /><strong>", dates()$YEAR, "</strong>",
+#              "<br /> ACRES_harvested: ",  dates()$corn_county_harvest_survey_acres,
+#              "<br /> ACRES_harvested: ",  dates()$corn_county_harvest_survey_operation,
+#              "<br /> ACRES_plated: ",  dates()$corn_county_planted_survey_acre,
+#              "<br /> BU_production: ",  dates()$corn_county_production_survey_bu,
+#              "<br /> TONS_production: ",  dates()$corn_county_production_survey_ton,
+#              "<br /> LB_production: ",  dates()$corn_county_production_survey_lb,
+#              "<br /> BU_ACRE_yield: ",  dates()$corn_county_yield_survey_bu_acre,
+#              "<br /> TONS_ACRE_yield: ",  dates()$corn_county_yield_survey_ton_acre,
+#              "<br /> OPERATIONS_sales: ",  dates()$corn_county_sales_survey_operation,
+#              "<br /> Dollar_sales: ",  dates()$corn_county_sales_survey_dollor)
+#      }
     }
   })
   
