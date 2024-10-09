@@ -281,8 +281,47 @@ corn_county <- data.frame(corn_county,
                           corn_county_yield_census_ton_acre = rep(NA, nrow(corn_county)),
                           corn_county_planted_census_acre  = rep(NA, nrow(corn_county)),
                           corn_county_sales_survey_dollor = rep(NA, nrow(corn_county)),
+                          corn_county_sales_survey_operation = rep(NA, nrow(corn_county)),
                           corn_county_production_survey_lb = rep(NA, nrow(corn_county)))
                           
 
 save(corn_county, file = "corn_county.rda")
 
+
+
+
+
+# popup_msg <- reactive({
+#   if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+#     if(as.character(input$source) == "CENSUS"){
+#       str_c("<strong>", dates()$county_state, #", ", dates()$State,
+#             "</strong><br /><strong>", dates()$YEAR, "</strong>",
+#             "<br /> ACRES_harvested: ", ifelse(is.zero(dates()$corn_county_harvest_census_acres), "(D)", dates()$corn_county_harvest_census_acres),
+#             "<br /> OPERATIONS_harvested: ", ifelse(is.zero(dates()$corn_county_harvest_census_operation), "(D)", dates()$corn_county_harvest_census_operation),
+#             "<br /> ACRES_plated: ",  ifelse(is.zero(dates()$corn_county_planted_census_acre), "(D)", dates()$corn_county_planted_census_acre),
+#             "<br /> BU_production: ",  ifelse(is.zero(dates()$corn_county_production_census_bu), "(D)", dates()$corn_county_production_census_bu),
+#             "<br /> TONS_production: ",  ifelse(is.zero(dates()$corn_county_production_census_ton), "(D)", dates()$corn_county_production_census_ton),
+#             "<br /> LB_production: ",  ifelse(is.zero(dates()$corn_county_production_census_lb), "(D)", dates()$corn_county_production_census_lb),
+#             "<br /> BU_ACRE_yield: ",  ifelse(is.zero(dates()$corn_county_yield_census_bu_acre), "(D)", dates()$corn_county_yield_census_bu_acre),
+#             "<br /> TONS_ACRE_yield: ",  ifelse(is.zero(dates()$corn_county_yield_census_ton_acre), "(D)", dates()$corn_county_yield_census_ton_acre),
+#             "<br /> OPERATIONS_sales: ",  ifelse(is.zero(dates()$corn_county_sales_census_operation), "(D)", dates()$corn_county_sales_census_operation),
+#             "<br /> Dollar_sales: ",  ifelse(is.zero(dates()$corn_county_sales_census_dollor), "(D)", dates()$corn_county_sales_census_dollor))
+# 
+#     }else if(as.character(input$source) == "SURVEY"){
+#       str_c("<strong>", dates()$county_state, #", ", dates()$State,
+#             "</strong><br /><strong>", dates()$YEAR, "</strong>",
+#             "<br /> ACRES_harvested: ",  ifelse(is.zero(dates()$corn_county_harvest_survey_acres), "(D)", dates()$corn_county_harvest_survey_acres),
+#             "<br /> ACRES_harvested: ",  ifelse(is.zero(dates()$corn_county_harvest_survey_operation), "(D)", dates()$corn_county_harvest_survey_operation),
+#             "<br /> ACRES_plated: ",  ifelse(is.zero(dates()$corn_county_planted_survey_acre), "(D)", dates()$corn_county_planted_survey_acre),
+#             "<br /> BU_production: ",  ifelse(is.zero(dates()$corn_county_production_survey_bu), "(D)", dates()$corn_county_production_survey_bu),
+#             "<br /> TONS_production: ",  ifelse(is.zero(dates()$corn_county_production_survey_ton), "(D)", dates()$corn_county_production_survey_ton),
+#             "<br /> LB_production: ",  ifelse(is.zero(dates()$corn_county_production_survey_lb), "(D)", dates()$corn_county_production_survey_lb),
+#             "<br /> BU_ACRE_yield: ",  ifelse(is.zero(dates()$corn_county_yield_survey_bu_acre), "(D)", dates()$corn_county_yield_survey_bu_acre),
+#             "<br /> TONS_ACRE_yield: ",  ifelse(is.zero(dates()$corn_county_yield_survey_ton_acre), "(D)", dates()$corn_county_yield_survey_ton_acre),
+#             "<br /> OPERATIONS_sales: ",  ifelse(is.zero(dates()$corn_county_sales_survey_operation), "(D)", dates()$corn_county_sales_survey_operation),
+#             "<br /> Dollar_sales: ",  ifelse(is.zero(dates()$corn_county_sales_survey_dollor), "(D)", dates()$corn_county_sales_survey_dollor))
+#     }
+#   }
+# 
+# 
+# })

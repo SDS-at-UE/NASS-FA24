@@ -8,9 +8,11 @@ library(shinythemes)
 library(bslib)
 library(imputeTS)
 library(data.table)
-library(purrr) 
+# install.packages("imputeTS")
 
+# setwd("C:\\Users\\o_kho\\OneDrive - University of Evansville\\2024_Fall\\Stat300\\NASS\\App")
 setwd("/Users/andrewthompson/Desktop/NASS-FA24/Complete_data/App")
+
 
 #######################  Loading the data  #############################
 
@@ -27,15 +29,6 @@ load("corn_county.rda")
 # corn_county_survey <- corn_county_survey %>%
 #   mutate(Production = rep(NA, nrow(corn_county_survey)))
 
-for(i in 4:dim(corn_county)[2]){
-  corn_county[,i][is.na(corn_county[,i])] <- 0
-}
-
-
-
-is.zero <- function(x) {
-  x == 0
-}
 
 
 #layer_county <- unique(corn_county_cencus$county_state)
@@ -177,7 +170,7 @@ ui <- navbarPage(leafletjs, theme = shinytheme("cosmo"),
                                                         #timeFormat = "%m-%d-%Y",
                                                         step = 1,
                                                         ticks = FALSE,
-                                                        animate = animationOptions(interval = 2000),
+                                                        animate = animationOptions(interval = 1000),
                                    ),
                                    ),
                                    column(3,)        
@@ -216,7 +209,14 @@ ui <- navbarPage(leafletjs, theme = shinytheme("cosmo"),
                                   
                            )
                          ),
-                         
+                         fluidRow(
+                           column(12,
+                                  DT::dataTableOutput("tab1"),
+                                  br(),
+                                  textOutput("test"),
+                                  
+                                  )
+                         ),
                          fluidRow(
                            column(2),
                            column(8,
@@ -228,35 +228,31 @@ ui <- navbarPage(leafletjs, theme = shinytheme("cosmo"),
                                   plotOutput("plot_operations"),
                                   br(),
                                   br(),
-                                  #h5("Sales Plot in the selected county"),
+                                  h5("Sales Plot in the selected county"),
                                   plotOutput("plot_sales"),
                                   br(),
                                   br(),
-                                  #h5("Yield Plot in the selected county"),
+                                  h5("Normalized Sales Plot in the selected county"),
+                                  plotOutput("plot_acres_norm"),
+                                  br(),
+                                  br(),
+                                  h5("Yield Plot in the selected county"),
                                   plotOutput("plot_yield"),
                                   br(),
                                   br(),
-                                  #h5("Harvested Area Plot in the selected county"),
+                                  h5("Harvested Area Plot in the selected county"),
                                   plotOutput("plot_harvested"),
                                   br(),
                                   br(),
-                                  #h5("Planted Area Plot in the selected county"),
+                                  h5("Planted Area Plot in the selected county"),
                                   plotOutput("plot_planted"),
                                   br(),
                                   br(),
-                                  #h5("Production Plot in the selected county"),
+                                  h5("Production Plot in the selected county"),
                                   plotOutput("plot_production"),
                                   
                            ),
                            column(2)
-                         ),
-                         fluidRow(
-                           column(12,
-                                  DT::dataTableOutput("tab1"),
-                                  #br(),
-                                  #textOutput("test"),
-                                  
-                           )
                          ),
                          
                          
@@ -276,24 +272,24 @@ server <- function(input, output,session) {
         x = c("","ACRES_harvested", "OPERATIONS_harvested")
         selectInput(inputId = "unit", label ="Choose a UNIT_DESC",
                     choices = x,
-                       selected = "")
+                       selected = NULL)
       }else if(input$stat == 'AREA PLANTED'){
-        x = c("","ACRES_plated")
+        x = c(NULL,"ACRES_plated")
         selectInput(inputId = "unit", label ="Choose a UNIT_DESC",
                        choices = x,
                        selected = "")
       }else if(input$stat == 'PRODUCTION'){
-        x = c("","BU_production", "TONS_production", "LB_production")
+        x = c(NULL,"BU_production", "TONS_production", "LB_production")
         selectInput(inputId = "unit", label ="Choose a UNIT_DESC",
                     choices = x,
                     selected = "")
       }else if(input$stat == 'YIELD'){
-        x = c("","BU_ACRE_yield", "TONS_ACRE_yield")
+        x = c(NULL,"BU_ACRE_yield", "TONS_ACRE_yield")
         selectInput(inputId = "unit", label ="Choose a UNIT_DESC",
                     choices = x,
                     selected = "")
       }else if(input$stat == 'SALES'){
-        x = c("","OPERATIONS_sales", "Dollar_sales")
+        x = c(NULL,"OPERATIONS_sales", "Dollar_sales")
         selectInput(inputId = "unit", label ="Choose a UNIT_DESC",
                     choices = x,
                     selected = "")
@@ -342,22 +338,8 @@ server <- function(input, output,session) {
   
   dates <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      data = data_new4() %>%
+      data_new4() %>% 
         filter(YEAR == as.numeric(input$dates))
-
-
-      # Validate that data is not empty
-      validate(
-        need(nrow(data) > 0, "No data available for the selected month.")
-      )
-
-      return(data)
-      
-      # data_filtered <- data_new4() %>% 
-      #   filter(YEAR == as.numeric(input$dates))
-      # 
-      # data_filtered
-      
     }
     
   })
@@ -439,99 +421,50 @@ server <- function(input, output,session) {
   
   pal_data <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      validate(
-        need(nrow(dates()) > 0, "No data to apply color palette.")
-      )
-      rdata = reactive_data()
-      if(max(reactive_stat())==0){
-        colorNumeric(palette = color_pal, domain = 0.0001:10000)
-      }else{
-        colorNumeric(palette = color_pal, domain = rdata)
-      }
-      
-      #colorNumeric(palette = color_pal, domain = 0.001:(max(reactive_data(), na.rm = TRUE)+1))
+      #rdata = reactive_data()
+      colorNumeric(palette = color_pal, domain = 0.001:(max(reactive_data(), na.rm = TRUE)+1))
       #colorNumeric(palette = color_pal, domain = rdata)#reactive_data())
     }
     
   })
-  
   
   popup_msg <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
       if(as.character(input$source) == "CENSUS"){
         str_c("<strong>", dates()$county_state, #", ", dates()$State,
               "</strong><br /><strong>", dates()$YEAR, "</strong>",
-              "<br /> ACRES_harvested: ", dates()$corn_county_harvest_census_acres,
-              "<br /> OPERATIONS_harvested: ", dates()$corn_county_harvest_census_operation,
-              "<br /> ACRES_plated: ",  dates()$corn_county_planted_census_acre,
-              "<br /> BU_production: ",  dates()$corn_county_production_census_bu,
-              "<br /> TONS_production: ",  dates()$corn_county_production_census_ton,
-              "<br /> LB_production: ",  dates()$corn_county_production_census_lb,
-              "<br /> BU_ACRE_yield: ",  dates()$corn_county_yield_census_bu_acre,
-              "<br /> TONS_ACRE_yield: ",  dates()$corn_county_yield_census_ton_acre,
-              "<br /> OPERATIONS_sales: ",  dates()$corn_county_sales_census_operation,
-              "<br /> Dollar_sales: ",  dates()$corn_county_sales_census_dollor)
+              "<br /> ACRES_harvested: ", ifelse(is.na(dates()$corn_county_harvest_census_acres), "(D)", dates()$corn_county_harvest_census_acres),
+              "<br /> OPERATIONS_harvested: ", ifelse(is.na(dates()$corn_county_harvest_census_operation), "(D)", dates()$corn_county_harvest_census_operation),
+              "<br /> ACRES_plated: ",  ifelse(is.na(dates()$corn_county_planted_census_acre), "(D)", dates()$corn_county_planted_census_acre),
+              "<br /> BU_production: ",  ifelse(is.na(dates()$corn_county_production_census_bu), "(D)", dates()$corn_county_production_census_bu),
+              "<br /> TONS_production: ",  ifelse(is.na(dates()$corn_county_production_census_ton), "(D)", dates()$corn_county_production_census_ton),
+              "<br /> LB_production: ",  ifelse(is.na(dates()$corn_county_production_census_lb), "(D)", dates()$corn_county_production_census_lb),
+              "<br /> BU_ACRE_yield: ",  ifelse(is.na(dates()$corn_county_yield_census_bu_acre), "(D)", dates()$corn_county_yield_census_bu_acres),
+              "<br /> TONS_ACRE_yield: ",  ifelse(is.na(dates()$corn_county_yield_census_ton_acre), "(D)", dates()$corn_county_yield_census_ton_acres),
+              "<br /> OPERATIONS_sales: ",  ifelse(is.na(dates()$corn_county_sales_census_operation), "(D)", dates()$corn_county_sales_census_operation),
+              "<br /> Dollar_sales: ",  ifelse(is.na(dates()$corn_county_sales_census_dollor), "(D)", dates()$corn_county_sales_census_dollor))
         
       }else if(as.character(input$source) == "SURVEY"){
         str_c("<strong>", dates()$county_state, #", ", dates()$State,
               "</strong><br /><strong>", dates()$YEAR, "</strong>",
-              "<br /> ACRES_harvested: ",  dates()$corn_county_harvest_survey_acres,
-              "<br /> ACRES_harvested: ",  dates()$corn_county_harvest_survey_operation,
-              "<br /> ACRES_plated: ",  dates()$corn_county_planted_survey_acre,
-              "<br /> BU_production: ",  dates()$corn_county_production_survey_bu,
-              "<br /> TONS_production: ",  dates()$corn_county_production_survey_ton,
-              "<br /> LB_production: ",  dates()$corn_county_production_survey_lb,
-              "<br /> BU_ACRE_yield: ",  dates()$corn_county_yield_survey_bu_acre,
-              "<br /> TONS_ACRE_yield: ",  dates()$corn_county_yield_survey_ton_acre,
-              "<br /> OPERATIONS_sales: ",  dates()$corn_county_sales_survey_operation,
-              "<br /> Dollar_sales: ",  dates()$corn_county_sales_survey_dollor)
+              "<br /> ACRES_harvested: ",  ifelse(is.na(dates()$corn_county_harvest_survey_acres), "(D)", dates()$corn_county_harvest_survey_acres),
+              "<br /> ACRES_harvested: ",  ifelse(is.na(dates()$corn_county_harvest_survey_operation), "(D)", dates()$corn_county_harvest_survey_operation),
+              "<br /> ACRES_plated: ",  ifelse(is.na(dates()$corn_county_planted_survey_acre), "(D)", dates()$corn_county_planted_survey_acre),
+              "<br /> BU_production: ",  ifelse(is.na(dates()$corn_county_production_survey_bu), "(D)", dates()$corn_county_production_survey_bu),
+              "<br /> TONS_production: ",  ifelse(is.na(dates()$corn_county_production_survey_ton), "(D)", dates()$corn_county_production_survey_ton),
+              "<br /> LB_production: ",  ifelse(is.na(dates()$corn_county_production_survey_lb), "(D)", dates()$corn_county_production_survey_lb),
+              "<br /> BU_ACRE_yield: ",  ifelse(is.na(dates()$corn_county_yield_survey_bu_acre), "(D)", dates()$corn_county_yield_survey_bu_acres),
+              "<br /> TONS_ACRE_yield: ",  ifelse(is.na(dates()$corn_county_yield_survey_ton_acre), "(D)", dates()$corn_county_yield_survey_ton_acres),
+              "<br /> OPERATIONS_sales: ",  ifelse(is.na(dates()$corn_county_sales_survey_operation), "(D)", dates()$corn_county_sales_survey_operation),
+              "<br /> Dollar_sales: ",  ifelse(is.na(dates()$corn_county_sales_survey_dollor), "(D)", dates()$corn_county_sales_survey_dollor))
       }
     }
+     
+    
   })
-  
-  
-  # popup_msg <- reactive({
-  #   if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-  #     if(as.character(input$source) == "CENSUS"){
-  #       str_c("<strong>", dates()$county_state, #", ", dates()$State,
-  #             "</strong><br /><strong>", dates()$YEAR, "</strong>",
-  #             "<br /> ACRES_harvested: ", ifelse(is.zero(dates()$corn_county_harvest_census_acres), "(D)", dates()$corn_county_harvest_census_acres),
-  #             "<br /> OPERATIONS_harvested: ", ifelse(is.zero(dates()$corn_county_harvest_census_operation), "(D)", dates()$corn_county_harvest_census_operation),
-  #             "<br /> ACRES_plated: ",  ifelse(is.zero(dates()$corn_county_planted_census_acre), "(D)", dates()$corn_county_planted_census_acre),
-  #             "<br /> BU_production: ",  ifelse(is.zero(dates()$corn_county_production_census_bu), "(D)", dates()$corn_county_production_census_bu),
-  #             "<br /> TONS_production: ",  ifelse(is.zero(dates()$corn_county_production_census_ton), "(D)", dates()$corn_county_production_census_ton),
-  #             "<br /> LB_production: ",  ifelse(is.zero(dates()$corn_county_production_census_lb), "(D)", dates()$corn_county_production_census_lb),
-  #             "<br /> BU_ACRE_yield: ",  ifelse(is.zero(dates()$corn_county_yield_census_bu_acre), "(D)", dates()$corn_county_yield_census_bu_acre),
-  #             "<br /> TONS_ACRE_yield: ",  ifelse(is.zero(dates()$corn_county_yield_census_ton_acre), "(D)", dates()$corn_county_yield_census_ton_acre),
-  #             "<br /> OPERATIONS_sales: ",  ifelse(is.zero(dates()$corn_county_sales_census_operation), "(D)", dates()$corn_county_sales_census_operation),
-  #             "<br /> Dollar_sales: ",  ifelse(is.zero(dates()$corn_county_sales_census_dollor), "(D)", dates()$corn_county_sales_census_dollor))
-  # 
-  #     }else if(as.character(input$source) == "SURVEY"){
-  #       str_c("<strong>", dates()$county_state, #", ", dates()$State,
-  #             "</strong><br /><strong>", dates()$YEAR, "</strong>",
-  #             "<br /> ACRES_harvested: ",  ifelse(is.zero(dates()$corn_county_harvest_survey_acres), "(D)", dates()$corn_county_harvest_survey_acres),
-  #             "<br /> ACRES_harvested: ",  ifelse(is.zero(dates()$corn_county_harvest_survey_operation), "(D)", dates()$corn_county_harvest_survey_operation),
-  #             "<br /> ACRES_plated: ",  ifelse(is.zero(dates()$corn_county_planted_survey_acre), "(D)", dates()$corn_county_planted_survey_acre),
-  #             "<br /> BU_production: ",  ifelse(is.zero(dates()$corn_county_production_survey_bu), "(D)", dates()$corn_county_production_survey_bu),
-  #             "<br /> TONS_production: ",  ifelse(is.zero(dates()$corn_county_production_survey_ton), "(D)", dates()$corn_county_production_survey_ton),
-  #             "<br /> LB_production: ",  ifelse(is.zero(dates()$corn_county_production_survey_lb), "(D)", dates()$corn_county_production_survey_lb),
-  #             "<br /> BU_ACRE_yield: ",  ifelse(is.zero(dates()$corn_county_yield_survey_bu_acre), "(D)", dates()$corn_county_yield_survey_bu_acre),
-  #             "<br /> TONS_ACRE_yield: ",  ifelse(is.zero(dates()$corn_county_yield_survey_ton_acre), "(D)", dates()$corn_county_yield_survey_ton_acre),
-  #             "<br /> OPERATIONS_sales: ",  ifelse(is.zero(dates()$corn_county_sales_survey_operation), "(D)", dates()$corn_county_sales_survey_operation),
-  #             "<br /> Dollar_sales: ",  ifelse(is.zero(dates()$corn_county_sales_survey_dollor), "(D)", dates()$corn_county_sales_survey_dollor))
-  #     }
-  #   }
-  # 
-  # 
-  # })
   
   output$map_pop <- renderLeaflet({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      
-      validate(
-        need(nrow(dates()) > 0, "No data available for the selected year.")
-      )
-      
       leaflet(width = "100%",
               options = leafletOptions(zoomSnap = 0,
                                        zoomDelta = 0.25)) %>%
@@ -597,7 +530,7 @@ server <- function(input, output,session) {
   county_data <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
       validate(
-        need(GRIDrv() != "", "Please select a climate grid cell to generate analyses.")
+        need(GRIDrv() != "", "Please select a county to generate analyses.")
       )
       
       Data = data_new4() %>% 
@@ -610,7 +543,7 @@ server <- function(input, output,session) {
   
   output$tab1 <- DT::renderDataTable({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      head(county_data())
+      print(county_data())
       
     }
     
@@ -628,15 +561,15 @@ server <- function(input, output,session) {
       Data_harvest <- county_data() %>% 
         select(YEAR, "corn_county_harvest_survey_acres",
                "corn_county_harvest_census_acres",
-               #               "corn_county_harvest_census_operation",
-               #               "corn_county_harvest_survey_operation"
-        ) %>% 
+#               "corn_county_harvest_census_operation",
+#               "corn_county_harvest_survey_operation"
+               ) %>% 
         group_by(YEAR) %>% 
         summarise(survey_acres = sum(corn_county_harvest_survey_acres, na.rm = T),
-                  #                  survey_operation = sum(corn_county_harvest_survey_operation, na.rm = T),
+#                  survey_operation = sum(corn_county_harvest_survey_operation, na.rm = T),
                   census_acres = sum(corn_county_harvest_census_acres, na.rm = T),
-                  #                  census_operation = sum(corn_county_harvest_census_operation, na.rm = T),
-        )
+#                  census_operation = sum(corn_county_harvest_census_operation, na.rm = T),
+                  )
       
       # Reshape data to long format
       long_data <- Data_harvest %>%
@@ -647,14 +580,14 @@ server <- function(input, output,session) {
       # Create side-by-side bar graph
       ggplot(subset(long_data, Value != 0), aes(x = as.numeric(YEAR), y = Value, color = Variable)) +
         geom_line() +  # "dodge" places bars side by side
-        labs(title = paste0("Number of Harvest Survey Acres in ", county_data()$county_state),
+        labs(title = paste0("Number of Harvest Survey Acres in ", dates()$county_state),
              x = "Year", 
              y = "Value") +
         theme_minimal() +
         scale_y_continuous(labels = scales::comma) +
         scale_fill_brewer(palette = "Set2") 
-      
-    }
+     
+      }
   })
   
   output$plot_operations <- renderPlot({
@@ -669,9 +602,9 @@ server <- function(input, output,session) {
         ) %>% 
         group_by(YEAR) %>% 
         summarise(#survey_acres = sum(corn_county_harvest_survey_acres, na.rm = T),
-          survey_operation = sum(corn_county_harvest_survey_operation, na.rm = T),
-          #census_acres = sum(corn_county_harvest_census_acres, na.rm = T),
-          census_operation = sum(corn_county_harvest_census_operation, na.rm = T),
+                  survey_operation = sum(corn_county_harvest_survey_operation, na.rm = T),
+                  #census_acres = sum(corn_county_harvest_census_acres, na.rm = T),
+                  census_operation = sum(corn_county_harvest_census_operation, na.rm = T),
         )
       
       # Reshape data to long format
@@ -684,7 +617,7 @@ server <- function(input, output,session) {
       # Create side-by-side bar graph
       ggplot(subset(long_data, Value != 0), aes(x = as.numeric(YEAR), y = Value, color = Variable)) +
         geom_line() +  # "dodge" places bars side by side
-        labs(title = paste0("Number of Harvest Operations in ", county_data()$county_state),
+        labs(title = paste0("Number of Harvest Operations in ", dates()$county_state),
              x = "Year", 
              y = "Value") +
         theme_minimal() +
@@ -692,11 +625,12 @@ server <- function(input, output,session) {
         scale_fill_brewer(palette = "Set2") 
       
     }
-  })
+  })Ω
   
   
-  output$plot_harvested <- renderPlot({
+  output$plot_sales <- renderPlot({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      
       Data_harvest <- county_data() %>% 
         select(YEAR, "corn_county_harvest_survey_acres" ,
                "corn_county_harvest_census_acres",
@@ -715,11 +649,64 @@ server <- function(input, output,session) {
                      values_to = "Value")
       
       # Create side-by-side bar graph
-      ggplot(long_data, aes(x = factor(YEAR), y = Value, fill = Variable)) +
+      ggplot(long_data, aes(x = as.numeric(YEAR), y = Value, fill = Variable)) +
         geom_bar(stat = "identity", position = "dodge") +  # "dodge" places bars side by side
-        labs(title = paste0("Side-by-side bar graph of harvested areas in ", county_data()$county_state),
+        labs(title = "Side-by-Side Bar Graph of Variables by Year",
              x = "Year", 
-             y = "Harvested Area") +
+             y = "Value") +
+        theme_minimal() +
+        scale_y_continuous(labels = scales::comma) +
+        scale_fill_brewer(palette = "Set2") 
+      
+      
+      
+    }
+  })
+  
+  
+  
+  output$plot_acres_norm <- renderPlot({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      Data_harvest <- county_data() %>% 
+        select(YEAR, "corn_county_harvest_survey_acres" ,
+               "corn_county_harvest_census_acres",
+               "corn_county_harvest_census_operation",
+               "corn_county_harvest_survey_operation") %>%
+        group_by(YEAR) %>% 
+        summarise(survey_acres = sum(corn_county_harvest_survey_acres, na.rm = T),
+                  survey_operation = sum(corn_county_harvest_survey_operation, na.rm = T),
+                  census_acres = sum(corn_county_harvest_census_acres, na.rm = T),
+                  census_operation = sum(corn_county_harvest_census_operation, na.rm = T),)
+      
+      
+      # Reshape data to long format
+      long_data <- Data_harvest %>%
+        pivot_longer(cols = c(survey_acres, survey_operation, census_acres, census_operation), 
+                     names_to = "Variable", 
+                     values_to = "Value")
+      
+      total_survey_acres = sum(Data_harvest$survey_acres) 
+      total_survey_operations = sum(Data_harvest$survey_operation) 
+      total_census_acres = sum(Data_harvest$census_acres) *5 # account for the data being recorded every 5 years
+      total_census_operations = sum(Data_harvest$census_operation) *5 # account for the data being recorded every 5 years
+      
+      long_data <- long_data %>% 
+        mutate(
+          Value = case_when(
+            Variable == "survey_acres" ~ Value / total_survey_acres,
+            Variable == "survey_operation" ~ Value / total_survey_operations,
+            Variable == "census_acres" ~ Value / total_census_acres,
+            Variable == "census_operation" ~ Value / total_census_operations,
+            TRUE ~ Value  # Default to original value if no match
+          )
+        )
+      
+      # Create side-by-side bar graph
+      ggplot(long_data, aes(x = as.numeric(YEAR), y = Value, fill = Variable)) +
+        geom_bar(stat = "identity", position = "dodge") +  # "dodge" places bars side by side
+        labs(title = "Side-by-Side Bar Graph of Variables Percentage of Total Across Time",
+             x = "Year", 
+             y = "Proportion") +
         theme_minimal() +
         scale_y_continuous(labels = scales::comma) +
         scale_fill_brewer(palette = "Set2") 
@@ -727,130 +714,34 @@ server <- function(input, output,session) {
     }
   })
   
+  
+  
   output$plot_yield <- renderPlot({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      Data_yield <- county_data() %>% 
-        select(YEAR, "corn_county_yield_survey_bu_acre" ,
-               "corn_county_yield_survey_ton_acre",
-               "corn_county_yield_census_bu_acre",
-               "corn_county_yield_census_ton_acre") %>% 
-        group_by(YEAR) %>% 
-        summarise(survey_bu_acre = sum(corn_county_yield_survey_bu_acre, na.rm = T),
-                  survey_ton_acre = sum(corn_county_yield_survey_ton_acre, na.rm = T),
-                  census_bu_acre = sum(corn_county_yield_census_bu_acre, na.rm = T),
-                  census_ton_acre = sum(corn_county_yield_census_ton_acre, na.rm = T),)
       
-      # Reshape data to long format
-      long_data <- Data_yield %>%
-        pivot_longer(cols = c(survey_bu_acre, survey_ton_acre, census_bu_acre, census_ton_acre), 
-                     names_to = "Variable", 
-                     values_to = "Value")
-      
-      # Create side-by-side bar graph
-      ggplot(long_data, aes(x = factor(YEAR), y = Value, fill = Variable)) +
-        geom_bar(stat = "identity", position = "dodge") +  # "dodge" places bars side by side
-        labs(title = paste0("Side-by-side bar graph of yield in ", county_data()$county_state),
-          x = "Year", 
-          y = "Yield") +
-        theme_minimal() +
-        scale_y_continuous(labels = scales::comma) +
-        scale_fill_brewer(palette = "Set2")
       
     }
   })
   
-  output$plot_sales <- renderPlot({
+  output$plot_harvested <- renderPlot({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      Data_sales <- county_data() %>% 
-        select(YEAR, "corn_county_sales_survey_dollor" ,
-               "corn_county_sales_survey_operation",
-               "corn_county_sales_census_operation",
-               "corn_county_sales_census_dollor") %>% 
-        group_by(YEAR) %>% 
-        summarise(survey_dollar = sum(corn_county_sales_survey_dollor, na.rm = T),
-                  survey_operation = sum(corn_county_sales_survey_operation, na.rm = T),
-                  census_operation = sum(corn_county_sales_census_operation, na.rm = T),
-                  census_dollar = sum(corn_county_sales_census_dollor, na.rm = T),)
       
-      # Reshape data to long format
-      long_data <- Data_sales %>%
-        pivot_longer(cols = c(survey_dollar,survey_operation, census_operation, census_dollar), 
-                     names_to = "Variable", 
-                     values_to = "Value")
-      
-      # Create side-by-side bar graph
-      ggplot(long_data, aes(x = factor(YEAR), y = Value, fill = Variable)) +
-        geom_bar(stat = "identity", position = "dodge") +  # "dodge" places bars side by side
-        labs(title = paste0("Side-by-side bar graph of sales in ", county_data()$county_state),
-          x = "Year", 
-          y = "Sales") +
-        theme_minimal() +
-        scale_y_continuous(labels = scales::comma) +
-        scale_fill_brewer(palette = "Set2")
       
     }
   })
   
   output$plot_planted <- renderPlot({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      Data_planted <- county_data() %>% 
-        select(YEAR, "corn_county_planted_survey_acre" ,
-               "corn_county_planted_census_acre") %>% 
-        group_by(YEAR) %>% 
-        summarise(survey_acre = sum(corn_county_planted_survey_acre, na.rm = T),
-                  census_acre = sum(corn_county_planted_census_acre, na.rm = T),)
       
-      # Reshape data to long format
-      long_data <- Data_planted %>%
-        pivot_longer(cols = c(survey_acre , census_acre), 
-                     names_to = "Variable", 
-                     values_to = "Value")
-      
-      # Create side-by-side bar graph
-      ggplot(long_data, aes(x = factor(YEAR), y = Value, fill = Variable)) +
-        geom_bar(stat = "identity", position = "dodge") +  # "dodge" places bars side by side
-        labs(title = paste0("Side-by-side bar graph of planted area in ", county_data()$county_state),
-          x = "Year", 
-          y = "Sales") +
-        theme_minimal() +
-        scale_y_continuous(labels = scales::comma) +
-        scale_fill_brewer(palette = "Set2")
-      
+      ggplot()+
+        geom_point() + 
+        geom_line(x_intercept = 0)
     }
   })
   
   output$plot_production <- renderPlot({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      Data_production <- county_data() %>% 
-        select(YEAR, "corn_county_production_survey_bu" ,
-               "corn_county_production_survey_ton",
-               "corn_county_production_survey_lb",
-               "corn_county_production_census_bu",
-               "corn_county_production_census_ton",
-               "corn_county_production_census_lb") %>% 
-        group_by(YEAR) %>% 
-        summarise(survey_bu = sum(corn_county_production_survey_bu, na.rm = T),
-                  survey_ton = sum(corn_county_production_survey_ton, na.rm = T),
-                  survey_lb = sum(corn_county_production_survey_lb, na.rm = T),
-                  census_bu = sum(corn_county_production_census_bu, na.rm = T),
-                  census_ton = sum(corn_county_production_census_ton, na.rm = T),
-                  census_lb = sum(corn_county_production_census_lb, na.rm = T),)
       
-      # Reshape data to long format
-      long_data <- Data_production %>%
-        pivot_longer(cols = c(survey_bu, survey_ton, census_bu, survey_lb, census_ton,census_lb ), 
-                     names_to = "Variable", 
-                     values_to = "Value")
-      
-      # Create side-by-side bar graph
-      ggplot(long_data, aes(x = factor(YEAR), y = Value, fill = Variable)) +
-        geom_bar(stat = "identity", position = "dodge") +  # "dodge" places bars side by side
-        labs(title = paste0("Side-by-side bar graph of production in ", county_data()$county_state),
-          x = "Year", 
-          y = "Production") +
-        theme_minimal() +
-        scale_y_continuous(labels = scales::comma) +
-        scale_fill_brewer(palette = "Set2")
       
     }
   })
