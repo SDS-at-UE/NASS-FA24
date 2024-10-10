@@ -24,6 +24,8 @@ states_map2 <- states_geometry %>%
 #load("corn_county_survey.rda")
 load("corn_county.rda")
 
+#view(corn_county)
+
 # corn_county_survey <- corn_county_survey %>%
 #   mutate(Production = rep(NA, nrow(corn_county_survey)))
 
@@ -305,7 +307,7 @@ server <- function(input, output,session) {
   
   data_new4 <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      st_as_sf(corn_county) %>%
+      st_as_sf(corn_county) %>% # Turns the geometry column into geometry, rather than observations (not column anymore, rather, characteristic)
         sf::st_set_crs(4326) %>% 
         sf::st_transform('+proj=longlat +datum=WGS84')
       
@@ -348,7 +350,7 @@ server <- function(input, output,session) {
 
       # Validate that data is not empty
       validate(
-        need(nrow(data) > 0, "No data available for the selected month.")
+        need(nrow(data) > 0, "No data available for the selected year.")
       )
 
       return(data)
@@ -362,6 +364,8 @@ server <- function(input, output,session) {
     
   })
   
+  
+  # Grabs only census data, only county data.
   reactive_data <-  reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
 #      if(as.character(input$source) == "CENSUS"){
@@ -383,6 +387,7 @@ server <- function(input, output,session) {
     }
      
   })
+  
   
   reactive_stat <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
