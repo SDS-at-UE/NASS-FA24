@@ -20,13 +20,13 @@ states_map2 <- states_geometry %>%
   sf::st_set_crs(4326) %>% 
   sf::st_transform('+proj=longlat +datum=WGS84')
 
-load("corn_county.rda")
+load("smaller_corn_county_census.rda")
 load("smaller_corn_state_census.rda")
 # view(corn_state_census)
-# view(corn_county)
+# view(corn_county_census)
 
-for(i in 4:dim(corn_county)[2]){
-  corn_county[,i][is.na(corn_county[,i])] <- 0
+for(i in 4:dim(corn_county_census)[2]){
+  corn_county_census[,i][is.na(corn_county_census[,i])] <- 0
 }
 for(i in 4:dim(corn_state_census)[2]){
   corn_state_census[,i][is.na(corn_state_census[,i])] <- 0
@@ -36,7 +36,7 @@ is.zero <- function(x) {
   x == 0
 }
 
-layer_county <- unique(corn_county$county_state)
+layer_county <- unique(corn_county_census$county_state)
 layer_state <- unique(corn_state_census$state_name)
 
 ###################### Setting the color range ##############################
@@ -166,8 +166,8 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                          #titlePanel("Crops"),
                          fluidRow( column(3,),
                                    column(6,sliderInput(inputId = "dates", "Timeline of Selected Parameter", 
-                                                        min = 2000L, #min(c(corn_county_cencus$YEAR, corn_county_survey$YEAR)),
-                                                        max = 2023L, #max(c(corn_county_cencus$YEAR, corn_county_survey$YEAR)),
+                                                        min = 2000L, #min(c(corn_county_census$YEAR, corn_county_survey$YEAR)),
+                                                        max = 2023L, #max(c(corn_county_census$YEAR, corn_county_survey$YEAR)),
                                                         value = 2002L,
                                                         sep = "",
                                                         #timeFormat = "%m-%d-%Y",
@@ -205,6 +205,7 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                          
                          fluidRow(
                            column(12,
+                                  textOutput("label"),
                                   DT::dataTableOutput("tab1"),
                                   #br(),
                                   #textOutput("test"),
@@ -215,29 +216,33 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                          fluidRow(
                            column(2),
                            column(8,
-                                  textOutput("label"),
-                                  h5("Plot of Acres in the selected county"),
-                                  plotOutput("plot1"),
-                                  br(),
-                                  br(),
-                                  h5("Plot of Operations in the selected county"),
-                                  plotOutput("plot2"),
-                                  br(),
-                                  br(),
-                                  #h5("Sales Plot in the selected county"),
-                                  plotOutput("plot3"),
-                                  br(),
-                                  br(),
-                                  #h5("Yield Plot in the selected county"),
-                                  plotOutput("plot4"),
-                                  br(),
-                                  br(),
                                   
 ######################################################################################################
 # CONDITIONAL PLOT - UTILIZE THESE
                                   conditionalPanel(
                                     condition = "input.level == 'State'",  # Replace 'SomeValue' with your condition
+                                    h5("State Selected Plots"),
+                                    plotOutput("plot1"),
+                                    br(),
+                                    br(),
+                                    h5("Plot of Operations in the selected county"),
+                                    plotOutput("plot2"),
+                                    br(),
+                                    br(),
+                                    #h5("Sales Plot in the selected county"),
+                                    plotOutput("plot3"),
+                                    br(),
+                                    br(),
+                                    #h5("Yield Plot in the selected county"),
+                                    plotOutput("plot4"),
+                                    br(),
+                                    br(),
                                     h5("Additional Plot in the selected county"),
+                                    plotOutput("plot7")
+                                  ),
+                                  conditionalPanel(
+                                    condition = "input.level == 'County'",  # Replace 'SomeValue' with your condition
+                                    h5("County Selected Plots:"),
                                     plotOutput("plot7")
                                   )
 ######################################################################################################
@@ -298,7 +303,7 @@ server <- function(input, output,session) {
   data_new4 <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
       if(input$level == "County") {
-      return(st_as_sf(corn_county) %>% # Turns the geometry column into geometry, rather than observations (not column anymore, rather, characteristic)
+      return(st_as_sf(corn_county_census) %>% # Turns the geometry column into geometry, rather than observations (not column anymore, rather, characteristic)
         sf::st_set_crs(4326) %>% 
         sf::st_transform('+proj=longlat +datum=WGS84'))
       }
@@ -416,7 +421,7 @@ server <- function(input, output,session) {
           )
         }
 
-        return(result)  
+        return(result)
       }
   })
   
@@ -620,10 +625,10 @@ server <- function(input, output,session) {
   output$tab1 <- DT::renderDataTable({
     req(input$unit)
     if (input$level == "State") {
-      result <- head(state_data())
+      result <- (state_data())
     } 
     if (input$level == "County") {
-      result <- head(county_data())
+      result <- (county_data())
     }
     return(result)
   })

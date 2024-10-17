@@ -16,7 +16,9 @@ head(unique(combined["domaincat_desc"]))
 smaller_combined = combined %>% 
   mutate(county_state = paste0(county_name, " COUNTY, ", state_name)) %>% 
   select(source_desc, year, agg_level_desc, sector_desc, statisticcat_desc, Value, group_desc, unit_desc, commodity_desc, short_desc, class_desc, domain_desc, county_state)
+names(smaller_combined)[names(smaller_combined) == 'year'] <- 'YEAR'
 
+smaller_combined
 
 corn_county_harvest_census_acres <- smaller_combined %>% 
   filter(commodity_desc == "CORN",
