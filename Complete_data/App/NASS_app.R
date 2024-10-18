@@ -441,7 +441,7 @@ server <- function(input, output,session) {
       if(max(reactive_stat())==0){
         colorNumeric(palette = color_pal, domain = 0.0001:10000)
       }else{
-        colorNumeric(palette = color_pal, domain = rdata)
+        colorNumeric(palette = color_pal, domain = 0.001:(max(rdata, na.rm = TRUE)+1))
       }
       
       #colorNumeric(palette = color_pal, domain = 0.001:(max(reactive_data(), na.rm = TRUE)+1))

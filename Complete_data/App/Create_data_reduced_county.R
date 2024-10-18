@@ -26,10 +26,10 @@ corn_county_harvest_census_acres <- smaller_combined %>%
          statisticcat_desc == "AREA HARVESTED",
          source_desc == 'CENSUS',
          unit_desc == "ACRES") %>% 
-  select(county_state, year, Value) %>% 
-  group_by(county_state, year) %>% 
+  select(county_state, YEAR, Value) %>% 
+  group_by(county_state, YEAR) %>% 
   summarise(corn_county_harvest_census_acres = sum(Value, na.rm=T)) %>% 
-  arrange(year)
+  arrange(YEAR)
 
 
 corn_county_harvest_census_operation <- smaller_combined %>% 
@@ -38,10 +38,10 @@ corn_county_harvest_census_operation <- smaller_combined %>%
          statisticcat_desc == "AREA HARVESTED",
          source_desc == 'CENSUS',
          unit_desc == "OPERATIONS") %>% 
-  select(county_state, year, Value) %>% 
-  group_by(county_state, year) %>% 
+  select(county_state, YEAR, Value) %>% 
+  group_by(county_state, YEAR) %>% 
   summarise(corn_county_harvest_census_operation = sum(Value, na.rm=T)) %>% 
-  arrange(year)
+  arrange(YEAR)
 
 #######
 #SALES#
@@ -53,10 +53,10 @@ corn_county_sales_census_operation <- smaller_combined %>%
          statisticcat_desc == "SALES",
          source_desc == 'CENSUS',
          unit_desc == "OPERATIONS") %>% 
-  select(county_state, year, Value) %>% 
-  group_by(county_state, year) %>% 
+  select(county_state, YEAR, Value) %>% 
+  group_by(county_state, YEAR) %>% 
   summarise(corn_county_sales_census_operation = sum(Value, na.rm=T)) %>% 
-  arrange(year)
+  arrange(YEAR)
 
 corn_county_sales_census_dollar <- smaller_combined %>% 
   filter(commodity_desc == "CORN",
@@ -64,10 +64,10 @@ corn_county_sales_census_dollar <- smaller_combined %>%
          statisticcat_desc == "SALES",
          source_desc == 'CENSUS',
          unit_desc == "$") %>% 
-  select(county_state, year, Value) %>% 
-  group_by(county_state, year) %>% 
+  select(county_state, YEAR, Value) %>% 
+  group_by(county_state, YEAR) %>% 
   summarise(corn_county_sales_census_dollar = sum(Value, na.rm=T)) %>% 
-  arrange(year)
+  arrange(YEAR)
 
 
 ############
@@ -80,10 +80,10 @@ corn_county_production_census_bu <- smaller_combined %>%
          statisticcat_desc == "PRODUCTION",
          source_desc == 'CENSUS',
          unit_desc == "BU") %>% 
-  select(county_state, year, Value) %>% 
-  group_by(county_state, year) %>% 
+  select(county_state, YEAR, Value) %>% 
+  group_by(county_state, YEAR) %>% 
   summarise(corn_county_production_census_bu = sum(Value, na.rm=T)) %>% 
-  arrange(year)
+  arrange(YEAR)
 
 corn_county_production_census_ton <- smaller_combined %>% 
   filter(commodity_desc == "CORN",
@@ -91,10 +91,10 @@ corn_county_production_census_ton <- smaller_combined %>%
          statisticcat_desc == "PRODUCTION",
          source_desc == 'CENSUS',
          unit_desc == "TONS") %>% 
-  select(county_state, year, Value) %>% 
-  group_by(county_state, year) %>% 
+  select(county_state, YEAR, Value) %>% 
+  group_by(county_state, YEAR) %>% 
   summarise(corn_county_production_census_ton = sum(Value, na.rm=T)) %>% 
-  arrange(year)
+  arrange(YEAR)
 
 corn_county_production_census_lb <- smaller_combined %>% 
   filter(commodity_desc == "CORN",
@@ -102,10 +102,10 @@ corn_county_production_census_lb <- smaller_combined %>%
          statisticcat_desc == "PRODUCTION",
          source_desc == 'CENSUS',
          unit_desc == "LB") %>% 
-  select(county_state, year, Value) %>% 
-  group_by(county_state, year) %>% 
+  select(county_state, YEAR, Value) %>% 
+  group_by(county_state, YEAR) %>% 
   summarise(corn_county_production_census_lb = sum(Value, na.rm=T)) %>% 
-  arrange(year)
+  arrange(YEAR)
 
 # COMBINING
 
@@ -117,13 +117,13 @@ county_geometry_main <- County_geometry %>%
 county_geometry_main$county_state <- toupper(county_geometry_main$county_state)
 
 
-year <- c()
-for(i in unique(corn_county_harvest_census_acres$year)){
-  year = c(year, rep(i, dim(county_geometry_main)[1]))
+YEAR <- c()
+for(i in unique(corn_county_harvest_census_acres$YEAR)){
+  YEAR = c(YEAR, rep(i, dim(county_geometry_main)[1]))
 }
 
 county_geo_corn_census <- data.frame(county_state = toupper(rep(county_geometry_main$county_state,5)),
-                                     year = year,
+                                     YEAR = YEAR,
                                      geometry = rep(county_geometry_main$geometry,5))
 
 corn_county_census <- reduce(list(county_geo_corn_census,
@@ -134,7 +134,7 @@ corn_county_census <- reduce(list(county_geo_corn_census,
                                   corn_county_production_census_bu,
                                   corn_county_production_census_ton,
                                   corn_county_production_census_lb), 
-                             dplyr::left_join, by = c("county_state", "year"))
+                             dplyr::left_join, by = c("county_state", "YEAR"))
 
 
 length(corn_county_harvest_census_acres$county_state)
