@@ -9,13 +9,14 @@ setwd("/Users/andrewthompson/Desktop/NASS-FA24")
 # CENSUS DATA ONLY
 
 library(tidyverse)
-load("DATA_FILES/ALL_COUNTY_DATA.RData")
+load("DATA_FILES/combined files/ALL_COUNTY_DATA.RData")
 colnames(combined)
 head(unique(combined["domaincat_desc"]))
 
 smaller_combined = combined %>% 
   mutate(county_state = paste0(county_name, " COUNTY, ", state_name)) %>% 
-  select(source_desc, year, agg_level_desc, sector_desc, statisticcat_desc, Value, group_desc, unit_desc, commodity_desc, short_desc, class_desc, domain_desc, county_state)
+  dplyr::select(source_desc, year, agg_level_desc, sector_desc, statisticcat_desc, Value, group_desc, unit_desc, commodity_desc, short_desc, class_desc, domain_desc, county_state)
+
 names(smaller_combined)[names(smaller_combined) == 'year'] <- 'YEAR'
 
 smaller_combined
@@ -109,7 +110,7 @@ corn_county_production_census_lb <- smaller_combined %>%
 
 # COMBINING
 
-load("Complete_data/App/County_geometry.rda")
+load("Complete_data/App/Data/County_geometry.rda")
 
 county_geometry_main <- County_geometry %>% 
   select(county_state, geometry) %>% 
@@ -151,10 +152,13 @@ str(county_geo_corn_census)
 
 
 nrow(corn_county_harvest_census_acres)
+colnames(corn_county_census)
+
+setwd("/Users/andrewthompson/Desktop/NASS-FA24/Complete_data/App/Data")
 
 save(corn_county_census, file = "smaller_corn_county_census.rda")
 corn_county_census
-
+setwd("/Users/andrewthompson/Desktop/NASS-FA24")
 corn_county_census %>% filter(!is.na(corn_county_sales_census_operation))
 
 ########################################################################################################################
@@ -162,14 +166,14 @@ corn_county_census %>% filter(!is.na(corn_county_sales_census_operation))
 ########################################################################################################################
 
 # STATE FROM CENSUS DATA ONLY
-load("Complete_data/App/state_crops.rda")
+load("Complete_data/App/Data/state_crops.rda")
 
 colnames(state_crops)
 head(unique(state_crops["domaincat_desc"]))
 
 
 state_combined = state_crops %>% 
-  select(source_desc, year, agg_level_desc, sector_desc, statisticcat_desc, Value, group_desc, unit_desc, commodity_desc, short_desc, class_desc, domain_desc, state_name)
+  dplyr::select(source_desc, year, agg_level_desc, sector_desc, statisticcat_desc, Value, group_desc, unit_desc, commodity_desc, short_desc, class_desc, domain_desc, state_name)
 head(unique(state_combined$agg_level_desc))
 names(state_combined)[names(state_combined) == 'year'] <- 'YEAR'
 state_combined
@@ -179,7 +183,7 @@ corn_state_harvest_census_acres <- state_combined %>%
          statisticcat_desc == "AREA HARVESTED",
          source_desc == 'CENSUS',
          unit_desc == "ACRES") %>% 
-  select(state_name, YEAR, Value) %>% 
+  dplyr::select(state_name, YEAR, Value) %>% 
   group_by(state_name, YEAR) %>% 
   summarise(corn_state_harvest_census_acres = sum(Value, na.rm=T)) %>% 
   arrange(YEAR)
@@ -263,7 +267,7 @@ corn_state_production_census_lb <- state_combined %>%
 
 # COMBINING
 
-load("Complete_data/App/states_geometry.rda")
+load("Complete_data/App/Data/states_geometry.rda")
 colnames(states_geometry) = c("state_name", "geometry")
 state_geometry_main <- states_geometry %>% 
   select(state_name, geometry) %>% 
@@ -303,13 +307,11 @@ length(unique(county_geo_corn_census$state_name))
 str(county_geo_corn_census)
 
 
-
-
 nrow(corn_state_harvest_census_acres)
-
-save(corn_state_census, file = "Complete_data/App/smaller_corn_state_census.rda")
+setwd("/Users/andrewthompson/Desktop/NASS-FA24/Complete_data/App/Data")
+save(corn_state_census, file = "smaller_corn_state_census.rda")
 corn_state_census
-
+setwd("/Users/andrewthompson/Desktop/NASS-FA24")
 # CHECK IF THERE ARE COLUMNS WITHOUT MISSING VALUES
 corn_state_census %>% filter(!is.na(corn_state_sales_census_operation))
 

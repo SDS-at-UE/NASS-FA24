@@ -15,13 +15,13 @@ setwd("/Users/andrewthompson/Desktop/NASS-FA24/Complete_data/App")
 #######################  Loading the data  #############################
 
 
-load("states_geometry.rda")  # states_geometry data
+load("Data/states_geometry.rda")  # states_geometry data
 states_map2 <- states_geometry %>%
   sf::st_set_crs(4326) %>% 
   sf::st_transform('+proj=longlat +datum=WGS84')
 
-load("smaller_corn_county_census.rda")
-load("smaller_corn_state_census.rda")
+load("Data/smaller_corn_county_census.rda")
+load("Data/smaller_corn_state_census.rda")
 # view(corn_state_census)
 # view(corn_county_census)
 
