@@ -33,7 +33,7 @@ for(i in 4:dim(corn_state_census)[2]){
 }
 
 is.zero <- function(x) {
-  x == 0
+  return(x == 0)
 }
 
 layer_county <- unique(corn_county_census$county_state)
@@ -441,7 +441,7 @@ server <- function(input, output,session) {
       if(max(reactive_stat())==0){
         colorNumeric(palette = color_pal, domain = 0.0001:10000)
       }else{
-        colorNumeric(palette = color_pal, domain = 0.001:(max(rdata, na.rm = TRUE)+1))
+        colorNumeric(palette = color_pal, domain = rdata+1)
       }
       
       #colorNumeric(palette = color_pal, domain = 0.001:(max(reactive_data(), na.rm = TRUE)+1))
@@ -454,23 +454,35 @@ server <- function(input, output,session) {
   popup_msg <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
       if(input$level == "County"){
-        str_c("<strong>", dates()$county_state, #", ", dates()$State,
+        result <- str_c("<strong>", dates()$county_state, #", ", dates()$State,
               "</strong><br /><strong>", dates()$YEAR, "</strong>",
               "<br /> ACRES_harvested: ", dates()$corn_county_harvest_census_acres,
               "<br /> OPERATIONS_harvested: ", dates()$corn_county_harvest_census_operation,
-              "<br /> ACRES_plated: ",  dates()$corn_county_planted_census_acre,
+#              "<br /> ACRES_planted: ",  dates()$corn_county_planted_census_acre,
               "<br /> BU_production: ",  dates()$corn_county_production_census_bu,
               "<br /> TONS_production: ",  dates()$corn_county_production_census_ton,
               "<br /> LB_production: ",  dates()$corn_county_production_census_lb,
               "<br /> BU_ACRE_yield: ",  dates()$corn_county_yield_census_bu_acre,
-              "<br /> TONS_ACRE_yield: ",  dates()$corn_county_yield_census_ton_acre,
-              "<br /> OPERATIONS_sales: ",  dates()$corn_county_sales_census_operation,
+#              "<br /> TONS_ACRE_yield: ",  dates()$corn_county_yield_census_ton_acre,
+#              "<br /> OPERATIONS_sales: ",  dates()$corn_county_sales_census_operation,
               "<br /> Dollar_sales: ",  dates()$corn_county_sales_census_dollor)
       }
       if(input$level == "State"){
-        ######################################################################################
-       # fill with a popup
+          result <- str_c("<strong>", dates()$state_state, #", ", dates()$State,
+                "</strong><br /><strong>", dates()$YEAR, "</strong>",
+                "<br /> ACRES_harvested: ", ifelse(is.zero(dates()$corn_state_harvest_census_acres), "(D)", dates()$corn_state_harvest_census_acres),
+                "<br /> OPERATIONS_harvested: ", ifelse(is.zero(dates()$corn_state_harvest_census_operation), "(D)", dates()$corn_state_harvest_census_operation),
+#                "<br /> ACRES_planted: ",  dates()$corn_state_planted_census_acre,
+                "<br /> BU_production: ",  ifelse(is.zero(dates()$corn_state_production_census_bu), "(D)", dates()$corn_state_production_census_bu),
+                "<br /> TONS_production: ",  ifelse(is.zero(dates()$corn_state_production_census_ton), "(D)", dates()$corn_state_production_census_ton),
+                "<br /> LB_production: ",  ifelse(is.zero(dates()$corn_state_production_census_lb), "(D)", dates()$corn_state_production_census_lb),
+#                "<br /> BU_ACRE_yield: ",  dates()$corn_state_yield_census_bu_acre,
+#                "<br /> TONS_ACRE_yield: ",  dates()$corn_state_yield_census_ton_acre,
+                "<br /> OPERATIONS_sales: ",  ifelse(is.zero(dates()$corn_state_sales_census_operation), "(D)", dates()$corn_state_sales_census_operation),
+                "<br /> Dollar_sales: ",  ifelse(is.zero(dates()$corn_state_sales_census_dollar), "(D)", dates()$corn_state_sales_census_dollar))
+                # "<br /> Dollar_sales: ",  dates()$corn_state_sales_census_dollar)
       }
+      return(result)
     }
   })
   
@@ -642,7 +654,7 @@ server <- function(input, output,session) {
   #   }
   # })
   
-  plot_county <- function() {
+  # plot_county <- function() {
     
     output$tab1 <- DT::renderDataTable({
       if(length(strsplit(as.character(req(input$unit)), ""))!=0){
@@ -907,15 +919,15 @@ server <- function(input, output,session) {
       }
     })
     
-  } # End plot_county bracket
-  
-  plot_state <- function() {
-    
-    
-      
-        
-      }
-   
+  # } # End plot_county bracket
+  # 
+  # plot_state <- function() {
+  #   
+  #   
+  #     
+  #       
+  #     }
+  #  
     
     
   
