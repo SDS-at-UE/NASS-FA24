@@ -186,7 +186,7 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                                                 selected = "State"),
                                     
                                     selectInput(inputId = "crop", "Choose a crop", 
-                                                c("Corn", "Soybean"),
+                                                c("Corn", "Soybean", "Wheat"),
                                                 selected = "Corn"),
                                     
                                     selectInput(inputId = "stat", "Choose a stat", 
@@ -250,10 +250,13 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                            column(2)
                          ),
                         
+            
                          
                          
                          
                          )
+
+
                 )
 
 
