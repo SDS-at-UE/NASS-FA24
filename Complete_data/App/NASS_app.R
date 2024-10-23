@@ -216,7 +216,18 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                          fluidRow(
                            column(2),
                            column(8,
-                                  
+                                  fluidRow(
+                                    column(4,
+                                           #plotOutput(),
+                                           br(),
+                                           br(),
+                                           ),
+                                    column(8,
+                                           #plotOutput(),
+                                           br(),
+                                           br(),
+                                    )
+                                  ),
 ######################################################################################################
 # CONDITIONAL PLOT - UTILIZE THESE
                                   conditionalPanel(
@@ -787,20 +798,18 @@ server <- function(input, output,session) {
       }
     })
     
-    view(state_census)
-    
     output$state_plot1 <- renderPlot({
       if(length(strsplit(as.character(req(input$unit)), ""))!=0){
           arg1 = paste0(tolower(input$crop), "_state_harvest_census_acres")
           arg2 = paste0(tolower(input$crop), "_state_production_census_bu")
-          Data_harvest <- county_data() %>% 
+          Data_harvest <- state_data() %>% 
             select(YEAR, 
                    !!sym(arg1),
                    !!sym(arg2),
             ) %>% 
             group_by(YEAR) %>% 
-            summarise(census_acres = sum(!!sym(arg1), na.rm = T),
-                      census_production = sum(!!sym(arg2), na.rm = T),
+            summarise(census_acres = log(sum(!!sym(arg1), na.rm = T)),
+                      census_production = log(sum(!!sym(arg2), na.rm = T)),
             )
           acresnum = max(Data_harvest$census_acres)
           prodnum = max(Data_harvest$census_production)
@@ -811,14 +820,15 @@ server <- function(input, output,session) {
           pivot_longer(cols = c(census_acres, census_production), 
                        names_to = "Variable", 
                        values_to = "Value")
+        print(Data_harvest)
+          
         
-        
-        ggplot(subset(Data_harvest, census_acres != 0 & census_production != 0), aes(x = YEAR)) +
+        ggplot(subset(Data_harvest, census_acres > 0 & census_production > 0), aes(x = as.numeric(YEAR))) +
           geom_line(aes(y = census_acres, color = "Census Acres")) + # First y-axis
           geom_line(aes(y = census_production / scale)) + # Second y-axis, scaled by factor
           scale_y_continuous(
-            name = "Acres Harvested",
-            sec.axis = sec_axis(~.*scale, name = "Census Production"),
+            name = "Log of Acres Harvested",
+            sec.axis = sec_axis(~.*scale, name = "Log of Census Production"),
             limits = c(0, max(c(max(Data_harvest$census_acres), max(Data_harvest$census_production / scale), na.rm = TRUE)))) +# Convert second y-axis back to original scale
           labs(x = "Year", color = "Variable") +
           theme_minimal()
