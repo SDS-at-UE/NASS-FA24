@@ -863,14 +863,41 @@ state_geo_census <- data.frame(state_name = toupper(rep(state_geometry_main$stat
                                      YEAR = year,
                                      geometry = rep(state_geometry_main$geometry,14))
 
-state_census <- reduce(list(state_geo_corn_census,
-                                  corn_state_harvest_census_acres,
-                                  corn_state_harvest_census_operation,
-                                  corn_state_sales_census_operation,
-                                  corn_state_sales_census_dollar,
-                                  corn_state_production_census_bu,
-                                  corn_state_production_census_ton,
-                                  corn_state_production_census_lb), 
+state_census <- reduce(list(state_geo_census,
+                            corn_state_harvest_census_acres,
+                            corn_state_harvest_census_operation,
+                            corn_state_sales_census_operation,
+                            corn_state_sales_census_dollar,
+                            corn_state_production_census_bu,
+                            corn_state_production_census_ton,
+                            corn_state_production_census_lb,
+                            
+                            
+                            soybeans_state_harvest_census_acres,
+                            soybeans_state_harvest_census_operation,
+                            soybeans_state_sales_census_operation,
+                            soybeans_state_sales_census_dollar,
+                            soybeans_state_production_census_bu,
+                            soybeans_state_production_census_ton,
+                            soybeans_state_production_census_lb,
+                            
+                            
+                            wheat_state_harvest_census_acres,
+                            wheat_state_harvest_census_operation,
+                            wheat_state_sales_census_operation,
+                            wheat_state_sales_census_dollar,
+                            wheat_state_production_census_bu,
+                            wheat_state_production_census_ton,
+                            wheat_state_production_census_lb,
+                            
+                            
+                            potatoes_state_harvest_census_acres,
+                            potatoes_state_harvest_census_operation,
+                            potatoes_state_sales_census_operation,
+                            potatoes_state_sales_census_dollar,
+                            potatoes_state_production_census_bu,
+                            potatoes_state_production_census_ton,
+                            potatoes_state_production_census_lb), 
                              dplyr::left_join, by = c("state_name", "YEAR"))
 
 
@@ -883,12 +910,12 @@ corn_state_sales_census_operation
 length(state_geo_census$state_name)
 length(unique(state_geo_census$state_name))
 str(state_geo_census)
-
+state_census
 
 nrow(corn_state_harvest_census_acres)
 setwd("/Users/andrewthompson/Desktop/NASS-FA24/Complete_data/App/Data")
 save(state_census, file = "smaller_state_census.rda")
-corn_state_census
+state_census
 setwd("/Users/andrewthompson/Desktop/NASS-FA24")
 # CHECK IF THERE ARE COLUMNS WITHOUT MISSING VALUES
 corn_state_census %>% filter(!is.na(corn_state_sales_census_operation))

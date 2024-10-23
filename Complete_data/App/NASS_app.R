@@ -220,23 +220,26 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
 ######################################################################################################
 # CONDITIONAL PLOT - UTILIZE THESE
                                   conditionalPanel(
-                                    condition = "input.level == 'State'",  # Replace 'SomeValue' with your condition
+                                    condition = "input.level == 'State'",  #
                                     h5("State Selected Plots"),
-                                    plotOutput("plot1"),
+                                    plotOutput("state_plot1"),
                                     br(),
                                     br(),
                                     h5("Plot of Operations in the selected county"),
-                                    plotOutput("plot2"),
+                                    plotOutput("state_plot2"),
                                     br(),
                                     br(),
                                   ),
                                   conditionalPanel(
-                                    condition = "input.level == 'County'",  # Replace 'SomeValue' with your condition
+                                    condition = "input.level == 'County'",  #
                                     h5("County Selected Plots:"),
                                     plotOutput("county_plot1"),
                                     br(),
                                     br(),
-                                    plotOutput("county_plot2")
+                                    plotOutput("county_plot2"),
+                                    br(),
+                                    br(), 
+                                    plotOutput("county_plot3")
                                   )
 ######################################################################################################
                            ),
@@ -708,22 +711,20 @@ server <- function(input, output,session) {
       }
     })
     
-    max(county_census$corn_county_harvest_census_acres)
-    max(county_census$corn_county_sales_census_dollar)
     
     
     output$county_plot1 <- renderPlot({
       if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-        
-        
+        arg1 = paste0(tolower(input$crop), "_county_harvest_census_acres")
+        arg2 = paste0(tolower(input$crop), "_county_sales_census_dollar")
         Data_harvest <- county_data() %>% 
           select(YEAR, 
-                 "corn_county_harvest_census_acres",
-                 "corn_county_sales_census_dollar",
+                 !!sym(arg1),
+                 !!sym(arg2),
           ) %>% 
           group_by(YEAR) %>% 
-          summarise(census_acres = sum(corn_county_harvest_census_acres, na.rm = T),
-                    sales_dollar = sum(corn_county_sales_census_dollar, na.rm = T),
+          summarise(census_acres = sum(!!sym(arg1), na.rm = T),
+                    sales_dollar = sum(!!sym(arg2), na.rm = T),
           )
         acresnum = max(Data_harvest$census_acres)
         dollarnum = max(Data_harvest$sales_dollar)
@@ -742,7 +743,83 @@ server <- function(input, output,session) {
           scale_y_continuous(
             name = "Acres Harvested",
             sec.axis = sec_axis(~.*scale, name = "Sales Dollar"),
-              limits = c(0, max(c(max(Data_harvest$census_acres), max(Data_harvest$sales_dollar / scale), na.rm = TRUE)))) +
+            limits = c(0, max(c(max(Data_harvest$census_acres), max(Data_harvest$sales_dollar / scale), na.rm = TRUE)))) +
+          labs(x = "Year", color = "Variable") +
+          theme_minimal()
+        
+      }
+    })
+    
+    output$county_plot2 <- renderPlot({
+      if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+        arg1 = paste0(tolower(input$crop), "_county_harvest_census_acres")
+        arg2 = paste0(tolower(input$crop), "_county_production_census_bu")
+        Data_harvest <- county_data() %>% 
+          select(YEAR, 
+                 !!sym(arg1),
+                 !!sym(arg2),
+          ) %>% 
+          group_by(YEAR) %>% 
+          summarise(census_acres = sum(!!sym(arg1), na.rm = T),
+                    census_production = sum(!!sym(arg2), na.rm = T),
+          )
+        acresnum = max(Data_harvest$census_acres)
+        prodnum = max(Data_harvest$census_production)
+        scale = prodnum/acresnum
+        
+        # Reshape data to long format
+        long_data <- Data_harvest %>%
+          pivot_longer(cols = c(census_acres, census_production), 
+                       names_to = "Variable", 
+                       values_to = "Value")
+        
+        
+        ggplot(subset(Data_harvest, census_acres != 0 & census_production != 0), aes(x = YEAR)) +
+          geom_line(aes(y = census_acres, color = "Census Acres")) + # First y-axis
+          geom_line(aes(y = census_production / scale)) + # Second y-axis, scaled by factor
+          scale_y_continuous(
+            name = "Acres Harvested",
+            sec.axis = sec_axis(~.*scale, name = "Census Production"),
+            limits = c(0, max(c(max(Data_harvest$census_acres), max(Data_harvest$census_production / scale), na.rm = TRUE)))) +# Convert second y-axis back to original scale
+          labs(x = "Year", color = "Variable") +
+          theme_minimal()
+        
+      }
+    })
+    
+    view(state_census)
+    
+    output$state_plot1 <- renderPlot({
+      if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+          arg1 = paste0(tolower(input$crop), "_state_harvest_census_acres")
+          arg2 = paste0(tolower(input$crop), "_state_production_census_bu")
+          Data_harvest <- county_data() %>% 
+            select(YEAR, 
+                   !!sym(arg1),
+                   !!sym(arg2),
+            ) %>% 
+            group_by(YEAR) %>% 
+            summarise(census_acres = sum(!!sym(arg1), na.rm = T),
+                      census_production = sum(!!sym(arg2), na.rm = T),
+            )
+          acresnum = max(Data_harvest$census_acres)
+          prodnum = max(Data_harvest$census_production)
+          scale = prodnum/acresnum
+        
+        # Reshape data to long format
+        long_data <- Data_harvest %>%
+          pivot_longer(cols = c(census_acres, census_production), 
+                       names_to = "Variable", 
+                       values_to = "Value")
+        
+        
+        ggplot(subset(Data_harvest, census_acres != 0 & census_production != 0), aes(x = YEAR)) +
+          geom_line(aes(y = census_acres, color = "Census Acres")) + # First y-axis
+          geom_line(aes(y = census_production / scale)) + # Second y-axis, scaled by factor
+          scale_y_continuous(
+            name = "Acres Harvested",
+            sec.axis = sec_axis(~.*scale, name = "Census Production"),
+            limits = c(0, max(c(max(Data_harvest$census_acres), max(Data_harvest$census_production / scale), na.rm = TRUE)))) +# Convert second y-axis back to original scale
           labs(x = "Year", color = "Variable") +
           theme_minimal()
         
@@ -750,7 +827,7 @@ server <- function(input, output,session) {
     })
     
     
-    output$county_plot2 <- renderPlot({
+    output$county_plot4 <- renderPlot({
       if(length(strsplit(as.character(req(input$unit)), ""))!=0){
         
         
@@ -786,7 +863,8 @@ server <- function(input, output,session) {
         
       }
     })
-    ??subset
+    
+    
     
     output$plot_yield <- renderPlot({
       if(length(strsplit(as.character(req(input$unit)), ""))!=0){
