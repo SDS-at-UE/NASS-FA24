@@ -243,7 +243,10 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                                   conditionalPanel(
                                     condition = "input.level == 'County'",  # Replace 'SomeValue' with your condition
                                     h5("County Selected Plots:"),
-                                    plotOutput("plot7")
+                                    plotOutput("county_plot1"),
+                                    br(),
+                                    br(),
+                                    plotOutput("county_plot2")
                                   )
 ######################################################################################################
                            ),
@@ -374,7 +377,7 @@ server <- function(input, output,session) {
                  Dollar_sales = data_new4()$corn_state_sales_census_dollor
         )
       }
-      if(as.character(input$level) == "County"){
+      else if(as.character(input$level) == "County"){
         result <-switch(input$unit,
                  ACRES_harvested = data_new4()$corn_county_harvest_census_acres,
                  OPERATIONS_harvested = data_new4()$corn_county_harvest_census_operation,
@@ -470,7 +473,7 @@ server <- function(input, output,session) {
 #              "<br /> OPERATIONS_sales: ",  dates()$corn_county_sales_census_operation,
               "<br /> Dollar_sales: ",  dates()$corn_county_sales_census_dollor)
       }
-      if(input$level == "State"){
+      else if(input$level == "State"){
           result <- str_c("<strong>", dates()$state_state, #", ", dates()$State,
                 "</strong><br /><strong>", dates()$YEAR, "</strong>",
                 "<br /> ACRES_harvested: ", ifelse(is.zero(dates()$corn_state_harvest_census_acres), "(D)", dates()$corn_state_harvest_census_acres),
@@ -600,26 +603,28 @@ server <- function(input, output,session) {
   
   county_data <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      
-        validate(
-          need(GRIDrv() != "", "Please select a county cell to generate analysis")
-        )
+      if (input$level == "County"){
+      validate(
+        need(GRIDrv() != "" && !is.null(GRIDrv()), "Please select a county cell to generate analysis")
+      )
         
         Data = data_new4() %>% 
           subset(county_state == GRIDrv()) 
         return(Data)
-      
+      }
     }
   })
   
   state_data <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      if (input$level == "State"){
       validate(
         need(STATErv() != "", "Please select a state to generate analysis")
       )
       Data = data_new4() %>% 
         subset(state_name == STATErv())
       return(Data)
+      }
     }
   })
   
@@ -629,7 +634,7 @@ server <- function(input, output,session) {
         data = state_data()
         print(paste("Currently Selected:", input$map_pop_shape_click$id))
       }
-      if(input$level == "County"){
+      else if(input$level == "County"){
         data = county_data()
         print(paste("Currently Selected:", input$map_pop_shape_click$id))
       }
@@ -683,121 +688,85 @@ server <- function(input, output,session) {
       }
     })
     
+    max(corn_county_census$corn_county_harvest_census_acres)
+    max(corn_county_census$corn_county_sales_census_dollar)
     
     
-    
-    output$plot_acres <- renderPlot({
+    output$county_plot1 <- renderPlot({
       if(length(strsplit(as.character(req(input$unit)), ""))!=0){
         
+        
         Data_harvest <- county_data() %>% 
-          select(YEAR, "corn_county_harvest_survey_acres",
+          select(YEAR, 
                  "corn_county_harvest_census_acres",
-                 #               "corn_county_harvest_census_operation",
-                 #               "corn_county_harvest_survey_operation"
+                 "corn_county_sales_census_dollar",
           ) %>% 
           group_by(YEAR) %>% 
-          summarise(survey_acres = sum(corn_county_harvest_survey_acres, na.rm = T),
-                    #                  survey_operation = sum(corn_county_harvest_survey_operation, na.rm = T),
-                    census_acres = sum(corn_county_harvest_census_acres, na.rm = T),
-                    #                  census_operation = sum(corn_county_harvest_census_operation, na.rm = T),
+          summarise(census_acres = sum(corn_county_harvest_census_acres, na.rm = T),
+                    sales_dollar = sum(corn_county_sales_census_dollar, na.rm = T),
           )
+        acresnum = max(Data_harvest$census_acres)
+        dollarnum = max(Data_harvest$sales_dollar)
+        scale = dollarnum/acresnum
         
         # Reshape data to long format
         long_data <- Data_harvest %>%
-          pivot_longer(cols = c(survey_acres, census_acres), 
+          pivot_longer(cols = c(census_acres, sales_dollar), 
                        names_to = "Variable", 
                        values_to = "Value")
         
-        # Create side-by-side bar graph
-        ggplot(subset(long_data, Value != 0), aes(x = as.numeric(YEAR), y = Value, color = Variable)) +
-          geom_line() +  # "dodge" places bars side by side
-          labs(title = paste0("Number of Harvest Survey Acres in ", county_data()$county_state),
-               x = "Year", 
-               y = "Value") +
-          theme_minimal() +
-          scale_y_continuous(labels = scales::comma) +
-          scale_fill_brewer(palette = "Set2") 
+        
+        ggplot(subset(Data_harvest, census_acres != 0 & sales_dollar != 0), aes(x = YEAR)) +
+          geom_line(aes(y = census_acres, color = "Census Acres")) + # First y-axis
+          geom_line(aes(y = sales_dollar / scale)) + # Second y-axis, scaled by factor
+          scale_y_continuous(
+            name = "Acres Harvested",
+            sec.axis = sec_axis(~.*scale, name = "Sales Dollar"),
+              limits = c(0, max(c(max(Data_harvest$census_acres), max(Data_harvest$sales_dollar / scale), na.rm = TRUE)))) +
+          labs(x = "Year", color = "Variable") +
+          theme_minimal()
         
       }
     })
     
     
-    #############################################################################
-    # UNNECESSARY GRAPH
-    #
-    #############################################################################
-    
-    output$plot_operations <- renderPlot({
+    output$county_plot2 <- renderPlot({
       if(length(strsplit(as.character(req(input$unit)), ""))!=0){
         
+        
         Data_harvest <- county_data() %>% 
-          select(YEAR,
-                 #"corn_county_harvest_survey_acres",
-                 #"corn_county_harvest_census_acres",
-                 "corn_county_harvest_census_operation",
-                 "corn_county_harvest_survey_operation"
+          select(YEAR, 
+                 "corn_county_harvest_census_acres",
+                 "corn_county_production_census_bu",
           ) %>% 
           group_by(YEAR) %>% 
-          summarise(#survey_acres = sum(corn_county_harvest_survey_acres, na.rm = T),
-            survey_operation = sum(corn_county_harvest_survey_operation, na.rm = T),
-            #census_acres = sum(corn_county_harvest_census_acres, na.rm = T),
-            census_operation = sum(corn_county_harvest_census_operation, na.rm = T),
+          summarise(census_acres = sum(corn_county_harvest_census_acres, na.rm = T),
+                    census_production = sum(corn_county_production_census_bu, na.rm = T),
           )
+        acresnum = max(Data_harvest$census_acres)
+        prodnum = max(Data_harvest$census_production)
+        scale = prodnum/acresnum
         
         # Reshape data to long format
         long_data <- Data_harvest %>%
-          pivot_longer(cols = c(survey_operation, census_operation), 
-                       names_to = "Variable", 
-                       values_to = "Value")
-        print(long_data)
-        
-        # Create side-by-side bar graph
-        ggplot(subset(long_data, Value != 0), aes(x = as.numeric(YEAR), y = Value, color = Variable)) +
-          geom_line() +  # "dodge" places bars side by side
-          labs(title = paste0("Number of Harvest Operations in ", county_data()$county_state),
-               x = "Year", 
-               y = "Value") +
-          theme_minimal() +
-          scale_y_continuous(labels = scales::comma) +
-          scale_fill_brewer(palette = "Set2") 
-        
-      }
-    })
-    
-    
-    
-    
-    output$plot_harvested <- renderPlot({
-      if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-        Data_harvest <- county_data() %>% 
-          select(YEAR, "corn_county_harvest_survey_acres" ,
-                 "corn_county_harvest_census_acres",
-                 "corn_county_harvest_census_operation",
-                 "corn_county_harvest_survey_operation") %>% 
-          group_by(YEAR) %>% 
-          summarise(survey_acres = sum(corn_county_harvest_survey_acres, na.rm = T),
-                    survey_operation = sum(corn_county_harvest_survey_operation, na.rm = T),
-                    census_acres = sum(corn_county_harvest_census_acres, na.rm = T),
-                    census_operation = sum(corn_county_harvest_census_operation, na.rm = T),)
-        
-        # Reshape data to long format
-        long_data <- Data_harvest %>%
-          pivot_longer(cols = c(survey_acres, survey_operation, census_acres, census_operation), 
+          pivot_longer(cols = c(census_acres, census_production), 
                        names_to = "Variable", 
                        values_to = "Value")
         
-        # Create side-by-side bar graph
-        ggplot(long_data, aes(x = factor(YEAR), y = Value, fill = Variable)) +
-          geom_bar(stat = "identity", position = "dodge") +  # "dodge" places bars side by side
-          labs(title = paste0("Side-by-side bar graph of harvested areas in ", county_data()$county_state),
-               x = "Year", 
-               y = "Harvested Area") +
-          theme_minimal() +
-          scale_y_continuous(labels = scales::comma) +
-          scale_fill_brewer(palette = "Set2") 
+        
+        ggplot(subset(Data_harvest, census_acres != 0 & census_production != 0), aes(x = YEAR)) +
+          geom_line(aes(y = census_acres, color = "Census Acres")) + # First y-axis
+          geom_line(aes(y = census_production / scale)) + # Second y-axis, scaled by factor
+          scale_y_continuous(
+            name = "Acres Harvested",
+            sec.axis = sec_axis(~.*scale, name = "Census Production"),
+            limits = c(0, max(c(max(Data_harvest$census_acres), max(Data_harvest$census_production / scale), na.rm = TRUE)))) +# Convert second y-axis back to original scale
+          labs(x = "Year", color = "Variable") +
+          theme_minimal()
         
       }
     })
+    ??subset
     
     output$plot_yield <- renderPlot({
       if(length(strsplit(as.character(req(input$unit)), ""))!=0){
