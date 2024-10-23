@@ -20,24 +20,24 @@ states_map2 <- states_geometry %>%
   sf::st_set_crs(4326) %>% 
   sf::st_transform('+proj=longlat +datum=WGS84')
 
-load("Data/smaller_corn_county_census.rda")
-load("Data/smaller_corn_state_census.rda")
+load("Data/smaller_county_census.rda")
+load("Data/smaller_state_census.rda")
 # view(corn_state_census)
 # view(corn_county_census)
 
-for(i in 4:dim(corn_county_census)[2]){
-  corn_county_census[,i][is.na(corn_county_census[,i])] <- 0
+for(i in 4:dim(county_census)[2]){
+  county_census[,i][is.na(county_census[,i])] <- 0
 }
-for(i in 4:dim(corn_state_census)[2]){
-  corn_state_census[,i][is.na(corn_state_census[,i])] <- 0
+for(i in 4:dim(state_census)[2]){
+  state_census[,i][is.na(state_census[,i])] <- 0
 }
 
 is.zero <- function(x) {
   return(x == 0)
 }
 
-layer_county <- unique(corn_county_census$county_state)
-layer_state <- unique(corn_state_census$state_name)
+layer_county <- unique(county_census$county_state)
+layer_state <- unique(state_census$state_name)
 
 ###################### Setting the color range ##############################
 
@@ -186,7 +186,7 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                                                 selected = "State"),
                                     
                                     selectInput(inputId = "crop", "Choose a crop", 
-                                                c("Corn", "Soybean", "Wheat"),
+                                                c("Corn", "Soybeans", "Wheat"),
                                                 selected = "Corn"),
                                     
                                     selectInput(inputId = "stat", "Choose a stat", 
@@ -229,16 +229,6 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                                     plotOutput("plot2"),
                                     br(),
                                     br(),
-                                    #h5("Sales Plot in the selected county"),
-                                    plotOutput("plot3"),
-                                    br(),
-                                    br(),
-                                    #h5("Yield Plot in the selected county"),
-                                    plotOutput("plot4"),
-                                    br(),
-                                    br(),
-                                    h5("Additional Plot in the selected county"),
-                                    plotOutput("plot7")
                                   ),
                                   conditionalPanel(
                                     condition = "input.level == 'County'",  # Replace 'SomeValue' with your condition
@@ -270,7 +260,16 @@ server <- function(input, output,session) {
   
   observeEvent(input$level, {
     updateSelectInput(session, "unit", selected = "")
+    
+    
   })
+  observeEvent(input$crop, {
+    updateSelectInput(session, "unit", selected = "")
+  })
+  
+  # observeEvent(input$unit, {
+  #   
+  # })
   #stat = c("PRODUCTION", "YIELD", "AREA PLANTED", "AREA HARVESTED", "SALES")
   output$unit <- renderUI({
     if(length(strsplit(as.character(req(input$stat)), ""))!=0){
@@ -309,12 +308,12 @@ server <- function(input, output,session) {
   data_new4 <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
       if(input$level == "County") {
-      return(st_as_sf(corn_county_census) %>% # Turns the geometry column into geometry, rather than observations (not column anymore, rather, characteristic)
+      return(st_as_sf(county_census) %>% # Turns the geometry column into geometry, rather than observations (not column anymore, rather, characteristic)
         sf::st_set_crs(4326) %>% 
         sf::st_transform('+proj=longlat +datum=WGS84'))
       }
       if(input$level == "State") {
-        return(st_as_sf(corn_state_census) %>% # Turns the geometry column into geometry, rather than observations (not column anymore, rather, characteristic)
+        return(st_as_sf(state_census) %>% # Turns the geometry column into geometry, rather than observations (not column anymore, rather, characteristic)
           sf::st_set_crs(4326) %>% 
           sf::st_transform('+proj=longlat +datum=WGS84'))
       }
@@ -359,43 +358,64 @@ server <- function(input, output,session) {
     
   })
   
-  
-  
-  reactive_data <-  reactive({
-    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-      if(as.character(input$level) == "State"){
-        result <-switch(input$unit,
-                 ACRES_harvested = data_new4()$corn_state_harvest_census_acres,
-                 OPERATIONS_harvested = data_new4()$corn_state_harvest_census_operation,
-                 ACRES_plated = data_new4()$corn_state_planted_census_acre,
-                 BU_production = data_new4()$corn_state_production_census_bu,
-                 TONS_production = data_new4()$corn_state_production_census_ton,
-                 LB_production = data_new4()$corn_state_production_census_lb,
-                 BU_ACRE_yield = data_new4()$corn_state_yield_census_bu_acre,
-                 TONS_ACRE_yield = data_new4()$corn_state_yield_census_ton_acre,
-                 OPERATIONS_sales = data_new4()$corn_state_sales_census_operation,
-                 Dollar_sales = data_new4()$corn_state_sales_census_dollor
-        )
+    reactive_data <-  reactive({
+      if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+        crop = tolower(input$crop)
+        level = tolower(input$level)
+        result <- switch(input$unit,
+                         ACRES_harvested = data_new4()[[paste0(crop, "_", level, "_harvest_census_acres")]],
+                         OPERATIONS_harvested = data_new4()[[paste0(crop, "_", level, "_harvest_census_operation")]],
+                         ACRES_plated = data_new4()[[paste0(crop, "_", level, "_planted_census_acre")]],
+                         BU_production = data_new4()[[paste0(crop, "_", level, "_production_census_bu")]],
+                         TONS_production = data_new4()[[paste0(crop, "_", level, "_production_census_ton")]],
+                         LB_production = data_new4()[[paste0(crop, "_", level, "_production_census_lb")]],
+                         BU_ACRE_yield = data_new4()[[paste0(crop, "_", level, "_yield_census_bu_acre")]],
+                         TONS_ACRE_yield = data_new4()[[paste0(crop, "_", level, "_yield_census_ton_acre")]],
+                         OPERATIONS_sales = data_new4()[[paste0(crop, "_", level, "_sales_census_operation")]],
+                         Dollar_sales = data_new4()[[paste0(crop, "_", level, "_sales_census_dollar")]])
       }
-      else if(as.character(input$level) == "County"){
-        result <-switch(input$unit,
-                 ACRES_harvested = data_new4()$corn_county_harvest_census_acres,
-                 OPERATIONS_harvested = data_new4()$corn_county_harvest_census_operation,
-                 ACRES_plated = data_new4()$corn_county_planted_census_acre,
-                 BU_production = data_new4()$corn_county_production_census_bu,
-                 TONS_production = data_new4()$corn_county_production_census_ton,
-                 LB_production = data_new4()$corn_county_production_census_lb,
-                 BU_ACRE_yield = data_new4()$corn_county_yield_census_bu_acre,
-                 TONS_ACRE_yield = data_new4()$corn_county_yield_census_ton_acre,
-                 OPERATIONS_sales = data_new4()$corn_county_sales_census_operation,
-                 Dollar_sales = data_new4()$corn_county_sales_census_dollor
-        )
-      }
-      return(result)
-    }
-     
-  })
+      return(result)})
   
+  
+  
+  
+  
+  
+  # reactive_data <-  reactive({
+  #   if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+  #     if(as.character(input$level) == "State"){
+  #       result <-switch(input$unit,
+  #                ACRES_harvested = data_new4()$corn_state_harvest_census_acres,
+  #                OPERATIONS_harvested = data_new4()$corn_state_harvest_census_operation,
+  #                ACRES_plated = data_new4()$corn_state_planted_census_acre,
+  #                BU_production = data_new4()$corn_state_production_census_bu,
+  #                TONS_production = data_new4()$corn_state_production_census_ton,
+  #                LB_production = data_new4()$corn_state_production_census_lb,
+  #                BU_ACRE_yield = data_new4()$corn_state_yield_census_bu_acre,
+  #                TONS_ACRE_yield = data_new4()$corn_state_yield_census_ton_acre,
+  #                OPERATIONS_sales = data_new4()$corn_state_sales_census_operation,
+  #                Dollar_sales = data_new4()$corn_state_sales_census_dollar
+  #       )
+  #     }
+  #     else if(as.character(input$level) == "County"){
+  #       result <-switch(input$unit,
+  #                ACRES_harvested = data_new4()$corn_county_harvest_census_acres,
+  #                OPERATIONS_harvested = data_new4()$corn_county_harvest_census_operation,
+  #                ACRES_plated = data_new4()$corn_county_planted_census_acre,
+  #                BU_production = data_new4()$corn_county_production_census_bu,
+  #                TONS_production = data_new4()$corn_county_production_census_ton,
+  #                LB_production = data_new4()$corn_county_production_census_lb,
+  #                BU_ACRE_yield = data_new4()$corn_county_yield_census_bu_acre,
+  #                TONS_ACRE_yield = data_new4()$corn_county_yield_census_ton_acre,
+  #                OPERATIONS_sales = data_new4()$corn_county_sales_census_operation,
+  #                Dollar_sales = data_new4()$corn_county_sales_census_dollar
+  #       )
+  #     }
+  #     return(result)
+  #   }
+  #    
+  # })
+  # 
   
   reactive_stat <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
@@ -688,8 +708,8 @@ server <- function(input, output,session) {
       }
     })
     
-    max(corn_county_census$corn_county_harvest_census_acres)
-    max(corn_county_census$corn_county_sales_census_dollar)
+    max(county_census$corn_county_harvest_census_acres)
+    max(county_census$corn_county_sales_census_dollar)
     
     
     output$county_plot1 <- renderPlot({
