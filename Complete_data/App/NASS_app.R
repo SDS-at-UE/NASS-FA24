@@ -186,7 +186,7 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                                                 selected = "State"),
                                     
                                     selectInput(inputId = "crop", "Choose a crop", 
-                                                c("Corn", "Soybeans", "Wheat"),
+                                                c("Corn", "Soybeans", "Wheat", "Potatoes"),
                                                 selected = "Corn"),
                                     
                                     selectInput(inputId = "stat", "Choose a stat", 
@@ -204,13 +204,13 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                          ),
                          
                          fluidRow(
-                           column(12,
+                           column(3),
+                           column(9,
                                   textOutput("label"),
-                                  DT::dataTableOutput("tab1"),
+                           )
                                   #br(),
                                   #textOutput("test"),
                                   
-                           )
                          ),
                          
                          fluidRow(
@@ -218,9 +218,8 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                            column(8,
                                   fluidRow(
                                     column(4,
-                                           #plotOutput(),
-                                           br(),
-                                           br(),
+                                           DT::dataTableOutput("tab1"),
+                                           plotOutput("norm")
                                            ),
                                     column(8,
                                            #plotOutput(),
@@ -674,16 +673,16 @@ server <- function(input, output,session) {
       }
     }
   })
-  
-  
+
   output$tab1 <- DT::renderDataTable({
     req(input$unit)
     if (input$level == "State") {
-      result <- (state_data())
+      result <- state_data()
     } 
     if (input$level == "County") {
-      result <- (county_data())
+      result <- county_data()
     }
+    print(result)
     return(result)
   })
   
@@ -722,7 +721,12 @@ server <- function(input, output,session) {
       }
     })
     
-    
+    output$norm <- renderPlot({
+      p1 <- ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
+        stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1)) + ylab("") +
+        scale_y_continuous(breaks = NULL)
+      return(p1)
+      })
     
     output$county_plot1 <- renderPlot({
       if(length(strsplit(as.character(req(input$unit)), ""))!=0){
@@ -820,7 +824,7 @@ server <- function(input, output,session) {
           pivot_longer(cols = c(census_acres, census_production), 
                        names_to = "Variable", 
                        values_to = "Value")
-        print(Data_harvest)
+        
           
         
         ggplot(subset(Data_harvest, census_acres > 0 & census_production > 0), aes(x = as.numeric(YEAR))) +
