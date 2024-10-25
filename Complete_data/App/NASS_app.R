@@ -176,7 +176,9 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                                                         animate = animationOptions(interval = 2000),
                                    ),
                                    ),
-                                   column(3,)        
+                                   column(3,
+                                          
+                                          )        
                          ),
                          fluidRow(
                            column(3,
@@ -217,12 +219,13 @@ ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
                            column(2),
                            column(8,
                                   fluidRow(
-                                    column(4,
+                                    column(6,
                                            DT::dataTableOutput("tab1"),
-                                           plotOutput("norm")
+                                           # tableOutput("staticTable"),
+                                           
                                            ),
-                                    column(8,
-                                           #plotOutput(),
+                                    column(6,
+                                           
                                            br(),
                                            br(),
                                     )
@@ -686,6 +689,17 @@ server <- function(input, output,session) {
     return(result)
   })
   
+  output$staticTable <- renderTable({
+    req(input$unit)
+    if (input$level == "State") {
+      result = head(state_data())
+    }
+    else if (input$level == "County") {
+      result = head(county_data())
+    }
+    return(result)
+  })
+  
   
   # observeEvent(input$level, {
   #   if (input$level == "State") {
@@ -696,19 +710,6 @@ server <- function(input, output,session) {
   # })
   
   # plot_county <- function() {
-    
-    output$tab1 <- DT::renderDataTable({
-      if(length(strsplit(as.character(req(input$unit)), ""))!=0){
-        if(input$level == "State"){
-          head(county_data())
-        }
-        if(input$level == "County"){
-          head(state_data())
-        }
-        
-      }
-      
-    })
     
     output$test <- renderPrint({
       if(length(strsplit(as.character(req(input$unit)), ""))!=0){
