@@ -24,6 +24,7 @@ load("Data/smaller_county_census.rda")
 load("Data/smaller_state_census.rda")
 # view(corn_state_census)
 # view(corn_county_census)
+# check for data inconsistencies such as harvested area > area planted
 
 for(i in 4:dim(county_census)[2]){
   county_census[,i][is.na(county_census[,i])] <- 0
