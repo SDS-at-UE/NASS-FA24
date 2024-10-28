@@ -319,7 +319,7 @@ server <- function(input, output,session) {
   
   
   
-  data_new4 <- reactive({
+  new_data4 <- reactive({
     if(length(strsplit(as.character(req(input$unit)), ""))!=0){
       if(input$level == "County") {
         return(st_as_sf(county_census) %>% # Turns the geometry column into geometry, rather than observations (not column anymore, rather, characteristic)
@@ -335,6 +335,7 @@ server <- function(input, output,session) {
     
   })
   
+  # if need be:
   # data_new5 <- reactive({
   #   if(length(strsplit(as.character(req(input$unit)), ""))!=0){
   #     if(input$level == "State") {
@@ -346,15 +347,15 @@ server <- function(input, output,session) {
   # })
   
   
-  ########################################################################
-  ########################################################################
+  #########################################################################
+  #########################################################################
   
   
   
   
   
-  ########################################################################
-  ########################################################################
+  #########################################################################
+  #########################################################################
   
   
   
