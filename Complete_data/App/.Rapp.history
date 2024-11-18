@@ -1,2 +1,0 @@
-load("/Users/andrewthompson/Desktop/NASS-FA24/Complete_data/App/corn_county_survey.rda")
-head(corn_county_survey)
