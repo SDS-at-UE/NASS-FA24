@@ -101,7 +101,6 @@ save(wheat_data, file = "wheat_data.rda")
 save(potatoes_data, file = "potatoes_data.rda")
 #################################################################################
 
-
 corn_census <- corn_data %>% 
   filter(SOURCE_DESC == "CENSUS")
 
@@ -186,8 +185,8 @@ wide_data <- complete_data %>%
     values_from = sum_value
   ) %>% 
   arrange(YEAR)
-
-wide_data$YIELD = ifelse(wide_data$PRODUCTION_BU == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_BU/wide_data$`AREA HARVESTED_ACRES`)
+wide_data
+wide_data$YIELD_ = ifelse(wide_data$PRODUCTION_BU == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_BU/wide_data$`AREA HARVESTED_ACRES`)
 
 # Create county_state column in the second data
 corn_county_geometry <- corn_county_geometry %>%
@@ -526,7 +525,7 @@ wide_data <- complete_data %>%
   ) %>% 
   arrange(YEAR)
 
-wide_data$YIELD = ifelse(wide_data$PRODUCTION_BU == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_BU/wide_data$`AREA HARVESTED_ACRES`)
+wide_data$YIELD_ = ifelse(wide_data$PRODUCTION_BU == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_BU/wide_data$`AREA HARVESTED_ACRES`)
 
 # Create county_state column in the second data
 soybeans_county_geometry <- soybeans_county_geometry %>%
@@ -732,7 +731,9 @@ wide_data <- complete_data %>%
   ) %>% 
   arrange(YEAR)
 
-wide_data$YIELD = ifelse(wide_data$PRODUCTION_CWT == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_CWT/wide_data$`AREA HARVESTED_ACRES`)
+wide_data$YIELD__ = ifelse(wide_data$PRODUCTION_CWT == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_CWT/wide_data$`AREA HARVESTED_ACRES`)
+
+
 
 # Create county_state column in the second data
 potatoes_county_geometry <- potatoes_county_geometry %>%
@@ -934,7 +935,7 @@ wide_data <- complete_data %>%
   ) %>% 
   arrange(YEAR)
 
-wide_data$YIELD = ifelse(wide_data$PRODUCTION_BU == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_BU/wide_data$`AREA HARVESTED_ACRES`)
+wide_data$YIELD_ = ifelse(wide_data$PRODUCTION_BU == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_BU/wide_data$`AREA HARVESTED_ACRES`)
 
 # Create county_state column in the second data
 wheat_county_geometry <- wheat_county_geometry %>%

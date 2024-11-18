@@ -312,8 +312,8 @@ ui <- fluidPage(
                                              # 
                                              uiOutput("unit"),
                                              br(),
-                                             switchInput(inputId = "toggle_map", label = "Mode", 
-                                                         onLabel = "Creating Map...", offLabel = "Update Filters...", 
+                                             switchInput(inputId = "toggle_map", label = "Map",
+                                                         onLabel = "Creating Map...", offLabel = "Updating Filters...", 
                                                          value = FALSE),
                                              
                                              hr(),
@@ -496,6 +496,7 @@ server <- function(input, output,session) {
     selectInput(inputId = "stat", label = "Choose a STATISTICCAT_DESC",
                 choices = c("", get_left_side(data_new4()[,-1])),  # Dynamically retrieve choices
                 selected = "")
+    
   })
   
   # Observe 'stat' changes to update 'unit'
