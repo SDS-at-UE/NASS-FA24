@@ -1,0 +1,1027 @@
+options(timeout=300)
+
+library(shiny)
+library(tidyverse)
+library(leaflet)
+library(sf)
+library(shinythemes)
+library(bslib)
+library(imputeTS)
+library(data.table)
+library(purrr) 
+
+
+
+#######################  Loading the data  #############################
+
+
+load("Data/states_geometry.rda")  # states_geometry data
+states_map2 <- states_geometry %>%
+  sf::st_set_crs(4326) %>% 
+  sf::st_transform('+proj=longlat +datum=WGS84')
+
+load("Data/smaller_county_census.rda")
+load("Data/smaller_state_census.rda")
+# view(corn_state_census)
+# view(corn_county_census)
+# check for data inconsistencies such as harvested area > area planted
+
+for(i in 4:dim(county_census)[2]){
+  county_census[,i][is.na(county_census[,i])] <- 0
+}
+for(i in 4:dim(state_census)[2]){
+  state_census[,i][is.na(state_census[,i])] <- 0
+}
+
+is.zero <- function(x) {
+  return(x == 0)
+}
+
+layer_county <- unique(county_census$county_state)
+layer_state <- unique(state_census$state_name)
+
+###################### Setting the color range ##############################
+
+
+color_pal1 <- colorRampPalette(colors = c("springgreen4", "yellow3"), space = "Lab")(2)
+
+## Make vector of colors for second bin
+#color_pal2 <- colorRampPalette(colors = c("yellow3", "orange"), space = "Lab")(5)
+
+## Make vector of colors for third bin
+color_pal3 <- colorRampPalette(colors = c("orange", "red3"), space = "Lab")(15)
+
+## Make vector of colors for fourth bin
+#color_pal4 <- colorRampPalette(colors = c("red3", "darkred"), space = "Lab")(5)
+
+## Make vector of colors for last bin
+color_pal5 <- colorRampPalette(colors = c("darkred", "black"), space = "Lab")(5)
+
+## Combine the five color palettes
+color_pal <- c(color_pal1, color_pal3, color_pal5)#, color_pal4, color_pal5)
+#color_pal <- c(color_pal1, color_pal2, color_pal3, color_pal4, color_pal5)
+
+
+################################## Helper functions  #############################
+
+## https://gist.github.com/addiversitas/d2659ff553f702d60105a97fe46261a0
+
+#helper functions for choropleth animation
+setShapeStyle <- function( map, data = getMapData(map), layerId,
+                           stroke = NULL, color = NULL,
+                           weight = NULL, opacity = NULL,
+                           fill = NULL, fillColor = NULL,
+                           fillOpacity = NULL, dashArray = NULL,
+                           smoothFactor = NULL, noClip = NULL, label = NULL,
+                           options = NULL){
+  
+  options <- c(list(layerId = layerId),
+               options,
+               filterNULL(list(stroke = stroke, color = color,
+                               weight = weight, opacity = opacity,
+                               fill = fill, fillColor = fillColor,
+                               fillOpacity = fillOpacity, dashArray = dashArray,
+                               smoothFactor = smoothFactor, noClip = noClip, label = label
+               )))
+  # evaluate all options
+  options <- evalFormula(options, data = data)
+  # make them the same length (by building a data.frame)
+  options <- do.call(data.frame, c(options, list(stringsAsFactors = FALSE)))
+  
+  layerId <- options[[1]]
+  style <- options[-1] # drop layer column
+  
+  leaflet::invokeMethod(map, data, "setStyle", "shape", layerId, style);
+}
+
+setShapeLabel <- function(map, data = getMapData(map), 
+                          layerId,
+                          label = NULL,
+                          options = NULL){
+  options <- c(list(layerId = layerId),
+               options,
+               filterNULL(list(label = label
+               )))
+  # evaluate all options
+  options <- evalFormula(options, data = data)
+  # make them the same length (by building a data.frame)
+  options <- do.call(data.frame, c(options, list(stringsAsFactors = FALSE)))
+  
+  layerId <- options[[1]]
+  style <- options[-1] # drop layer column
+  
+  leaflet::invokeMethod(map, data, "setLabel", "shape", layerId, label);
+}
+
+#helper function in JS for choropleth animation
+leafletjs <-  tags$head(
+  tags$script(HTML('
+window.LeafletWidget.methods.setStyle = function(category, layerId, style){
+  var map = this;
+  if (!layerId){
+    return;
+  } else if (!(typeof(layerId) === "object" && layerId.length)){
+    layerId = [layerId];
+  }
+  style = HTMLWidgets.dataframeToD3(style);
+  layerId.forEach(function(d,i){
+    var layer = map.layerManager.getLayer(category, d);
+    if (layer){
+      layer.setStyle(style[i]);
+    }
+  });
+};
+window.LeafletWidget.methods.setLabel = function(category, layerId, label){
+  var map = this;
+  if (!layerId){
+    return;
+  } else if (!(typeof(layerId) === "object" && layerId.length)){
+    layerId = [layerId];
+  }
+  layerId.forEach(function(d,i){
+    var layer = map.layerManager.getLayer(category, d);
+    if (layer){
+      layer.unbindTooltip();
+      layer.bindTooltip(label[i])
+    }
+  });
+};
+'
+  ))
+)
+
+validate_input <- function(input_value) {
+  if (length(input_value) != 1) {
+    return(NULL)  # You can return NULL or an appropriate error message
+  }
+  return(TRUE)  # If valid, return TRUE
+}
+########################################################################
+# Valid themes are: cerulean, cosmo, cyborg, darkly, flatly, journal, 
+# lumen, paper, readable, sandstone, simplex, slate, spacelab, 
+# superhero, united, yeti.
+
+ui <- navbarPage(leafletjs, theme = shinytheme("spacelab"),
+                 title = "Agriculture Data Analysis Portal",
+                 tabPanel('Crops',
+                          #titlePanel("Crops"),
+                          fluidRow( column(3,),
+                                    column(6,sliderInput(inputId = "dates", "Timeline of Selected Parameter", 
+                                                         min = 2000L, #min(c(corn_county_census$YEAR, corn_county_survey$YEAR)),
+                                                         max = 2023L, #max(c(corn_county_census$YEAR, corn_county_survey$YEAR)),
+                                                         value = 2002L,
+                                                         sep = "",
+                                                         #timeFormat = "%m-%d-%Y",
+                                                         step = 1,
+                                                         ticks = FALSE,
+                                                         animate = animationOptions(interval = 2000),
+                                    ),
+                                    ),
+                                    column(3,)        
+                          ),
+                          fluidRow(
+                            column(3,
+                                   wellPanel(
+                                     selectInput(inputId = "level", "Choose a level", 
+                                                 c("County", "State"),
+                                                 selected = "State"),
+                                     
+                                     selectInput(inputId = "crop", "Choose a crop", 
+                                                 c("Corn", "Soybeans", "Wheat", "Potatoes"),
+                                                 selected = "Corn"),
+                                     
+                                     selectInput(inputId = "stat", "Choose a stat", 
+                                                 c("PRODUCTION", "YIELD", "AREA PLANTED", "AREA HARVESTED", "SALES"),
+                                                 selected = "AREA HARVESTED"),
+                                     
+                                     uiOutput("unit"),
+                                   )
+                                   
+                            ),
+                            column(9,
+                                   leafletOutput("map_pop"),
+                                   
+                            )
+                          ),
+                          
+                          fluidRow(
+                            column(3),
+                            column(9,
+                                   textOutput("label"),
+                            )
+                            #br(),
+                            #textOutput("test"),
+                            
+                          ),
+                          
+                          fluidRow(
+                            column(2),
+                            column(8,
+                                   fluidRow(
+                                     column(4,
+                                            DT::dataTableOutput("tab1"),
+                                            plotOutput("norm")
+                                     ),
+                                     column(8,
+                                            #plotOutput(),
+                                            br(),
+                                            br(),
+                                     )
+                                   ),
+                                   ######################################################################################################
+                                   # CONDITIONAL PLOT - UTILIZE THESE
+                                   conditionalPanel(
+                                     condition = "input.level == 'State'",  #
+                                     h5("State Selected Plots"),
+                                     plotOutput("state_plot1"),
+                                     br(),
+                                     br(),
+                                     h5("Plot of Operations in the selected county"),
+                                     plotOutput("state_plot2"),
+                                     br(),
+                                     br(),
+                                   ),
+                                   conditionalPanel(
+                                     condition = "input.level == 'County'",  #
+                                     h5("County Selected Plots:"),
+                                     plotOutput("county_plot1"),
+                                     br(),
+                                     br(),
+                                     plotOutput("county_plot2"),
+                                     br(),
+                                     br(), 
+                                     plotOutput("county_plot3")
+                                   )
+                                   ######################################################################################################
+                            ),
+                            column(2)
+                          ),
+                          
+                          
+                          
+                          
+                          
+                 )
+                 
+                 
+)
+
+
+server <- function(input, output,session) {
+  ### Map Interface & Climate Grid Selection
+  GRIDrv <- reactiveVal()
+  STATErv <- reactiveVal()
+  
+  observeEvent(input$level, {
+    updateSelectInput(session, "unit", selected = "")
+    
+    
+  })
+  observeEvent(input$crop, {
+    updateSelectInput(session, "unit", selected = "")
+  })
+  
+  # observeEvent(input$unit, {
+  #   
+  # })
+  #stat = c("PRODUCTION", "YIELD", "AREA PLANTED", "AREA HARVESTED", "SALES")
+  output$unit <- renderUI({
+    if(length(strsplit(as.character(req(input$stat)), ""))!=0){
+      if(input$stat == 'AREA HARVESTED'){
+        x = c("","ACRES_harvested", "OPERATIONS_harvested")
+        selectInput(inputId = "unit", label ="Choose a UNIT_DESC",
+                    choices = x,
+                    selected = "")
+      }else if(input$stat == 'AREA PLANTED'){
+        x = c("","ACRES_plated")
+        selectInput(inputId = "unit", label ="Choose a UNIT_DESC",
+                    choices = x,
+                    selected = "")
+      }else if(input$stat == 'PRODUCTION'){
+        x = c("","BU_production", "TONS_production", "LB_production")
+        selectInput(inputId = "unit", label ="Choose a UNIT_DESC",
+                    choices = x,
+                    selected = "")
+      }else if(input$stat == 'YIELD'){
+        x = c("","BU_ACRE_yield", "TONS_ACRE_yield")
+        selectInput(inputId = "unit", label ="Choose a UNIT_DESC",
+                    choices = x,
+                    selected = "")
+      }else if(input$stat == 'SALES'){
+        x = c("","OPERATIONS_sales", "Dollar_sales")
+        selectInput(inputId = "unit", label ="Choose a UNIT_DESC",
+                    choices = x,
+                    selected = "")
+      }
+    }
+    
+  })
+  
+  
+  
+  new_data4 <- reactive({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      if(input$level == "County") {
+        return(st_as_sf(county_census) %>% # Turns the geometry column into geometry, rather than observations (not column anymore, rather, characteristic)
+                 sf::st_set_crs(4326) %>% 
+                 sf::st_transform('+proj=longlat +datum=WGS84'))
+      }
+      if(input$level == "State") {
+        return(st_as_sf(state_census) %>% # Turns the geometry column into geometry, rather than observations (not column anymore, rather, characteristic)
+                 sf::st_set_crs(4326) %>% 
+                 sf::st_transform('+proj=longlat +datum=WGS84'))
+      }
+    }
+    
+  })
+  
+  # if need be:
+  # data_new5 <- reactive({
+  #   if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+  #     if(input$level == "State") {
+  #     st_as_sf(corn_state_census) %>% # Turns the geometry column into geometry, rather than observations (not column anymore, rather, characteristic)
+  #       sf::st_set_crs(4326) %>% 
+  #       sf::st_transform('+proj=longlat +datum=WGS84')
+  #     }
+  #   }
+  # })
+  
+  
+  #########################################################################
+  #########################################################################
+  
+  
+  
+  
+  
+  #########################################################################
+  #########################################################################
+  
+  
+  
+  dates <- reactive({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      data = data_new4() %>%
+        filter(YEAR == as.numeric(input$dates))
+      
+      # Validate that data is not empty
+      validate(
+        need(nrow(data) > 0, "No data available for the selected year.")
+      )
+      data
+    }
+    
+  })
+  
+  reactive_data <-  reactive({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      crop = tolower(input$crop)
+      level = tolower(input$level)
+      result <- switch(input$unit,
+                       ACRES_harvested = data_new4()[[paste0(crop, "_", level, "_harvest_census_acres")]],
+                       OPERATIONS_harvested = data_new4()[[paste0(crop, "_", level, "_harvest_census_operation")]],
+                       ACRES_plated = data_new4()[[paste0(crop, "_", level, "_planted_census_acre")]],
+                       BU_production = data_new4()[[paste0(crop, "_", level, "_production_census_bu")]],
+                       TONS_production = data_new4()[[paste0(crop, "_", level, "_production_census_ton")]],
+                       LB_production = data_new4()[[paste0(crop, "_", level, "_production_census_lb")]],
+                       BU_ACRE_yield = data_new4()[[paste0(crop, "_", level, "_yield_census_bu_acre")]],
+                       TONS_ACRE_yield = data_new4()[[paste0(crop, "_", level, "_yield_census_ton_acre")]],
+                       OPERATIONS_sales = data_new4()[[paste0(crop, "_", level, "_sales_census_operation")]],
+                       Dollar_sales = data_new4()[[paste0(crop, "_", level, "_sales_census_dollar")]])
+    }
+    return(result)})
+  
+  
+  
+  
+  
+  
+  # reactive_data <-  reactive({
+  #   if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+  #     if(as.character(input$level) == "State"){
+  #       result <-switch(input$unit,
+  #                ACRES_harvested = data_new4()$corn_state_harvest_census_acres,
+  #                OPERATIONS_harvested = data_new4()$corn_state_harvest_census_operation,
+  #                ACRES_plated = data_new4()$corn_state_planted_census_acre,
+  #                BU_production = data_new4()$corn_state_production_census_bu,
+  #                TONS_production = data_new4()$corn_state_production_census_ton,
+  #                LB_production = data_new4()$corn_state_production_census_lb,
+  #                BU_ACRE_yield = data_new4()$corn_state_yield_census_bu_acre,
+  #                TONS_ACRE_yield = data_new4()$corn_state_yield_census_ton_acre,
+  #                OPERATIONS_sales = data_new4()$corn_state_sales_census_operation,
+  #                Dollar_sales = data_new4()$corn_state_sales_census_dollar
+  #       )
+  #     }
+  #     else if(as.character(input$level) == "County"){
+  #       result <-switch(input$unit,
+  #                ACRES_harvested = data_new4()$corn_county_harvest_census_acres,
+  #                OPERATIONS_harvested = data_new4()$corn_county_harvest_census_operation,
+  #                ACRES_plated = data_new4()$corn_county_planted_census_acre,
+  #                BU_production = data_new4()$corn_county_production_census_bu,
+  #                TONS_production = data_new4()$corn_county_production_census_ton,
+  #                LB_production = data_new4()$corn_county_production_census_lb,
+  #                BU_ACRE_yield = data_new4()$corn_county_yield_census_bu_acre,
+  #                TONS_ACRE_yield = data_new4()$corn_county_yield_census_ton_acre,
+  #                OPERATIONS_sales = data_new4()$corn_county_sales_census_operation,
+  #                Dollar_sales = data_new4()$corn_county_sales_census_dollar
+  #       )
+  #     }
+  #     return(result)
+  #   }
+  #    
+  # })
+  # 
+  
+  reactive_stat <- reactive({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      if (as.character(input$level) == "State") {
+        result <- switch(input$unit,
+                         ACRES_harvested = dates()$corn_state_harvest_census_acres,
+                         OPERATIONS_harvested = dates()$corn_state_harvest_census_operation,
+                         ACRES_plated = dates()$corn_state_planted_census_acre,
+                         BU_production = dates()$corn_state_production_census_bu,
+                         TONS_production = dates()$corn_state_production_census_ton,
+                         LB_production = dates()$corn_state_production_census_lb,
+                         BU_ACRE_yield = dates()$corn_state_yield_census_bu_acre,
+                         TONS_ACRE_yield = dates()$corn_state_yield_census_ton_acre,
+                         OPERATIONS_sales = dates()$corn_state_sales_census_operation,
+                         Dollar_sales = dates()$corn_state_sales_census_dollar
+        )
+      } else if (as.character(input$level) == "County") {
+        result <- switch(input$unit,
+                         ACRES_harvested = dates()$corn_county_harvest_census_acres,
+                         OPERATIONS_harvested = dates()$corn_county_harvest_census_operation,
+                         ACRES_plated = dates()$corn_county_planted_census_acre,
+                         BU_production = dates()$corn_county_production_census_bu,
+                         TONS_production = dates()$corn_county_production_census_ton,
+                         LB_production = dates()$corn_county_production_census_lb,
+                         BU_ACRE_yield = dates()$corn_county_yield_census_bu_acre,
+                         TONS_ACRE_yield = dates()$corn_county_yield_census_ton_acre,
+                         OPERATIONS_sales = dates()$corn_county_sales_census_operation,
+                         Dollar_sales = dates()$corn_county_sales_census_dollar
+        )
+      }
+      
+      return(result)
+    }
+  })
+  
+  counties <- reactive({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      data_new4()$county_state
+    }
+    
+  })
+  
+  pal_data <- reactive({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      validate(
+        need(nrow(dates()) > 0, "No data to apply color palette.")
+      )
+      rdata = reactive_data()
+      if(max(reactive_stat())==0){
+        colorNumeric(palette = color_pal, domain = 0.0001:10000)
+      }else{
+        colorNumeric(palette = color_pal, domain = rdata+1)
+      }
+      
+      #colorNumeric(palette = color_pal, domain = 0.001:(max(reactive_data(), na.rm = TRUE)+1))
+      #colorNumeric(palette = color_pal, domain = rdata)#reactive_data())
+    }
+    
+  })
+  
+  
+  popup_msg <- reactive({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      if(input$level == "County"){
+        result <- str_c("<strong>", dates()$county_state, #", ", dates()$State,
+                        "</strong><br /><strong>", dates()$YEAR, "</strong>",
+                        "<br /> ACRES_harvested: ", dates()$corn_county_harvest_census_acres,
+                        "<br /> OPERATIONS_harvested: ", dates()$corn_county_harvest_census_operation,
+                        #              "<br /> ACRES_planted: ",  dates()$corn_county_planted_census_acre,
+                        "<br /> BU_production: ",  dates()$corn_county_production_census_bu,
+                        "<br /> TONS_production: ",  dates()$corn_county_production_census_ton,
+                        "<br /> LB_production: ",  dates()$corn_county_production_census_lb,
+                        "<br /> BU_ACRE_yield: ",  dates()$corn_county_yield_census_bu_acre,
+                        #              "<br /> TONS_ACRE_yield: ",  dates()$corn_county_yield_census_ton_acre,
+                        #              "<br /> OPERATIONS_sales: ",  dates()$corn_county_sales_census_operation,
+                        "<br /> Dollar_sales: ",  dates()$corn_county_sales_census_dollor)
+      }
+      else if(input$level == "State"){
+        result <- str_c("<strong>", dates()$state_state, #", ", dates()$State,
+                        "</strong><br /><strong>", dates()$YEAR, "</strong>",
+                        "<br /> ACRES_harvested: ", ifelse(is.zero(dates()$corn_state_harvest_census_acres), "(D)", dates()$corn_state_harvest_census_acres),
+                        "<br /> OPERATIONS_harvested: ", ifelse(is.zero(dates()$corn_state_harvest_census_operation), "(D)", dates()$corn_state_harvest_census_operation),
+                        #                "<br /> ACRES_planted: ",  dates()$corn_state_planted_census_acre,
+                        "<br /> BU_production: ",  ifelse(is.zero(dates()$corn_state_production_census_bu), "(D)", dates()$corn_state_production_census_bu),
+                        "<br /> TONS_production: ",  ifelse(is.zero(dates()$corn_state_production_census_ton), "(D)", dates()$corn_state_production_census_ton),
+                        "<br /> LB_production: ",  ifelse(is.zero(dates()$corn_state_production_census_lb), "(D)", dates()$corn_state_production_census_lb),
+                        #                "<br /> BU_ACRE_yield: ",  dates()$corn_state_yield_census_bu_acre,
+                        #                "<br /> TONS_ACRE_yield: ",  dates()$corn_state_yield_census_ton_acre,
+                        "<br /> OPERATIONS_sales: ",  ifelse(is.zero(dates()$corn_state_sales_census_operation), "(D)", dates()$corn_state_sales_census_operation),
+                        "<br /> Dollar_sales: ",  ifelse(is.zero(dates()$corn_state_sales_census_dollar), "(D)", dates()$corn_state_sales_census_dollar))
+        # "<br /> Dollar_sales: ",  dates()$corn_state_sales_census_dollar)
+      }
+      return(result)
+    }
+  })
+  
+  
+  
+  output$map_pop <- renderLeaflet({
+    if(length(strsplit(as.character(req(input$unit)), "")) != 0) {
+      validate(
+        need(nrow(dates()) > 0, "No data available for the selected year.")
+      )
+      
+      # Initialize leaflet map (this part is common to both conditions)
+      map <- leaflet(width = "100%",
+                     options = leafletOptions(zoomSnap = 0,
+                                              zoomDelta = 0.25)) %>%
+        addProviderTiles(provider = "CartoDB.Positron") %>%
+        setView(lat = 41.550835, lng = -88.100409, zoom = 5) %>%
+        addPolygons(data = states_map2,
+                    group = "state",
+                    color = "black",
+                    fill = FALSE,
+                    weight = 3)
+      
+      # Conditionally add county polygons if input$level is "County"
+      if(input$level == "County") {
+        map <- map %>%
+          addPolygons(data = st_transform(filter(data_new4(), YEAR == 2002), crs = "+init=epsg:4326"),
+                      layerId = layer_county,
+                      color = "white",
+                      weight = 1,
+                      smoothFactor = 0,
+                      fillOpacity = 0.7)
+      }
+      if(input$level == "State") {
+        map <- map %>%
+          addPolygons(data = states_map2,
+                      layerId = layer_state,  # Assign layer IDs for states
+                      color = "black",         # Customize state polygon colors
+                      weight = 2,
+                      fillOpacity = 0.4)
+      }
+      
+      # Return the leaflet map
+      map
+    }
+  })
+  
+  
+  
+  observe({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      if(input$level == "County"){
+        leafletProxy("map_pop", data = dates()) %>% 
+          setShapeStyle(layerId = layer_county, 
+                        fillColor = ~ suppressWarnings(pal_data()(reactive_stat())))
+      }
+      if(input$level == "State"){
+        leafletProxy("map_pop", data = dates()) %>% 
+          setShapeStyle(layerId = layer_state, 
+                        fillColor = ~ suppressWarnings(pal_data()(reactive_stat())))
+      }
+    }
+    
+  })
+  
+  observe({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      if(input$level == "County"){
+        chosen_layers = layer_county
+        
+      }
+      if(input$level == "State") {
+        chosen_layers = layer_state
+        
+      }
+      leafletProxy("map_pop", data = dates()) %>%
+        setShapeLabel(layerId = chosen_layers,
+                      label = popup_msg())
+    }
+    
+    
+  })
+  
+  observe({ 
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      leafletProxy("map_pop") %>% 
+        clearControls() %>% 
+        addLegend("bottomleft",
+                  pal = pal_data(),
+                  values = na.omit(reactive_data()),
+                  title = str_to_title(str_replace_all(input$unit, "_", " ")),
+                  na.label = "",
+                  opacity = 5)
+    }
+    
+  })
+  
+  observeEvent(input$map_pop_shape_click, {
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      if(input$level == "State"){
+        STATErv(input$map_pop_shape_click$id)
+        print(paste(input$map_pop_shape_click$id, "clicked"))
+      }
+      if(input$level == "County"){
+        GRIDrv(input$map_pop_shape_click$id)
+        print(paste(input$map_pop_shape_click$id, "clicked"))
+      }
+    }
+  })
+  
+  
+  
+  county_data <- reactive({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      if (input$level == "County"){
+        validate(
+          need(GRIDrv() != "" && !is.null(GRIDrv()), "Please select a county cell to generate analysis")
+        )
+        
+        Data = data_new4() %>% 
+          subset(county_state == GRIDrv()) 
+        return(Data)
+      }
+    }
+  })
+  
+  state_data <- reactive({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      if (input$level == "State"){
+        validate(
+          need(STATErv() != "", "Please select a state to generate analysis")
+        )
+        Data = data_new4() %>% 
+          subset(state_name == STATErv())
+        return(Data)
+      }
+    }
+  })
+  
+  output$label <- renderPrint({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      if(input$level == "State"){
+        data = state_data()
+        print(paste("Currently Selected:", input$map_pop_shape_click$id))
+      }
+      else if(input$level == "County"){
+        data = county_data()
+        print(paste("Currently Selected:", input$map_pop_shape_click$id))
+      }
+    }
+  })
+  
+  output$tab1 <- DT::renderDataTable({
+    req(input$unit)
+    if (input$level == "State") {
+      result <- state_data()
+    } 
+    if (input$level == "County") {
+      result <- county_data()
+    }
+    print(result)
+    return(result)
+  })
+  
+  
+  # observeEvent(input$level, {
+  #   if (input$level == "State") {
+  #     plot_county()  # Calls the first set of observe/reactive/etc. for value1
+  #   } else if (input$level == "County") {
+  #     plot_state()  # Calls the second set of observe/reactive/etc. for value2
+  #   }
+  # })
+  
+  # plot_county <- function() {
+  
+  output$tab1 <- DT::renderDataTable({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      if(input$level == "State"){
+        head(county_data())
+      }
+      if(input$level == "County"){
+        head(state_data())
+      }
+      
+    }
+    
+  })
+  
+  output$test <- renderPrint({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      if(input$level == "State"){
+        names(county_data())
+      }
+      if(input$level == "County"){
+        names(county_data())
+      }
+    }
+  })
+  
+  output$norm <- renderPlot({
+    p1 <- ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
+      stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1)) + ylab("") +
+      scale_y_continuous(breaks = NULL)
+    return(p1)
+  })
+  
+  output$county_plot1 <- renderPlot({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      arg1 = paste0(tolower(input$crop), "_county_harvest_census_acres")
+      arg2 = paste0(tolower(input$crop), "_county_sales_census_dollar")
+      Data_harvest <- county_data() %>% 
+        select(YEAR, 
+               !!sym(arg1),
+               !!sym(arg2),
+        ) %>% 
+        group_by(YEAR) %>% 
+        summarise(census_acres = sum(!!sym(arg1), na.rm = T),
+                  sales_dollar = sum(!!sym(arg2), na.rm = T),
+        )
+      acresnum = max(Data_harvest$census_acres)
+      dollarnum = max(Data_harvest$sales_dollar)
+      scale = dollarnum/acresnum
+      
+      # Reshape data to long format
+      long_data <- Data_harvest %>%
+        pivot_longer(cols = c(census_acres, sales_dollar), 
+                     names_to = "Variable", 
+                     values_to = "Value")
+      
+      
+      ggplot(subset(Data_harvest, census_acres != 0 & sales_dollar != 0), aes(x = YEAR)) +
+        geom_line(aes(y = census_acres, color = "Census Acres")) + # First y-axis
+        geom_line(aes(y = sales_dollar / scale)) + # Second y-axis, scaled by factor
+        scale_y_continuous(
+          name = "Acres Harvested",
+          sec.axis = sec_axis(~.*scale, name = "Sales Dollar"),
+          limits = c(0, max(c(max(Data_harvest$census_acres), max(Data_harvest$sales_dollar / scale), na.rm = TRUE)))) +
+        labs(x = "Year", color = "Variable") +
+        theme_minimal()
+      
+    }
+  })
+  
+  output$county_plot2 <- renderPlot({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      arg1 = paste0(tolower(input$crop), "_county_harvest_census_acres")
+      arg2 = paste0(tolower(input$crop), "_county_production_census_bu")
+      Data_harvest <- county_data() %>% 
+        select(YEAR, 
+               !!sym(arg1),
+               !!sym(arg2),
+        ) %>% 
+        group_by(YEAR) %>% 
+        summarise(census_acres = sum(!!sym(arg1), na.rm = T),
+                  census_production = sum(!!sym(arg2), na.rm = T),
+        )
+      acresnum = max(Data_harvest$census_acres)
+      prodnum = max(Data_harvest$census_production)
+      scale = prodnum/acresnum
+      
+      # Reshape data to long format
+      long_data <- Data_harvest %>%
+        pivot_longer(cols = c(census_acres, census_production), 
+                     names_to = "Variable", 
+                     values_to = "Value")
+      
+      
+      ggplot(subset(Data_harvest, census_acres != 0 & census_production != 0), aes(x = YEAR)) +
+        geom_line(aes(y = census_acres, color = "Census Acres")) + # First y-axis
+        geom_line(aes(y = census_production / scale)) + # Second y-axis, scaled by factor
+        scale_y_continuous(
+          name = "Acres Harvested",
+          sec.axis = sec_axis(~.*scale, name = "Census Production"),
+          limits = c(0, max(c(max(Data_harvest$census_acres), max(Data_harvest$census_production / scale), na.rm = TRUE)))) +# Convert second y-axis back to original scale
+        labs(x = "Year", color = "Variable") +
+        theme_minimal()
+      
+    }
+  })
+  
+  output$state_plot1 <- renderPlot({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      arg1 = paste0(tolower(input$crop), "_state_harvest_census_acres")
+      arg2 = paste0(tolower(input$crop), "_state_production_census_bu")
+      Data_harvest <- state_data() %>% 
+        select(YEAR, 
+               !!sym(arg1),
+               !!sym(arg2),
+        ) %>% 
+        group_by(YEAR) %>% 
+        summarise(census_acres = log(sum(!!sym(arg1), na.rm = T)),
+                  census_production = log(sum(!!sym(arg2), na.rm = T)),
+        )
+      acresnum = max(Data_harvest$census_acres)
+      prodnum = max(Data_harvest$census_production)
+      scale = prodnum/acresnum
+      
+      # Reshape data to long format
+      long_data <- Data_harvest %>%
+        pivot_longer(cols = c(census_acres, census_production), 
+                     names_to = "Variable", 
+                     values_to = "Value")
+      
+      
+      
+      ggplot(subset(Data_harvest, census_acres > 0 & census_production > 0), aes(x = as.numeric(YEAR))) +
+        geom_line(aes(y = census_acres, color = "Census Acres")) + # First y-axis
+        geom_line(aes(y = census_production / scale)) + # Second y-axis, scaled by factor
+        scale_y_continuous(
+          name = "Log of Acres Harvested",
+          sec.axis = sec_axis(~.*scale, name = "Log of Census Production"),
+          limits = c(0, max(c(max(Data_harvest$census_acres), max(Data_harvest$census_production / scale), na.rm = TRUE)))) +# Convert second y-axis back to original scale
+        labs(x = "Year", color = "Variable") +
+        theme_minimal()
+      
+    }
+  })
+  
+  
+  output$county_plot4 <- renderPlot({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      
+      
+      Data_harvest <- county_data() %>% 
+        select(YEAR, 
+               "corn_county_harvest_census_acres",
+               "corn_county_production_census_bu",
+        ) %>% 
+        group_by(YEAR) %>% 
+        summarise(census_acres = sum(corn_county_harvest_census_acres, na.rm = T),
+                  census_production = sum(corn_county_production_census_bu, na.rm = T),
+        )
+      acresnum = max(Data_harvest$census_acres)
+      prodnum = max(Data_harvest$census_production)
+      scale = prodnum/acresnum
+      
+      # Reshape data to long format
+      long_data <- Data_harvest %>%
+        pivot_longer(cols = c(census_acres, census_production), 
+                     names_to = "Variable", 
+                     values_to = "Value")
+      
+      
+      ggplot(subset(Data_harvest, census_acres != 0 & census_production != 0), aes(x = YEAR)) +
+        geom_line(aes(y = census_acres, color = "Census Acres")) + # First y-axis
+        geom_line(aes(y = census_production / scale)) + # Second y-axis, scaled by factor
+        scale_y_continuous(
+          name = "Acres Harvested",
+          sec.axis = sec_axis(~.*scale, name = "Census Production"),
+          limits = c(0, max(c(max(Data_harvest$census_acres), max(Data_harvest$census_production / scale), na.rm = TRUE)))) +# Convert second y-axis back to original scale
+        labs(x = "Year", color = "Variable") +
+        theme_minimal()
+      
+    }
+  })
+  
+  
+  
+  output$plot_yield <- renderPlot({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      Data_yield <- county_data() %>% 
+        select(YEAR, "corn_county_yield_survey_bu_acre" ,
+               "corn_county_yield_survey_ton_acre",
+               "corn_county_yield_census_bu_acre",
+               "corn_county_yield_census_ton_acre") %>% 
+        group_by(YEAR) %>% 
+        summarise(survey_bu_acre = sum(corn_county_yield_survey_bu_acre, na.rm = T),
+                  survey_ton_acre = sum(corn_county_yield_survey_ton_acre, na.rm = T),
+                  census_bu_acre = sum(corn_county_yield_census_bu_acre, na.rm = T),
+                  census_ton_acre = sum(corn_county_yield_census_ton_acre, na.rm = T),)
+      
+      # Reshape data to long format
+      long_data <- Data_yield %>%
+        pivot_longer(cols = c(survey_bu_acre, survey_ton_acre, census_bu_acre, census_ton_acre), 
+                     names_to = "Variable", 
+                     values_to = "Value")
+      
+      # Create side-by-side bar graph
+      ggplot(long_data, aes(x = factor(YEAR), y = Value, fill = Variable)) +
+        geom_bar(stat = "identity", position = "dodge") +  # "dodge" places bars side by side
+        labs(title = paste0("Side-by-side bar graph of yield in ", county_data()$county_state),
+             x = "Year", 
+             y = "Yield") +
+        theme_minimal() +
+        scale_y_continuous(labels = scales::comma) +
+        scale_fill_brewer(palette = "Set2")
+      
+    }
+  })
+  
+  output$plot_sales <- renderPlot({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      Data_sales <- county_data() %>% 
+        select(YEAR, "corn_county_sales_census_operation",
+               "corn_county_sales_census_dollor") %>% 
+        group_by(YEAR) %>% 
+        summarise(census_operation = sum(corn_county_sales_census_operation, na.rm = T),
+                  census_dollar = sum(corn_county_sales_census_dollor, na.rm = T),)
+      
+      
+      print("DATA SALES")
+      print(Data_sales)
+      
+      # Reshape data to long format
+      long_data <- Data_sales %>%
+        pivot_longer(cols = c(census_operation, census_dollar), 
+                     names_to = "Variable", 
+                     values_to = "Value")
+      
+      # Create side-by-side bar graph
+      ggplot(long_data, aes(x = na.omit(as.factor(YEAR)), y = Value)) +
+        geom_bar(stat = "identity") +  # "dodge" places bars side by side
+        labs(title = paste0("Bar graph of sales (Census) in ", county_data()$county_state),
+             x = "Year", 
+             y = "Sales") +
+        theme_minimal() +
+        scale_y_continuous(labels = scales::comma) +
+        scale_fill_brewer(palette = "Set2")
+      
+    }
+  })
+  
+  output$plot_planted <- renderPlot({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      Data_planted <- county_data() %>% 
+        select(YEAR, "corn_county_planted_survey_acre" ,
+               "corn_county_planted_census_acre") %>% 
+        group_by(YEAR) %>% 
+        summarise(survey_acre = sum(corn_county_planted_survey_acre, na.rm = T),
+                  census_acre = sum(corn_county_planted_census_acre, na.rm = T),)
+      
+      # Reshape data to long format
+      long_data <- Data_planted %>%
+        pivot_longer(cols = c(survey_acre , census_acre), 
+                     names_to = "Variable", 
+                     values_to = "Value")
+      
+      # Create side-by-side bar graph
+      ggplot(long_data, aes(x = factor(YEAR), y = Value, fill = Variable)) +
+        geom_bar(stat = "identity", position = "dodge") +  # "dodge" places bars side by side
+        labs(title = paste0("Side-by-side bar graph of planted area in ", county_data()$county_state),
+             x = "Year", 
+             y = "Sales") +
+        theme_minimal() +
+        scale_y_continuous(labels = scales::comma) +
+        scale_fill_brewer(palette = "Set2")
+      
+    }
+  })
+  
+  output$plot_production <- renderPlot({
+    if(length(strsplit(as.character(req(input$unit)), ""))!=0){
+      Data_production <- county_data() %>% 
+        select(YEAR,
+               "corn_county_production_census_bu",
+               "corn_county_production_census_ton",
+               "corn_county_production_census_lb") %>% 
+        group_by(YEAR) %>% 
+        summarise(census_bu = sum(corn_county_production_census_bu, na.rm = T),
+                  census_ton = sum(corn_county_production_census_ton, na.rm = T),
+                  census_lb = sum(corn_county_production_census_lb, na.rm = T),)
+      
+      # Reshape data to long format
+      long_data <- Data_production %>%
+        pivot_longer(cols = c(census_bu, census_ton, census_lb), 
+                     names_to = "Variable", 
+                     values_to = "Value")
+      
+      # Create side-by-side bar graph
+      ggplot(long_data, aes(x = as.numeric(YEAR), y = Value, fill = Variable)) +
+        geom_bar(stat = "identity", position = "dodge") +  # "dodge" places bars side by side
+        labs(title = paste0("Side-by-side bar graph of production in ", county_data()$county_state),
+             x = "Year", 
+             y = "Production") +
+        theme_minimal() +
+        scale_y_continuous(labels = scales::comma) +
+        scale_fill_brewer(palette = "Set2")
+      
+    }
+  })
+  
+  # } # End plot_county bracket
+  # 
+  # plot_state <- function() {
+  #   
+  #   
+  #     
+  #       
+  #     }
+  #  
+  
+  
+  
+  
+  
+  
+  
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
