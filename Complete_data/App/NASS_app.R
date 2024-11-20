@@ -24,7 +24,7 @@ states_map2 <- states_geometry %>%
 #load("corn_county_survey.rda")
 load("corn_county.rda")
 
-# corn_county_survey <- corn_county_survey %>%
+#   corn_county_survey <- corn_county_survey %>%
 #   mutate(Production = rep(NA, nrow(corn_county_survey)))
 
 for(i in 4:dim(corn_county)[2]){
