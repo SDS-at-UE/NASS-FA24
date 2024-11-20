@@ -331,7 +331,7 @@ ui <- fluidPage(
                                                          step = 1,
                                                          ticks = FALSE,
                                                          width = '100%',
-                                                         animate = animationOptions(interval = 10000),
+                                                         animate = animationOptions(interval = 3000),
                                     ),
                                     br(),
                                     br(),
@@ -355,9 +355,12 @@ ui <- fluidPage(
                                     ),
                                     column(8,
                                            fluidRow(
-                                             column(12,
+                                             column(9,
                                                     plotOutput("boxplot")
-                                                    )
+                                                    ),
+                                             column(3,
+                                                    textOutput("zscore_box")
+                                             )
                                            ),
                                            fluidRow(
                                              column(6,
@@ -1080,6 +1083,14 @@ server <- function(input, output,session) {
     states <- unique(na.omit(data_condition()$STATE_NAME))
     paste("The following plots are available only for the following states:\n", 
           paste(states, collapse = ", "))
+  })
+  
+  output$zscore_box <- renderText({
+    if(length(strsplit(as.character(req(input$unit)), "")) != 0 & input$toggle_map == TRUE &
+       length(strsplit(as.character(req(input$var2)), "")) != 0)
+      paste("Z-standardization allows for comparison between data for different variables.
+    Z-scores represent the number of standard deviations the data point
+                                         is from the mean.")
   })
   
   

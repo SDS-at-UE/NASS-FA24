@@ -186,7 +186,7 @@ wide_data <- complete_data %>%
   ) %>% 
   arrange(YEAR)
 wide_data
-wide_data$`YIELD_BU PER ACRE` = ifelse(wide_data$PRODUCTION_BU == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_BU/wide_data$`AREA HARVESTED_ACRES`)
+wide_data$`YIELD_BU / ACRE` = ifelse(wide_data$PRODUCTION_BU == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_BU/wide_data$`AREA HARVESTED_ACRES`)
 
 # Create county_state column in the second data
 corn_county_geometry <- corn_county_geometry %>%
@@ -525,7 +525,7 @@ wide_data <- complete_data %>%
   ) %>% 
   arrange(YEAR)
 
-wide_data$`YIELD_BU PER ACRE` = ifelse(wide_data$PRODUCTION_BU == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_BU/wide_data$`AREA HARVESTED_ACRES`)
+wide_data$`YIELD_BU / ACRE` = ifelse(wide_data$PRODUCTION_BU == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_BU/wide_data$`AREA HARVESTED_ACRES`)
 
 # Create county_state column in the second data
 soybeans_county_geometry <- soybeans_county_geometry %>%
@@ -733,7 +733,7 @@ wide_data <- complete_data %>%
   ) %>% 
   arrange(YEAR)
 
-wide_data$`YIELD_BU PER ACRE` = ifelse(wide_data$PRODUCTION_CWT == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_CWT/wide_data$`AREA HARVESTED_ACRES`)
+wide_data$`YIELD_CWT / ACRE` = ifelse(wide_data$PRODUCTION_CWT == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_CWT/wide_data$`AREA HARVESTED_ACRES`)
 
 
 
@@ -937,7 +937,7 @@ wide_data <- complete_data %>%
   ) %>% 
   arrange(YEAR)
 
-wide_data$`YIELD_BU PER ACRE` = ifelse(wide_data$PRODUCTION_BU == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_BU/wide_data$`AREA HARVESTED_ACRES`)
+wide_data$`YIELD_BU / ACRE` = ifelse(wide_data$PRODUCTION_BU == 0 | wide_data$`AREA HARVESTED_ACRES` == 0, 0, wide_data$PRODUCTION_BU/wide_data$`AREA HARVESTED_ACRES`)
 
 # Create county_state column in the second data
 wheat_county_geometry <- wheat_county_geometry %>%
