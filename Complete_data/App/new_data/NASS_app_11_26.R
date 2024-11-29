@@ -30,84 +30,104 @@ sapply(list.of.packages, library, character.only = TRUE)
 
 #######################  Loading the data  #############################
 url_1 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_census_final.rda?raw=true"
-load(url(url_1))
-close(url(url_1))
+url_var = url(url_1)
+load(url_var)
+close(url_var)
 
 url_2 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_county_geometry.rda?raw=true"
-load(url(url_2))
-close(url(url_2))
+url_var = url(url_2)
+  load(url_var)
+close(url_var)
 
 url_3 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_state_geometry.rda?raw=true"
-load(url(url_3))
-close(url(url_3))
+url_var = url(url_3)
+  load(url_var)
+close(url_var)
 
 url_4 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_survey_final.rda?raw=true"
-load(url(url_4))
-close(url(url_4))
+url_var = url(url_4)
+  load(url_var)
+close(url_var)
 
 url_5 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_survey_week_final.rda?raw=true"
-load(url(url_5))
-close(url(url_5))
+url_var = url(url_5)
+  load(url_var)
+close(url_var)
 
 url_6 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_census_final.rda?raw=true"
-load(url(url_6))
-close(url(url_6))
+url_var = url(url_6)
+  load(url_var)
+close(url_var)
 
 url_7 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_county_geometry.rda?raw=true"
-load(url(url_7))
-close(url(url_7))
+url_var = url(url_7)
+  load(url_var)
+close(url_var)
 
 url_8 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_state_geometry.rda?raw=true"
-load(url(url_8))
-close(url(url_8))
+url_var = url(url_8)
+  load(url_var)
+close(url_var)
 
 url_9 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_survey_final.rda?raw=true"
-load(url(url_9))
-close(url(url_9))
+url_var = url(url_9)
+  load(url_var)
+close(url_var)
 
 url_10 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_survey_week_final.rda?raw=true"
-load(url(url_10))
-close(url(url_10))
+url_var = url(url_10)
+  load(url_var)
+close(url_var)
 
 url_11 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_census_final.rda?raw=true"
-load(url(url_11))
-close(url(url_11))
+url_var = url(url_11)
+  load(url_var)
+close(url_var)
 
 url_12 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_county_geometry.rda?raw=true"
-load(url(url_12))
-close(url(url_12))
+url_var = url(url_12)
+  load(url_var)
+close(url_var)
 
 url_13 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_state_geometry.rda?raw=true"
-load(url(url_13))
-close(url(url_13))
+url_var = url(url_13)
+  load(url_var)
+close(url_var)
 
 url_14 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_survey_final.rda?raw=true"
-load(url(url_14))
-close(url(url_14))
+url_var = url(url_14)
+  load(url_var)
+close(url_var)
 
 url_15 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_survey_week_final.rda?raw=true"
-load(url(url_15))
-close(url(url_15))
+url_var = url(url_15)
+  load(url_var)
+close(url_var)
 
 url_16 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_census_final.rda?raw=true"
-load(url(url_16))
-close(url(url_16))
+url_var = url(url_16)
+  load(url_var)
+close(url_var)
 
 url_17 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_county_geometry.rda?raw=true"
-load(url(url_17))
-close(url(url_17))
+url_var = url(url_17)
+  load(url_var)
+close(url_var)
 
 url_18 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_state_geometry.rda?raw=true"
-load(url(url_18))
-close(url(url_18))
+url_var = url(url_18)
+  load(url_var)
+close(url_var)
 
 url_19 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_survey_final.rda?raw=true"
-load(url(url_19))
-close(url(url_19))
+url_var = url(url_19)
+  load(url_var)
+close(url_var)
 
 url_20 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_survey_week_final.rda?raw=true"
-load(url(url_20))
-close(url(url_20))
+url_var = url(url_20)
+  load(url_var)
+close(url_var)
 
 #load("corn_survey_final1.rda")
 
@@ -292,7 +312,9 @@ ui <- fluidPage(
   
   fluidRow(
     # Adding the logo at the top using img tag
-    column(3, div(style="text-align: center;",img(src = "NASS.jpg", height = "30%", width = "30%")  )),
+    column(3, div(style="text-align: center;",a(href = "https://www.nass.usda.gov/", 
+                                                img(src = "NASS.jpg", height = "30%", width = "30%"))
+                                                )),
     #column(2, span(h5(img(src = "Logo_US_Forest.jpg", height = "30%", width = "30%")  ,"US Forest Service" ))),
     column(4, div(style = "font-size: 18px; color: black;",
                   "This page depicts the Crop data analysis for",
@@ -301,8 +323,11 @@ ui <- fluidPage(
                   br(),
                   strong("National Agricultural Statistics Service")
     )), 
-    column(3, br(), div(style="text-align: left;",img(src = "UE_logo.jpg", height = "70%", width = "70%"))),
-    column(2, div(style="text-align: top;",img(src = "new_stat_300.jpg", height = '100px', width = '190px')))
+    column(3, br(), div(style="text-align: left;",a(href = "https://www.nass.usda.gov/", 
+                                                    img(src = "UE_logo.jpg", height = "70%", width = "70%"))
+                                                    )),
+    column(2, div(style="text-align: top;",a(href = "https://www.nass.usda.gov/", 
+                                             img(src = "new_stat_300.jpg", height = "100px", width = "190px"))))
     #Stat300_2
   ),
   
@@ -339,10 +364,10 @@ ui <- fluidPage(
                                    HTML(
                                      "<br><b>States included in this analysis:</b>
                                       <ul style='margin: 0; padding-left: 20px;'>
-                                        <li style='color: black;'><b><span style='color: green;'>Corn:</span></b> Illinois, Indiana, Iowa, Kansas, Minnesota, Missouri, Nebraska, Ohio, South Dakota, Wisconsin, Michigan, Kentucky</li>
-                                        <li style='color: black;'><b><span style='color: green;'>Soybeans:</span></b> Arkansas, Illinois, Indiana, Iowa, Kansas, Minnesota, Missouri, Nebraska, North Dakota, Ohio, South Dakota, Michigan, Kentucky</li>
-                                        <li style='color: black;'><b><span style='color: green;'>Wheat:</span></b> Colorado, Illinois, Kansas, Missouri, Montana, Nebraska, Ohio, Oklahoma, Texas, Washington, Michigan, Kentucky, Indiana</li>
-                                        <li style='color: black;'><b><span style='color: green;'>Potatoes:</span></b> Idaho, Maine, Minnesota, North Dakota, Oregon, Washington, Wisconsin, Illinois, Missouri, Michigan, Kentucky, Indiana, Ohio</li>
+                                        <li style='color: rgb(78,53,36);'><b><span style='color: green;'>Corn:</span></b> Illinois, Indiana, Iowa, Kansas, Minnesota, Missouri, Nebraska, Ohio, South Dakota, Wisconsin, Michigan, Kentucky</li>
+                                        <li style='color: rgb(78,53,36);'><b><span style='color: green;'>Soybeans:</span></b> Arkansas, Illinois, Indiana, Iowa, Kansas, Minnesota, Missouri, Nebraska, North Dakota, Ohio, South Dakota, Michigan, Kentucky</li>
+                                        <li style='color: rgb(78,53,36);'><b><span style='color: green;'>Wheat:</span></b> Colorado, Illinois, Kansas, Missouri, Montana, Nebraska, Ohio, Oklahoma, Texas, Washington, Michigan, Kentucky, Indiana</li>
+                                        <li style='color: rgb(78,53,36);'><b><span style='color: green;'>Potatoes:</span></b> Idaho, Maine, Minnesota, North Dakota, Oregon, Washington, Wisconsin, Illinois, Missouri, Michigan, Kentucky, Indiana, Ohio</li>
                                       </ul>"
                                    ),
                                    style = "font-size: 15px; color: rgb(78,53,36); margin-top: 10px;"
@@ -362,17 +387,55 @@ ui <- fluidPage(
                         ),
                         
                       ),
+                      
+                      fluidRow(
+                        column(8,
+                               div(
+                                 div(
+                                   HTML(
+                                     "Put Some sort of title or sentence here talking about STAT 300, Data Analysis: Real World"
+                                   ),
+                                   tags$a(
+                                     href = "https://www.evansville.edu/majors/mathematics/changelab-research.cfm",
+                                     "University of Evansville Other Changelab Projects",
+                                     style = "text-decoration: underline; color: blue;"
+                                   ),
+                                   style = "font-size: 15px; color: rgb(78,53,36); margin-bottom: 0px;"
+                                 ),
+                                 div(
+                                   HTML(
+                                     "The goal of STAT 300: Talk about CISM, SDS, MATH"
+                                   ),
+                                   
+                                   HTML(
+                                     "<p>Sentence here, or any other information.</p>"
+                                     
+                                   ),
+                                   style = "font-size: 15px; color: rgb(78,53,36); margin-top: 10px;" # applies to everything within this div()
+                                 ),
+                                 
+                                 # Overall Styling for the Container
+                                 style = "display: flex; flex-direction: column; gap: 20px; line-height: 1.5;"
+                               )
+                        ),
+                        column(4, 
+                               div(
+                                 HTML("<p></p>")
+                               )
+                               )
+                      ),
+                      
+                      
                       hr(style = "margin-top: 5px; margin-bottom: 5px; border-width: 2px;; border-color: black;"),
                       
                       h3("Total and average yield (BU/ACRE) of the crops in the selected states:"),
                       fluidRow(
                         column(3,
-                               div(
-                                   style="text-align: center;",
+                               div(style="text-align: center;",
                                    img(src = "corn.jpg", 
-                                       height = '200px', 
-                                       width = '200px',
-                                       style = "display: block;")),
+                                       height = '300px',
+                                       width = '100%',
+                                       style = "object-fit: cover; display: block; max-height: 300px;")),
                                br(),
                                plotOutput("corn_plot"),
                                div(class = "scrollable-container",
@@ -380,17 +443,18 @@ ui <- fluidPage(
                                tags$style(HTML("
                                 #corn_intro table {  /* Target only the table inside 'corn_intro' */
                                   font-size: 10px;  /* Adjust font size */
+                                  text-align: center;
+                                  margin: 0 auto;
                                 }
                               "))
                                 
                         ),
                         column(3,
-                               div(
-                                   style="text-align: center;",
+                               div(style="text-align: center;",
                                    img(src = "soybeans.jpg", 
-                                       height = '200px', 
-                                       width = '200px',
-                                       style = "display: block;" )),
+                                       height = '300px',
+                                       width = '100%',
+                                       style = "object-fit: cover; display: block; max-height: 300px;" )),
                                
                                br(),
                                plotOutput("soybeans_plot"),
@@ -399,16 +463,17 @@ ui <- fluidPage(
                                tags$style(HTML("
                                 #soybeans_intro table {  /* Target only the table inside 'soybeans_intro' */
                                   font-size: 10px;  /* Adjust font size */
+                                  text-align: center;
+                                  margin: 0 auto;
                                 }
                               "))
                         ),
                         column(3,
-                               div(
-                                   style="text-align: center;",
+                               div(style="text-align: center;",
                                    img(src = "wheat.jpg", 
-                                       height = '200px', 
-                                       width = '200px',
-                                       style = "display: block;")),
+                                       height = '300px',
+                                       width = '100%',
+                                       style = "object-fit: cover; display: block; max-height: 300px;")),
                                
                                br(),
                                plotOutput("wheat_plot"),
@@ -417,16 +482,17 @@ ui <- fluidPage(
                                tags$style(HTML("
                                 #wheat_intro table {  /* Target only the table inside 'wheat_intro' */
                                   font-size: 10px;  /* Adjust font size */
+                                  text-align: center;
+                                  margin: 0 auto;
                                 }
                               "))
                         ),
                         column(3,
-                               div(
-                                   style="text-align: center;",
+                               div(style="text-align: center;",
                                    img(src = "potatoes.jpg", 
-                                       height = '200px', 
-                                       width = '200px',
-                                       style = "display: block;")),
+                                       height = '300px', 
+                                       width = '100%',
+                                       style = "object-fit: cover; display: block; max-height: 300px;")),
                                br(),
                                plotOutput("potatoes_plot"),
                                div(class = "scrollable-container",
@@ -434,6 +500,8 @@ ui <- fluidPage(
                                tags$style(HTML("
                                 #potatoes_intro table {  /* Target only the table inside 'potatoes_intro' */
                                   font-size: 10px;  /* Adjust font size */
+                                  text-align: center;
+                                  margin: 0 auto;
                                 }
                               "))
                                
@@ -455,25 +523,43 @@ ui <- fluidPage(
                           wellPanel(
                             helpText(
                               HTML(
-                                "<b style='font-family: \"Arial Black\", Gadget, sans-serif;'>Special thanks</b> to NASS employees who helped us in this project:<br>
-                                 <table style='width: 100%; font-size: 12px; color: rgb(76, 38, 131); font-family: Arial, sans-serif; border-collapse: collapse;'>
+                                "<b style='font-family: \"Arial Black\", Gadget, sans-serif;'>Special thanks</b> to NASS employees who helped us in this project:<br /><br />"
+                              ),
+                              column(2),
+                              column(2,
+                                     HTML(
+                                       "<table style='width: 100%; font-size: 12px; color: rgb(76, 38, 131); font-family: Arial, sans-serif; border-collapse: collapse;'>
+                                 <tr>
+                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Virginia Harris,</td>
+                                 </tr>
+                                 <tr>
+                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Nathanial Warenski,</td>
+                                 </tr>
+                                 <tr>
+                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Brad Summa,</td>
+                                 </tr>
+                                 <tr>
+                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Chris Hawthorn,</td>
+                                 </tr>
+                                 </table>"),
+                              ),
+                              column(8, 
+                                     HTML(
+                                       "<table style='width: 100%; font-size: 12px; color: rgb(76, 38, 131); font-family: Arial, sans-serif; border-collapse: collapse;'>
                                    <tr>
-                                     <td style='font-weight: bold; text-align: center; padding: 0px;'>Virginia Harris,</td>
-                                     <td style='padding: 2px;'>Economic, Environmental and Demographic Section, Statistics Division</td>
+                                   <td style='padding: 2px;'>Economic, Environmental and Demographic Section, Statistics Division</td>
                                    </tr>
                                    <tr>
-                                     <td style='font-weight: bold; text-align: center; padding: 0px;'>Nathanial Warenski,</td>
-                                     <td style='padding: 2px;'>Indiana State Statistician</td>
+                                   <td style='padding: 2px;'>Indiana State Statistician</td>
                                    </tr>
                                    <tr>
-                                     <td style='font-weight: bold; text-align: center; padding: 0px;'>Brad Summa,</td>
-                                     <td style='padding: 2px;'>Director, Heartland Regional Field Office</td>
+                                   <td style='padding: 2px;'>Director, Heartland Regional Field Office</td>
                                    </tr>
                                    <tr>
-                                     <td style='font-weight: bold; text-align: center; padding: 0px;'>Chris Hawthorn,</td>
-                                     <td style='padding: 2px;'>Acting Head, Field Crops Section</td>
+                                   <td style='padding: 2px;'>Acting Head, Field Crops Section</td>
                                    </tr>
-                                 </table>"
+                                   </table><br />"
+                                     )
                               )
                             ),
                             br(),
@@ -487,7 +573,6 @@ ui <- fluidPage(
                             )
                           )
                         )
-                        
                         
                         
                         ),
