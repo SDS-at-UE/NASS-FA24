@@ -31,63 +31,83 @@ sapply(list.of.packages, library, character.only = TRUE)
 #######################  Loading the data  #############################
 url_1 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_census_final.rda?raw=true"
 load(url(url_1))
+close(url(url_1))
 
 url_2 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_county_geometry.rda?raw=true"
 load(url(url_2))
+close(url(url_2))
 
 url_3 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_state_geometry.rda?raw=true"
 load(url(url_3))
+close(url(url_3))
 
 url_4 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_survey_final.rda?raw=true"
 load(url(url_4))
+close(url(url_4))
 
 url_5 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_survey_week_final.rda?raw=true"
 load(url(url_5))
+close(url(url_5))
 
 url_6 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_census_final.rda?raw=true"
 load(url(url_6))
+close(url(url_6))
 
 url_7 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_county_geometry.rda?raw=true"
 load(url(url_7))
+close(url(url_7))
 
 url_8 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_state_geometry.rda?raw=true"
 load(url(url_8))
+close(url(url_8))
 
 url_9 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_survey_final.rda?raw=true"
 load(url(url_9))
+close(url(url_9))
 
 url_10 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_survey_week_final.rda?raw=true"
 load(url(url_10))
+close(url(url_10))
 
 url_11 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_census_final.rda?raw=true"
 load(url(url_11))
+close(url(url_11))
 
 url_12 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_county_geometry.rda?raw=true"
 load(url(url_12))
+close(url(url_12))
 
 url_13 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_state_geometry.rda?raw=true"
 load(url(url_13))
+close(url(url_13))
 
 url_14 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_survey_final.rda?raw=true"
 load(url(url_14))
+close(url(url_14))
 
 url_15 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_survey_week_final.rda?raw=true"
 load(url(url_15))
+close(url(url_15))
 
 url_16 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_census_final.rda?raw=true"
 load(url(url_16))
+close(url(url_16))
 
 url_17 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_county_geometry.rda?raw=true"
 load(url(url_17))
+close(url(url_17))
 
 url_18 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_state_geometry.rda?raw=true"
 load(url(url_18))
+close(url(url_18))
 
 url_19 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_survey_final.rda?raw=true"
 load(url(url_19))
+close(url(url_19))
 
 url_20 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_survey_week_final.rda?raw=true"
 load(url(url_20))
+close(url(url_20))
 
 #load("corn_survey_final1.rda")
 
@@ -304,7 +324,7 @@ ui <- fluidPage(
                                      "Click here!",
                                      style = "text-decoration: underline; color: blue;"
                                    ),
-                                   style = "font-size: 15px; color: rgb(246, 139, 31); margin-bottom: 0px;"
+                                   style = "font-size: 15px; color: rgb(78,53,36); margin-bottom: 0px;"
                                  ),
                                  div(
                                    HTML(
@@ -319,13 +339,13 @@ ui <- fluidPage(
                                    HTML(
                                      "<br><b>States included in this analysis:</b>
                                       <ul style='margin: 0; padding-left: 20px;'>
-                                        <li><b><span style='color: green;'>Corn:</span></b> Illinois, Indiana, Iowa, Kansas, Minnesota, Missouri, Nebraska, Ohio, South Dakota, Wisconsin, Michigan, Kentucky</li>
-                                        <li><b><span style='color: green;'>Soybeans:</span></b> Arkansas, Illinois, Indiana, Iowa, Kansas, Minnesota, Missouri, Nebraska, North Dakota, Ohio, South Dakota, Michigan, Kentucky</li>
-                                        <li><b><span style='color: green;'>Wheat:</span></b> Colorado, Illinois, Kansas, Missouri, Montana, Nebraska, Ohio, Oklahoma, Texas, Washington, Michigan, Kentucky, Indiana</li>
-                                        <li><b><span style='color: green;'>Potatoes:</span></b> Idaho, Maine, Minnesota, North Dakota, Oregon, Washington, Wisconsin, Illinois, Missouri, Michigan, Kentucky, Indiana, Ohio</li>
+                                        <li style='color: black;'><b><span style='color: green;'>Corn:</span></b> Illinois, Indiana, Iowa, Kansas, Minnesota, Missouri, Nebraska, Ohio, South Dakota, Wisconsin, Michigan, Kentucky</li>
+                                        <li style='color: black;'><b><span style='color: green;'>Soybeans:</span></b> Arkansas, Illinois, Indiana, Iowa, Kansas, Minnesota, Missouri, Nebraska, North Dakota, Ohio, South Dakota, Michigan, Kentucky</li>
+                                        <li style='color: black;'><b><span style='color: green;'>Wheat:</span></b> Colorado, Illinois, Kansas, Missouri, Montana, Nebraska, Ohio, Oklahoma, Texas, Washington, Michigan, Kentucky, Indiana</li>
+                                        <li style='color: black;'><b><span style='color: green;'>Potatoes:</span></b> Idaho, Maine, Minnesota, North Dakota, Oregon, Washington, Wisconsin, Illinois, Missouri, Michigan, Kentucky, Indiana, Ohio</li>
                                       </ul>"
                                    ),
-                                   style = "font-size: 15px; color: rgb(246, 139, 31); margin-top: 10px;"
+                                   style = "font-size: 15px; color: rgb(78,53,36); margin-top: 10px;"
                                  ),
 
                                  # Overall Styling for the Container
@@ -347,14 +367,16 @@ ui <- fluidPage(
                       h3("Total and average yield (BU/ACRE) of the crops in the selected states:"),
                       fluidRow(
                         column(3,
-                               div(style="text-align: center;",
+                               div(
+                                   style="text-align: center;",
                                    img(src = "corn.jpg", 
                                        height = '200px', 
                                        width = '200px',
                                        style = "display: block;")),
                                br(),
                                plotOutput("corn_plot"),
-                               tableOutput("corn_intro"),
+                               div(class = "scrollable-container",
+                                   tableOutput("corn_intro")),
                                tags$style(HTML("
                                 #corn_intro table {  /* Target only the table inside 'corn_intro' */
                                   font-size: 10px;  /* Adjust font size */
@@ -363,7 +385,8 @@ ui <- fluidPage(
                                 
                         ),
                         column(3,
-                               div(style="text-align: center;",
+                               div(
+                                   style="text-align: center;",
                                    img(src = "soybeans.jpg", 
                                        height = '200px', 
                                        width = '200px',
@@ -371,7 +394,8 @@ ui <- fluidPage(
                                
                                br(),
                                plotOutput("soybeans_plot"),
-                               tableOutput("soybeans_intro"),
+                               div(class = "scrollable-container",
+                                   tableOutput("soybeans_intro")),
                                tags$style(HTML("
                                 #soybeans_intro table {  /* Target only the table inside 'soybeans_intro' */
                                   font-size: 10px;  /* Adjust font size */
@@ -379,7 +403,8 @@ ui <- fluidPage(
                               "))
                         ),
                         column(3,
-                               div(style="text-align: center;",
+                               div(
+                                   style="text-align: center;",
                                    img(src = "wheat.jpg", 
                                        height = '200px', 
                                        width = '200px',
@@ -387,7 +412,8 @@ ui <- fluidPage(
                                
                                br(),
                                plotOutput("wheat_plot"),
-                               tableOutput("wheat_intro"),
+                               div(class = "scrollable-container",
+                                   tableOutput("wheat_intro")),
                                tags$style(HTML("
                                 #wheat_intro table {  /* Target only the table inside 'wheat_intro' */
                                   font-size: 10px;  /* Adjust font size */
@@ -395,14 +421,16 @@ ui <- fluidPage(
                               "))
                         ),
                         column(3,
-                               div(style="text-align: center;",
+                               div(
+                                   style="text-align: center;",
                                    img(src = "potatoes.jpg", 
                                        height = '200px', 
                                        width = '200px',
                                        style = "display: block;")),
                                br(),
                                plotOutput("potatoes_plot"),
-                               tableOutput("potatoes_intro"),
+                               div(class = "scrollable-container",
+                                   tableOutput("potatoes_intro")),
                                tags$style(HTML("
                                 #potatoes_intro table {  /* Target only the table inside 'potatoes_intro' */
                                   font-size: 10px;  /* Adjust font size */
@@ -411,6 +439,13 @@ ui <- fluidPage(
                                
                         ),
                       ),
+                      tags$style(HTML("
+                        .scrollable-container {
+                          height: 300px;  /* Set a fixed height */
+                          overflow-y: auto;  /* Enable vertical scrolling */
+                          overflow-x: hidden;  /* Prevent horizontal scrolling */
+                        }
+                      ")),
                       br(),
                       
                       fluidRow(
@@ -443,7 +478,7 @@ ui <- fluidPage(
                             ),
                             br(),
                             HTML(
-                              'This app was developed by Andrew Thompson, Ethan John, Josephine Pagano, Abigal Jahn, and Max Hansmann, students at the 
+                              'This app was developed by Andrew Thompson, Ethan John, Abbie Jahn, Josie Pagano, and Max Hansmann, students at the 
                                 <a href="https://www.evansville.edu/">University of Evansville</a>, led by Dr. Omid Khormali.'
                             ),
                             br(),
