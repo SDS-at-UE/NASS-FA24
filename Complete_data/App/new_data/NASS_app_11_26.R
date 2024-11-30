@@ -695,21 +695,7 @@ ui <- fluidPage(
                                       #   solidHeader = TRUE,
                                       #   collapsible = TRUE,
                                       #   width = NULL,
-                                        h4("Explanation of the following box Plot"),
-                                        p("In this plot, the values of the variables are scaled using a 
-                                          statistical method called z-scores. This means that instead of 
-                                          showing the raw values (e.g., yield, production), the values are 
-                                          adjusted to show how far they are from the average (mean) 
-                                          value for each variable. The y-axis represents standard deviations:"),
-                                        tags$ul(
-                                          tags$li("A value of 0 means the data point is equal to the average."),
-                                          tags$li("Positive values (e.g., +2) mean the data point is above the average."),
-                                          tags$li("Negative values (e.g., -2) mean the data point is below the average.")
-                                        ),
-                                        p("This scaling allows us to compare variables with different units 
-                                          (e.g., bushels, acres) on the same scale, making it easier to 
-                                          identify patterns and trends."),
-                                        
+                                        uiOutput("boxplot_explanation"),
                                         # Boxplot Output
                                         plotOutput("boxplot")
                                       #)
@@ -1743,6 +1729,31 @@ server <- function(input, output,session) {
 
   }, striped = TRUE, hover = TRUE, bordered = TRUE, sanitize.text.function = identity,
   table.attr = 'style="font-size:9px; width:50%;"')
+  
+  
+  output$boxplot_explanation <- renderUI({
+    if (length(strsplit(as.character(req(input$unit)), "")) != 0 && 
+        input$toggle_map == TRUE && 
+        length(strsplit(as.character(req(input$var2)), "")) != 0) {
+      
+      tagList(
+        h4("Explanation of the following box Plot"),
+        p("In this plot, the values of the variables are scaled using a 
+        statistical method called z-scores. This means that instead of 
+        showing the raw values (e.g., yield, production), the values are 
+        adjusted to show how far they are from the average (mean) 
+        value for each variable. The y-axis represents standard deviations:"),
+        tags$ul(
+          tags$li("A value of 0 means the data point is equal to the average."),
+          tags$li("Positive values (e.g., +2) mean the data point is above the average."),
+          tags$li("Negative values (e.g., -2) mean the data point is below the average.")
+        ),
+        p("This scaling allows us to compare variables with different units 
+        (e.g., bushels, acres) on the same scale, making it easier to 
+        identify patterns and trends.")
+      )
+    }
+  })
   
   
   output$boxplot <- renderPlot({

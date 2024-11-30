@@ -232,6 +232,7 @@ corn_survey2 <- data.frame(corn_survey, county_state = paste0(str_to_title(corn_
   group_by(YEAR, STATISTICCAT_DESC,UNIT_DESC, STATE_NAME) %>% 
   summarise(sum_value = sum(VALUE, na.rm = TRUE))
 
+corn_survey2 <- filter(corn_survey2, !(STATISTICCAT_DESC %in% c("EAR COUNT", "ROW WIDTH", "SAMPLES")))
 
 complete_data <- corn_survey2 %>%
   ungroup() %>%
@@ -581,6 +582,8 @@ soybeans_survey2 <- data.frame(soybeans_survey, county_state = paste0(str_to_tit
   group_by(YEAR, STATISTICCAT_DESC,UNIT_DESC, STATE_NAME) %>% 
   summarise(sum_value = sum(VALUE, na.rm = TRUE))
 
+soybeans_survey2 <- filter(soybeans_survey2, !(STATISTICCAT_DESC %in% c("POD COUNT", "ROW WIDTH", "SAMPLES")))
+
 complete_data <- soybeans_survey2 %>%
   ungroup() %>%
   complete(STATE_NAME, YEAR, STATISTICCAT_DESC, UNIT_DESC, fill = list(sum_value = 0))
@@ -798,6 +801,8 @@ potatoes_survey2 <- data.frame(potatoes_survey, county_state = paste0(str_to_tit
   group_by(YEAR, STATISTICCAT_DESC,UNIT_DESC, STATE_NAME) %>% 
   summarise(sum_value = sum(VALUE, na.rm = TRUE))
 
+potatoes_survey2 <- filter(potatoes_survey2, !(STATISTICCAT_DESC %in% c("LOSS", "SAMPLES", "SALES", "SHRINK")))
+
 complete_data <- potatoes_survey2 %>%
   ungroup() %>%
   complete(STATE_NAME, YEAR, STATISTICCAT_DESC, UNIT_DESC, fill = list(sum_value = 0))
@@ -1012,6 +1017,7 @@ wheat_survey2 <- data.frame(wheat_survey, county_state = paste0(str_to_title(whe
   group_by(YEAR, STATISTICCAT_DESC,UNIT_DESC, STATE_NAME) %>% 
   summarise(sum_value = sum(VALUE, na.rm = TRUE))
 
+wheat_survey2 <- filter(wheat_survey2, !(STATISTICCAT_DESC %in% c("AREA PLANTED, NET", "HEAD COUNT")))
 
 complete_data <- wheat_survey2 %>%
   ungroup() %>%
