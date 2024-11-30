@@ -1991,10 +1991,21 @@ server <- function(input, output,session) {
         ungroup() %>% 
         dplyr::select(REFERENCE_PERIOD_DESC, STATE_NAME, Year, Week_Num, good_excellent) %>% 
         filter(STATE_NAME == name, 
-               Year %in% c((year-4):year)) %>% 
+               Year %in% c((year-5):year)) %>% 
         arrange(STATE_NAME, Week_Num)
       
+     
+      if(input$crop == "Wheat"){
+        
+        df1 <- df1 %>%
+          mutate(Year = ifelse(df1$Week_Num >= 35, Year+1, Year)) %>% 
+          mutate(adjusted_week = ifelse(Week_Num >= 35, Week_Num - 34, Week_Num + 18))
+        df1$Week_Num = df1$adjusted_week
+        df1 <- df1 %>% 
+          filter(Year != max(Year, na.rm = TRUE) & Year != min(Year, na.rm = TRUE))
+      }
       df1$Year <- as.factor(df1$Year) 
+      
       
       # Get the last point with non-NA values for each year to add the label at the end of the line
       df_last <- df1 %>%
@@ -2004,7 +2015,7 @@ server <- function(input, output,session) {
       
       # plot
       ggplot(data = df1, 
-             aes(x = Week_Num, y = good_excellent, color = Year, group = Year)) +
+             aes(x = Week_Num, y = good_excellent, color = factor(Year), group = Year)) +
         geom_line() +  # Add lines for each year
         geom_point() +  # Add points for better visualization, but it can be removed
         # Add year label at the end of each line for every year
@@ -2023,7 +2034,8 @@ server <- function(input, output,session) {
           #axis.text.x = element_text(angle = 45, hjust = 1),
           legend.position = "none"  # Remove legend since we’re adding labels
         ) +
-        scale_x_continuous(expand = expansion(mult = c(0.05, 0.1)))  # Add extra space on x-axis for labels
+        scale_x_continuous(expand = expansion(mult = c(0.05, 0.1))) +  # Add extra space on x-axis for labels
+        scale_x_continuous(breaks = c(35:52, 1:34))
   
       
     }
