@@ -2025,7 +2025,7 @@ server <- function(input, output,session) {
                   size = 4) +    # Size of the text
         labs(
           title = "Good Excellent Values of the crop by Week for selected state",
-          x = "Week Number",
+          x = "Week Number (Wheat Adjusted to Begin Week 35)",
           y = "Good Excellent",
           color = "Year"
         ) +
@@ -2034,8 +2034,7 @@ server <- function(input, output,session) {
           #axis.text.x = element_text(angle = 45, hjust = 1),
           legend.position = "none"  # Remove legend since we’re adding labels
         ) +
-        scale_x_continuous(expand = expansion(mult = c(0.05, 0.1))) +  # Add extra space on x-axis for labels
-        scale_x_continuous(breaks = c(35:52, 1:34))
+        scale_x_continuous(expand = expansion(mult = c(0.05, 0.1)))  # Add extra space on x-axis for labels
   
       
     }
@@ -2061,7 +2060,7 @@ server <- function(input, output,session) {
           `CONDITION_PCT VERY POOR`
         ) %>% 
         filter(STATE_NAME == name, 
-               Year == year) %>% 
+               Year %in% c(year, year - 1)) %>% 
         arrange(STATE_NAME, Week_Num)
       
       # Calculate cumulative values
@@ -2073,6 +2072,18 @@ server <- function(input, output,session) {
           `CUMULATIVE GOOD` = `CUMULATIVE FAIR` + `CONDITION_PCT GOOD`,
           `CUMULATIVE EXCELLENT` = `CUMULATIVE GOOD` + `CONDITION_PCT EXCELLENT`
         )
+      
+      if(input$crop == "Wheat"){
+        
+        df2 <- df2 %>%
+          mutate(Year = ifelse(df2$Week_Num >= 35, Year+1, Year)) %>% 
+          mutate(adjusted_week = ifelse(Week_Num >= 35, Week_Num - 34, Week_Num + 18))
+        df2$Week_Num = df2$adjusted_week
+        df2 <- df2 %>% 
+          filter(Year != max(Year, na.rm = TRUE) & Year != min(Year, na.rm = TRUE))
+      }
+      df2 <- df2 %>% 
+        filter(Year == max(Year))
       
       
       ggplot(data = df2) +
@@ -2086,7 +2097,7 @@ server <- function(input, output,session) {
           breaks = c("EXCELLENT", "GOOD", "FAIR", "POOR", "VERY POOR")  # Correct order for the legend
         ) +
         labs(
-          x = "Week Number",
+          x = "Week Number (Wheat Adjusted to Begin Week 35)",
           y = "Cumulative Percentage",
           fill = "Condition",
           title = "Cumulative Crop Condition by Week in the selected state and year"
@@ -2113,9 +2124,21 @@ server <- function(input, output,session) {
       df3 <- df3 %>% 
         ungroup() %>% 
         filter(STATE_NAME == name, 
-               Year == input$dates) %>% 
+               Year %in% c(year, year-1)) %>% 
         arrange(STATE_NAME, Week_Num)
       
+      if(input$crop == "Wheat"){
+        
+        df3 <- df3 %>%
+          mutate(Year = ifelse(df3$Week_Num >= 35, Year+1, Year)) %>% 
+          mutate(adjusted_week = ifelse(Week_Num >= 35, Week_Num - 34, Week_Num + 18))
+        df3$Week_Num = df3$adjusted_week
+        df3 <- df3 %>% 
+          filter(Year != max(Year, na.rm = TRUE) & Year != min(Year, na.rm = TRUE))
+      }
+      
+      df3 <- df3 %>% 
+        filter(Year == max(Year))
       
       df3_long <- df3 %>%
         pivot_longer(
@@ -2151,7 +2174,7 @@ server <- function(input, output,session) {
         ) +
         labs(
           title = "Progress of Crop by Category Over Weeks",
-          x = "Week Number",
+          x = "Week Number (Wheat Adjusted to Begin Week 35)",
           y = "Percentage",
           color = "Category",
           linetype = "Legend"
