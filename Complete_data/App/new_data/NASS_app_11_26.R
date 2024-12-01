@@ -29,102 +29,102 @@ sapply(list.of.packages, library, character.only = TRUE)
 #setwd("C:\\Users\\o_kho\\OneDrive - University of Evansville\\2024_Fall\\Stat300\\NASS\\Data\\Final_data\\")
 
 #######################  Loading the data  #############################
-url_1 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_census_final.rda?raw=true"
+url_1 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/corn_census_final.rda?raw=true"
 url_var = url(url_1)
 load(url_var)
 close(url_var)
 
-url_2 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_county_geometry.rda?raw=true"
+url_2 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/corn_county_geometry.rda?raw=true"
 url_var = url(url_2)
   load(url_var)
 close(url_var)
 
-url_3 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_state_geometry.rda?raw=true"
+url_3 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/corn_state_geometry.rda?raw=true"
 url_var = url(url_3)
   load(url_var)
 close(url_var)
 
-url_4 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_survey_final.rda?raw=true"
+url_4 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/corn_survey_final.rda?raw=true"
 url_var = url(url_4)
   load(url_var)
 close(url_var)
 
-url_5 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_survey_week_final.rda?raw=true"
+url_5 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/corn_survey_week_final.rda?raw=true"
 url_var = url(url_5)
   load(url_var)
 close(url_var)
 
-url_6 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_census_final.rda?raw=true"
+url_6 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/potatoes_census_final.rda?raw=true"
 url_var = url(url_6)
   load(url_var)
 close(url_var)
 
-url_7 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_county_geometry.rda?raw=true"
+url_7 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/potatoes_county_geometry.rda?raw=true"
 url_var = url(url_7)
   load(url_var)
 close(url_var)
 
-url_8 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_state_geometry.rda?raw=true"
+url_8 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/potatoes_state_geometry.rda?raw=true"
 url_var = url(url_8)
   load(url_var)
 close(url_var)
 
-url_9 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_survey_final.rda?raw=true"
+url_9 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/potatoes_survey_final.rda?raw=true"
 url_var = url(url_9)
   load(url_var)
 close(url_var)
 
-url_10 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_survey_week_final.rda?raw=true"
+url_10 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/potatoes_survey_week_final.rda?raw=true"
 url_var = url(url_10)
   load(url_var)
 close(url_var)
 
-url_11 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_census_final.rda?raw=true"
+url_11 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/soybeans_census_final.rda?raw=true"
 url_var = url(url_11)
   load(url_var)
 close(url_var)
 
-url_12 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_county_geometry.rda?raw=true"
+url_12 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/soybeans_county_geometry.rda?raw=true"
 url_var = url(url_12)
   load(url_var)
 close(url_var)
 
-url_13 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_state_geometry.rda?raw=true"
+url_13 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/soybeans_state_geometry.rda?raw=true"
 url_var = url(url_13)
   load(url_var)
 close(url_var)
 
-url_14 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_survey_final.rda?raw=true"
+url_14 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/soybeans_survey_final.rda?raw=true"
 url_var = url(url_14)
   load(url_var)
 close(url_var)
 
-url_15 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_survey_week_final.rda?raw=true"
+url_15 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/soybeans_survey_week_final.rda?raw=true"
 url_var = url(url_15)
   load(url_var)
 close(url_var)
 
-url_16 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_census_final.rda?raw=true"
+url_16 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/wheat_census_final.rda?raw=true"
 url_var = url(url_16)
   load(url_var)
 close(url_var)
 
-url_17 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_county_geometry.rda?raw=true"
+url_17 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/wheat_county_geometry.rda?raw=true"
 url_var = url(url_17)
   load(url_var)
 close(url_var)
 
-url_18 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_state_geometry.rda?raw=true"
+url_18 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/wheat_state_geometry.rda?raw=true"
 url_var = url(url_18)
   load(url_var)
 close(url_var)
 
-url_19 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_survey_final.rda?raw=true"
+url_19 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/wheat_survey_final.rda?raw=true"
 url_var = url(url_19)
   load(url_var)
 close(url_var)
 
-url_20 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_survey_week_final.rda?raw=true"
+url_20 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/wheat_survey_week_final.rda?raw=true"
 url_var = url(url_20)
   load(url_var)
 close(url_var)
