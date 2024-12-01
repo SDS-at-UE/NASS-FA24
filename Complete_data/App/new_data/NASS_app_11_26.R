@@ -323,10 +323,10 @@ ui <- fluidPage(
                   br(),
                   strong("National Agricultural Statistics Service")
     )), 
-    column(3, br(), div(style="text-align: left;",a(href = "https://www.nass.usda.gov/", 
+    column(3, br(), div(style="text-align: left;",a(href = "https://www.evansville.edu/index.cfm", 
                                                     img(src = "UE_logo.jpg", height = "70%", width = "70%"))
                                                     )),
-    column(2, div(style="text-align: top;",a(href = "https://www.nass.usda.gov/", 
+    column(2, div(style="text-align: top;",a(href = "https://www.evansville.edu/majors/mathematics/changelab-research.cfm", 
                                              img(src = "new_stat_300.jpg", height = "100px", width = "190px"))))
     #Stat300_2
   ),
@@ -336,17 +336,17 @@ ui <- fluidPage(
                 title = "Agriculture Data Analysis Portal",
              tabPanel('Introduction',
                       fluidRow(
-                        column(9,  # Adjusted width to span both columns
+                        column(7,  # Adjusted width to span both columns
                                div(
                                  # First Section: General Information
                                  div(
                                    HTML(
                                      "The data analysis for the crop dataset was conducted during the fall semester of 2024.
-      The dataset was obtained from the NASS website:"
+      The dataset was obtained from "
                                    ),
                                    tags$a(
                                      href = "https://www.nass.usda.gov/datasets/",
-                                     "Click here!",
+                                     "the NASS website.",
                                      style = "text-decoration: underline; color: blue;"
                                    ),
                                    style = "font-size: 15px; color: rgb(78,53,36); margin-bottom: 0px;"
@@ -354,11 +354,11 @@ ui <- fluidPage(
                                  div(
                                    HTML(
                                      "The states included in this analysis are part of the Objective Yield (OY) program.
-                                        For more information, visit the official page:"
+                                        For more information, visit "
                                    ),
                                    tags$a(
                                      href = "https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Objective_Yield/index.php",
-                                     "Click here!",
+                                     "the official page.",
                                      style = "text-decoration: underline; color: blue;"
                                    ),
                                    HTML(
@@ -375,41 +375,26 @@ ui <- fluidPage(
 
                                  # Overall Styling for the Container
                                  style = "display: flex; flex-direction: column; gap: 20px; line-height: 1.5;"
-                               )
-                                   
-                        ),
-                        column(3,
-                               div(style="text-align: right;",
-                                   img(src = "agriculture.jpg", 
-                                       height = '250px', 
-                                       width = '240px',
-                                       style = "float: right;"))
-                        ),
-                        
-                      ),
-                      
-                      fluidRow(
-                        column(8,
+                               ),
                                div(
                                  div(
                                    HTML(
-                                     "Put Some sort of title or sentence here talking about STAT 300, Data Analysis: Real World"
+                                     "<br /><b>Our Project with NASS: Making Data Accessible Through Visualization</b><br />"
                                    ),
-                                   tags$a(
-                                     href = "https://www.evansville.edu/majors/mathematics/changelab-research.cfm",
-                                     "University of Evansville Other Changelab Projects",
-                                     style = "text-decoration: underline; color: blue;"
+                                   HTML(
+                                     "As a team of dedicated students from the STAT 300: Data Analysis in the Real World course at the University of Evansville, we are pleased to present our experimental visualization project in collaboration with the USDA's National Agricultural Statistics Service (NASS). 
+                                     This valuable experience provided the opportunity to apply our skills to a substantial challenge with a focus on making national agricultural data accessible for farmers, businesses, and others who may benefit from this accessibility.<br /> 
+                                      Our central objective was to develop impactful data visualizations that effectively convey critical insights to a wider audience. Utilizing advanced software and programming like R, RStudio, Shiny, Leaflet, and more, we transformed vast complex datasets into graphics designed to simplify comprehension and emphasize locational and timeline trends.<br />
+This project has marked a crucial milestone in our educational journey, solidifying the necessity of data visualization in making analytical information accessible and relevant. We are eager to share our findings and aim to foster a deeper appreciation for the data that informs and drives U.S. agriculture."
                                    ),
                                    style = "font-size: 15px; color: rgb(78,53,36); margin-bottom: 0px;"
                                  ),
                                  div(
-                                   HTML(
-                                     "The goal of STAT 300: Talk about CISM, SDS, MATH"
-                                   ),
                                    
-                                   HTML(
-                                     "<p>Sentence here, or any other information.</p>"
-                                     
+                                   tags$a(
+                                     href = "https://www.evansville.edu/majors/mathematics/changelab-research.cfm",
+                                     "Other Changelab Projects from the University of Evansville",
+                                     style = "text-decoration: underline; color: blue;"
                                    ),
                                    style = "font-size: 15px; color: rgb(78,53,36); margin-top: 10px;" # applies to everything within this div()
                                  ),
@@ -417,13 +402,19 @@ ui <- fluidPage(
                                  # Overall Styling for the Container
                                  style = "display: flex; flex-direction: column; gap: 20px; line-height: 1.5;"
                                )
+                                   
                         ),
-                        column(4, 
-                               div(
-                                 HTML("<p></p>")
-                               )
-                               )
+                        column(5,
+                               div(style="text-align: right;",
+                                   img(src = "agriculture.jpg", 
+                                       height = 'auto', 
+                                       width = '100%',
+                                       style = "float: right; object-fit: cover;"))
+                        ),
+                        
                       ),
+                      
+                      
                       
                       
                       hr(style = "margin-top: 5px; margin-bottom: 5px; border-width: 2px;; border-color: black;"),
