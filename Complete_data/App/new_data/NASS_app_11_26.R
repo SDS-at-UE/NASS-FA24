@@ -36,52 +36,52 @@ close(url_var)
 
 url_2 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_county_geometry.rda?raw=true"
 url_var = url(url_2)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_3 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_state_geometry.rda?raw=true"
 url_var = url(url_3)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_4 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_survey_final.rda?raw=true"
 url_var = url(url_4)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_5 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/corn_survey_week_final.rda?raw=true"
 url_var = url(url_5)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_6 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_census_final.rda?raw=true"
 url_var = url(url_6)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_7 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_county_geometry.rda?raw=true"
 url_var = url(url_7)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_8 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_state_geometry.rda?raw=true"
 url_var = url(url_8)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_9 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_survey_final.rda?raw=true"
 url_var = url(url_9)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_10 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/potatoes_survey_week_final.rda?raw=true"
 url_var = url(url_10)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_11 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_census_final.rda?raw=true"
 url_var = url(url_11)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_12 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_county_geometry.rda?raw=true"
@@ -91,42 +91,42 @@ close(url_var)
 
 url_13 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_state_geometry.rda?raw=true"
 url_var = url(url_13)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_14 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_survey_final.rda?raw=true"
 url_var = url(url_14)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_15 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/soybeans_survey_week_final.rda?raw=true"
 url_var = url(url_15)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_16 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_census_final.rda?raw=true"
 url_var = url(url_16)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_17 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_county_geometry.rda?raw=true"
 url_var = url(url_17)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_18 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_state_geometry.rda?raw=true"
 url_var = url(url_18)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_19 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_survey_final.rda?raw=true"
 url_var = url(url_19)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 url_20 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/app_dev/Complete_data/App/new_data/wheat_survey_week_final.rda?raw=true"
 url_var = url(url_20)
-  load(url_var)
+load(url_var)
 close(url_var)
 
 #load("corn_survey_final1.rda")
@@ -383,9 +383,9 @@ ui <- fluidPage(
                                    ),
                                    HTML(
                                      "As a team of dedicated students from the STAT 300: Data Analysis in the Real World course at the University of Evansville, we are pleased to present our experimental visualization project in collaboration with the USDA's National Agricultural Statistics Service (NASS). 
-                                     This valuable experience allowed us to apply our skills to a substantial challenge with a focus on making national agricultural data accessible for farmers, businesses, and others who may benefit from this accessibility.<br /> 
-                                      Our central objective was to develop impactful data visualizations that effectively communicate insights from agricultural data to a wider audience. Utilizing advanced software and programming like R, RStudio, Shiny, Leaflet, and more, we transformed vast complex datasets into graphics designed to simplify comprehension and emphasize locational and timeline trends.<br />
-This project has marked a crucial milestone in our educational journey, solidifying the necessity of data visualization in making analytical information accessible and relevant. We are eager to share our findings and aim to foster a deeper appreciation for the data that informs and drives U.S. agriculture."
+                                     This valuable experience allowed us to apply our skills to a substantial challenge with a focus on making national agricultural data accessible for farmers, businesses, and others who may benefit from data accessibility.<br /> 
+                                      Our central objective was to develop impactful data visualizations that effectively communicate insights from agricultural data to a wider audience. Utilizing advanced software and programming like R, RStudio, Shiny, Leaflet, and more, we transformed vast complex datasets into graphics designed to simplify comprehension and emphasize geographical trends.<br />
+This project has marked a crucial milestone in our educational journey, solidifying the necessity of data visualization in making analytical information accessible, interpretable, and relevant. We are eager to share our findings and aim to foster a deeper appreciation for the data that informs and drives U.S. agriculture."
                                    ),
                                    style = "font-size: 15px; color: rgb(78,53,36); margin-bottom: 0px;"
                                  ),
@@ -753,6 +753,8 @@ This project has marked a crucial milestone in our educational journey, solidify
                                   
                            )
                          ),
+                         conditionalPanel(
+                           condition = "input.level == 'State'", 
                          fluidRow(column(12,
                                          h2("Crop Progress and Condition in the selected states"),
                                          br(),
@@ -765,6 +767,7 @@ This project has marked a crucial milestone in our educational journey, solidify
                                          plotOutput("progress"),
                                          
                                          ))
+                         )
 
                          ),
                      tabPanel('Parameter Comparison',
