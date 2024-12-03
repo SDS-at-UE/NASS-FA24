@@ -1,6 +1,7 @@
 library(tidyverse)
 library(sf)
 library(tigris)
+library(units)
 options(tigris_use_cache = TRUE)
 
 setwd("C:\\Users\\o_kho\\OneDrive - University of Evansville\\2024_Fall\\Stat300\\NASS\\Data")
@@ -72,6 +73,56 @@ potatoes_state_geometry <- states(cb = TRUE) %>%
 
 all_states <- toupper(unique(c(corn_states, cotton_states, soybeans_states, wheat_states, potatoes_states)))
 
+
+# Function to compute distances between counties of specified states
+compute_county_distances <- function(states) {
+  county_geo <- bind_rows(lapply(states, function(state) {
+    counties(state = state, cb = TRUE, year = 2020) %>%
+      st_as_sf() %>%
+      st_transform(crs = 4326) %>%
+      mutate(
+        county_state = paste(NAME, "County,", toupper(STATE_NAME))  # Format "Adams County, Iowa"
+      )
+  }))
+  
+  county_geo <- county_geo %>%
+    st_make_valid() %>%
+    filter(!st_is_empty(geometry))
+  
+  dist_matrix <- st_distance(county_geo)
+  
+  county_pairs <- expand.grid(
+    from_county = county_geo$county_state,
+    to_county = county_geo$county_state,
+    stringsAsFactors = FALSE
+  )
+  
+  county_pairs$distance <- as.numeric(dist_matrix)
+  
+  county_pairs$distance <- set_units(county_pairs$distance, "meters") %>%
+    set_units("miles") %>%
+    as.numeric()
+  
+  county_pairs
+}
+
+
+corn_county_distances <- compute_county_distances(corn_states)
+save(corn_county_distances, file = "corn_county_distances.rda")
+
+soybeans_county_distances <- compute_county_distances(soybeans_states)
+save(soybeans_county_distances, file = "soybeans_county_distances.rda")
+
+wheat_county_distances <- compute_county_distances(wheat_states)
+save(wheat_county_distances, file = "wheat_county_distances.rda")
+
+potatoes_county_distances <- compute_county_distances(potatoes_states)
+save(potatoes_county_distances, file = "potatoes_county_distances.rda")
+
+
+
+
+##########################################################
 corn_data <- Data %>% 
   filter(STATE_NAME %in% corn_states,
          COMMODITY_DESC == "CORN")

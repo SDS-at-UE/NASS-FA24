@@ -36,52 +36,52 @@ close(url_var)
 
 url_2 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/corn_county_geometry.rda?raw=true"
 url_var = url(url_2)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_3 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/corn_state_geometry.rda?raw=true"
 url_var = url(url_3)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_4 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/corn_survey_final.rda?raw=true"
 url_var = url(url_4)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_5 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/corn_survey_week_final.rda?raw=true"
 url_var = url(url_5)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_6 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/potatoes_census_final.rda?raw=true"
 url_var = url(url_6)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_7 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/potatoes_county_geometry.rda?raw=true"
 url_var = url(url_7)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_8 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/potatoes_state_geometry.rda?raw=true"
 url_var = url(url_8)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_9 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/potatoes_survey_final.rda?raw=true"
 url_var = url(url_9)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_10 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/potatoes_survey_week_final.rda?raw=true"
 url_var = url(url_10)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_11 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/soybeans_census_final.rda?raw=true"
 url_var = url(url_11)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_12 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/soybeans_county_geometry.rda?raw=true"
@@ -91,44 +91,64 @@ close(url_var)
 
 url_13 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/soybeans_state_geometry.rda?raw=true"
 url_var = url(url_13)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_14 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/soybeans_survey_final.rda?raw=true"
 url_var = url(url_14)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_15 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/soybeans_survey_week_final.rda?raw=true"
 url_var = url(url_15)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_16 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/wheat_census_final.rda?raw=true"
 url_var = url(url_16)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_17 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/wheat_county_geometry.rda?raw=true"
 url_var = url(url_17)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_18 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/wheat_state_geometry.rda?raw=true"
 url_var = url(url_18)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_19 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/wheat_survey_final.rda?raw=true"
 url_var = url(url_19)
-load(url_var)
+  load(url_var)
 close(url_var)
 
 url_20 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/wheat_survey_week_final.rda?raw=true"
 url_var = url(url_20)
+  load(url_var)
+close(url_var)
+
+
+url_21 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/corn_county_distances.rda?raw=true"
+url_var = url(url_21)
 load(url_var)
 close(url_var)
 
+url_22 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/potatoes_county_distances.rda?raw=true"
+url_var = url(url_22)
+load(url_var)
+close(url_var)
+
+url_23 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/soybeans_county_distances.rda?raw=true"
+url_var = url(url_23)
+load(url_var)
+close(url_var)
+
+url_24 <- "https://github.com/SDS-at-UE/NASS-FA24/blob/main/Complete_data/App/new_data/wheat_county_distances.rda?raw=true"
+url_var = url(url_24)
+load(url_var)
+close(url_var)
 #load("corn_survey_final1.rda")
 
 
@@ -383,9 +403,9 @@ ui <- fluidPage(
                                    ),
                                    HTML(
                                      "As a team of dedicated students from the STAT 300: Data Analysis in the Real World course at the University of Evansville, we are pleased to present our experimental visualization project in collaboration with the USDA's National Agricultural Statistics Service (NASS). 
-                                     This valuable experience allowed us to apply our skills to a substantial challenge with a focus on making national agricultural data accessible for farmers, businesses, and others who may benefit from data accessibility.<br /> 
-                                      Our central objective was to develop impactful data visualizations that effectively communicate insights from agricultural data to a wider audience. Utilizing advanced software and programming like R, RStudio, Shiny, Leaflet, and more, we transformed vast complex datasets into graphics designed to simplify comprehension and emphasize geographical trends.<br />
-This project has marked a crucial milestone in our educational journey, solidifying the necessity of data visualization in making analytical information accessible, interpretable, and relevant. We are eager to share our findings and aim to foster a deeper appreciation for the data that informs and drives U.S. agriculture."
+                                     This valuable experience allowed us to apply our skills to a substantial challenge with a focus on making national agricultural data accessible for farmers, businesses, and others who may benefit from this accessibility.<br /> 
+                                      Our central objective was to develop impactful data visualizations that effectively communicate insights from agricultural data to a wider audience. Utilizing advanced software and programming like R, RStudio, Shiny, Leaflet, and more, we transformed vast complex datasets into graphics designed to simplify comprehension and emphasize locational and timeline trends.<br />
+This project has marked a crucial milestone in our educational journey, solidifying the necessity of data visualization in making analytical information accessible and relevant. We are eager to share our findings and aim to foster a deeper appreciation for the data that informs and drives U.S. agriculture."
                                    ),
                                    style = "font-size: 15px; color: rgb(78,53,36); margin-bottom: 0px;"
                                  ),
@@ -514,59 +534,12 @@ This project has marked a crucial milestone in our educational journey, solidify
                           wellPanel(
                             helpText(
                               HTML(
-                                "This app was developed by students at the 
-                                <a href='https://www.evansville.edu/'><b style='font-family: \"Arial Black\", Gadget, sans-serif;'>University of Evansville</b></a>, led by Dr. Omid Khormali:<br /><br />"
+                                "<b style='font-family: \"Arial Black\", Gadget, sans-serif;'>Special thanks</b> to NASS employees who helped us in this project:<br /><br />"
                               ),
-                              column(4,
-                                     HTML(
-                                       "<table style='width: 100%; font-size: 12px; color: rgb(76, 38, 131); font-family: Arial, sans-serif; border-collapse: collapse; text-align: right;'>
-                                 <tr>
-                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Andrew Thompson,</td>
-                                 </tr>
-                                 <tr>
-                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Ethan John,</td>
-                                 </tr>
-                                 <tr>
-                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Abbie Jahn,</td>
-                                 </tr>
-                                 <tr>
-                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Josie Pagano,</td>
-                                 </tr>
-                                 <tr>
-                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Max Hansmann,</td>
-                                 </tr>
-                                 </table>"),
-                              ),
-                              column(8, 
+                              column(2),
+                              column(2,
                                      HTML(
                                        "<table style='width: 100%; font-size: 12px; color: rgb(76, 38, 131); font-family: Arial, sans-serif; border-collapse: collapse;'>
-                                   <tr>
-                                   <td style='padding: 2px;'>B.S. Statistics and Data Science, B.S. Computer Science, Class of 2027</td>
-                                   </tr>
-                                   <tr>
-                                   <td style='padding: 2px;'>B.S. Neuroscience, Class of 2026</td>
-                                   </tr>
-                                   <tr>
-                                   <td style='padding: 2px;'>B.S. Biology, Class of 2026</td>
-                                   </tr>
-                                   <tr>
-                                   <td style='padding: 2px;'>B.S. Biology, Class of 2024</td>
-                                   </tr>
-                                   <tr>
-                                   <td style='padding: 2px;'>B.S. Statistics and Data Science, Class of 2026</td>
-                                   </tr>
-                                   </table><br />"
-                                     )
-                              )
-                            ),
-                            br(),
-                            helpText(
-                              HTML(
-                                "<b style='font-family: \"Arial Black\", Gadget, sans-serif;'>Special thanks</b> to NASS employees who provided us with feedback in this project:<br /><br />"
-                              ),
-                              column(4,
-                                     HTML(
-                                       "<table style='width: 100%; font-size: 12px; color: rgb(76, 38, 131); font-family: Arial, sans-serif; border-collapse: collapse; text-align: right;'>
                                  <tr>
                                  <td style='font-weight: bold; text-align: right; padding: 2px;'>Virginia Harris,</td>
                                  </tr>
@@ -600,7 +573,12 @@ This project has marked a crucial milestone in our educational journey, solidify
                                      )
                               )
                             ),
-                            
+                            br(),
+                            HTML(
+                              'This app was developed by Andrew Thompson, Ethan John, Abbie Jahn, Josie Pagano, and Max Hansmann, students at the 
+                                <a href="https://www.evansville.edu/">University of Evansville</a>, led by Dr. Omid Khormali.'
+                            ),
+                            br(),
                             HTML(
                               "<p style='text-align: left; font-size: 12px; font-family: Arial, sans-serif; margin-top: 10px;'>* The images used in this application are sourced from <a href='https://pixabay.com/' target='_blank'>Pixabay</a>, a platform offering free, high-quality images. </p>"
                             )
@@ -609,8 +587,6 @@ This project has marked a crucial milestone in our educational journey, solidify
                         
                         
                         ),
-                      
-                      
                         
                       
                       ),
@@ -722,6 +698,8 @@ This project has marked a crucial milestone in our educational journey, solidify
                                       
                                       # Leaflet Map
                                       leafletOutput("map_pop"),
+                                      br(),
+                                      uiOutput("map_counties"),
                                       
                                       # Explanation and Plot Box
                                       # box(
@@ -797,42 +775,18 @@ This project has marked a crucial milestone in our educational journey, solidify
                                   
                            )
                          ),
-                         conditionalPanel(
-                           condition = "input.level == 'State'", 
                          fluidRow(column(12,
                                          h2("Crop Progress and Condition in the selected states"),
                                          br(),
                                          textOutput("main_states"),
                                          br(),
-                                         HTML(
-                                           'This chart displays the percentage of the selected crop that was rated good or excellent 
-                                           over several weeks for the selected state, comparing data from the past 4 years. 
-                                           This highlights variability in crop quality over time and and between subsequent years. '
-                                         ),
-                                         br(),
-                                         br(),
                                          plotOutput("excellent_good"),
                                          br(),
-                                         HTML(
-                                           'This plot displays crop condition. The colors represent the proportion of crop status between
-                                           Excellent, Good, Fair, Poor, and Very Poor ratings over time. 
-                                           This can be used to determine the portion of healthy crop in a given year for the selected state. '
-                                         ),
-                                         br(),
-                                         br(),
                                          plotOutput("condition"),
-                                         br(),
-                                         HTML(
-                                           'This plot provides a comprehensive look at crop progress throughout the stages of production, 
-                                           showcasing the weekly development of each stage compared to previous years and the five year average. 
-                                           This can be used to highlight trends in crop development. '
-                                         ),
-                                         br(),
                                          br(),
                                          plotOutput("progress"),
                                          
                                          ))
-                         )
 
                          ),
                      tabPanel('Parameter Comparison',
@@ -880,7 +834,7 @@ This project has marked a crucial milestone in our educational journey, solidify
                                             plotOutput("comparison")
                                             ),
                                      column(4,
-                                            tableOutput("table_comparison")
+                                            tableOutput("tabel_comparison")
                                             )
                                      )
                      ),
@@ -972,6 +926,15 @@ server <- function(input, output,session) {
            "Wheat" = wheat_county_geometry %>%
              sf::st_set_crs(4326) %>% 
              sf::st_transform('+proj=longlat +datum=WGS84')
+    )
+  })
+  
+  county_distances <- reactive({
+    switch(input$crop,
+           "Corn" = corn_county_distances,
+           "Soybeans" = soybeans_county_distances,
+           "Potatoes" = potatoes_county_distances,
+           "Wheat" = wheat_county_distances
     )
   })
   
@@ -1271,7 +1234,6 @@ server <- function(input, output,session) {
     }
   })
   
-  
   observe({ 
     if(length(strsplit(as.character(req(input$unit)), ""))!=0 &
        input$toggle_map == TRUE){
@@ -1287,18 +1249,7 @@ server <- function(input, output,session) {
     
   })
   
-  ################################################
-  # observeEvent(input$map_pop_shape_click, {
-  #   print(input$map_pop_shape_click$id)
-  #   
-  #   if (input$level == "County") {
-  #     GRIDrv(input$map_pop_shape_click$id)
-  #     print(paste("Selected County:", GRIDrv()))
-  #   } else if (input$level == "State") {
-  #     STATErv(input$map_pop_shape_click$id)
-  #     print(paste("Selected State:", STATErv()))
-  #   }
-  # })
+
   
   
   #####################################
@@ -1315,52 +1266,31 @@ server <- function(input, output,session) {
       }
     }
   })
+
   #############################################
-  selected_data <- reactiveVal(NULL)
-
-  observeEvent(GRIDrv(), {
-    req(input$level == "County", GRIDrv())
-
-    # Fetch data for the selected county
-    selected_data(data_new4() %>% filter(county_state == GRIDrv()))
-  })
-
-  observeEvent(STATErv(), {
-    req(input$level == "State", STATErv())
-
-    # Fetch data for the selected state
-    selected_data(data_new4() %>% filter(STATE_NAME == STATErv()))
-  })
-
   updated_data <- reactive({
-    req(selected_data())
-    selected_data()
-  })
+    req(input$unit, input$toggle_map)
+    # if(length(strsplit(as.character(req(input$unit)), ""))!=0 &
+    #    input$toggle_map == TRUE){
+      if (input$level == "County"){
+        validate(
+          need(GRIDrv() != "" && !is.null(GRIDrv()), "Please select a county cell to generate analysis")
+        )
 
-  #############################################
-  # updated_data <- reactive({
-  #   req(input$unit, input$toggle_map)
-  #   # if(length(strsplit(as.character(req(input$unit)), ""))!=0 &
-  #   #    input$toggle_map == TRUE){
-  #     if (input$level == "County"){
-  #       validate(
-  #         need(GRIDrv() != "" && !is.null(GRIDrv()), "Please select a county cell to generate analysis")
-  #       )
-  # 
-  #       Data = data_new4() %>%
-  #         subset(county_state == GRIDrv())
-  #       return(Data)
-  #     }
-  #     if (input$level == "State"){
-  #       validate(
-  #         need(STATErv() != "", "Please select a state to generate analysis")
-  #       )
-  #       Data = data_new4() %>%
-  #         subset(STATE_NAME == STATErv())
-  #       return(Data)
-  #     }
-  #   #}
-  # })
+        Data = data_new4() %>%
+          subset(county_state == GRIDrv())
+        return(Data)
+      }
+      if (input$level == "State"){
+        validate(
+          need(STATErv() != "", "Please select a state to generate analysis")
+        )
+        Data = data_new4() %>%
+          subset(STATE_NAME == STATErv())
+        return(Data)
+      }
+    #}
+  })
   ####################################################
   
   
@@ -1444,133 +1374,83 @@ server <- function(input, output,session) {
     
   })
   
+ 
+
+  ###################################
   
-  ###########################################################
-  # county_geometry_preprocessed <- reactive({
-  #   req(input$level == "County")
-  #   county_geo <- county_geometry() %>%
-  #     mutate(geometry = st_make_valid(geometry)) %>% # Ensure valid geometries
-  #     st_set_crs(4326) %>%
-  #     st_transform(crs = '+proj=longlat +datum=WGS84')
-  #   county_geo
-  # })
-  # 
+  filtered_counties <- reactive({
+    req(updated_data(), input$distance, input$update_map)
+    
+    selected_county <- GRIDrv()
+    req(selected_county)
+    
+    nearby_counties <- county_distances() %>%
+      filter(from_county == selected_county, distance <= input$distance)
+    
+    county_geo <- data_new4() %>%
+      filter(county_state %in% nearby_counties$to_county) %>%
+      left_join(county_geometry()[, c("county_state", "geometry")], by = "county_state") %>% 
+      st_as_sf() %>%
+      sf::st_set_crs(4326) %>%
+      sf::st_transform('+proj=longlat +datum=WGS84')
+    
+    print(county_geo)
+    return(county_geo)
+  })
+  
+  
+  
+  # # Calculate counties within the selected distance
   # filtered_counties <- reactive({
-  #   req(updated_data(), input$distance, GRIDrv())
+  #   req(updated_data(), input$distance, input$update_map)
   #   county_geo <- data_new4() %>%
   #     left_join(county_geometry()[, c("county_state", "geometry")], by = "county_state")
   # 
   #   county_geo <- st_as_sf(county_geo) %>%
   #     sf::st_set_crs(4326) %>%
   #     sf::st_transform('+proj=longlat +datum=WGS84')
-  #   
-  #   # Get geometry of the selected county
-  #   selected_geom <- county_geometry_preprocessed() %>%
-  #     filter(county_state == GRIDrv()) %>%
-  #     st_geometry()
   # 
-  #   # Filter counties within distance
-  #   valid_counties <- county_geometry_preprocessed()
-  #   valid_counties[st_distance(valid_counties, selected_geom) <= units::set_units(input$distance, "miles"), ]
-  # })
-  
-  
-  ############################################################
-  # Calculate counties within the selected distance
-  # filtered_counties <- reactive({
-  #   req(updated_data(), input$distance)
-  #   county_geo <- data_new4() %>%
-  #     left_join(county_geometry()[, c("county_state", "geometry")], by = "county_state")
-  #   
-  #   county_geo <- st_as_sf(county_geo) %>%
-  #     sf::st_set_crs(4326) %>%
-  #     sf::st_transform('+proj=longlat +datum=WGS84')
-  #   
-  #   selected_county <- unique(county_geo$county_state)
-  #   
+  #   #selected_county <- unique(county_geo$county_state)
+  # 
   #   # Remove empty geometries
   #   valid_counties <- county_geo[!st_is_empty(county_geo$geometry), ]
   #   
   #   
-  #   # Get the selected county geometry
   #   selected_geom <- valid_counties %>%
-  #     filter(county_state %in% selected_county) %>%
-  #     distinct(county_state, .keep_all = TRUE) %>%
-  #     st_geometry() %>%
-  #     .[[1]]
+  #     filter(county_state == GRIDrv()) %>%
+  #     st_geometry()
+  # 
+  #   # Filter counties within distance
+  #   valid_counties <- county_geo
+  #   valid_counties[st_distance(valid_counties, selected_geom) <= units::set_units(input$distance, "miles"), ]
+  #     
   #   
-  #   selected_geom <- st_sf(geometry = st_sfc(selected_geom), crs = st_crs(valid_counties))
-  #   #selected_geom <- st_transform(selected_geom, crs = "+init=epsg:4326")
-  #   # Calculate distances
-  #   distances <- st_distance(valid_counties, selected_geom)
-  #   
-  #   
-  #   distance_threshold <- units::as_units(input$distance, "miles")
-  #   
-  #   D <- valid_counties[distances <= distance_threshold, ]
-  #   
-  #   print(dim(D))
-  #   return(D)
   # })
-  ###################################
-  
-  # Calculate counties within the selected distance
-  filtered_counties <- reactive({
-    req(updated_data(), input$distance)
-    county_geo <- data_new4() %>%
-      left_join(county_geometry()[, c("county_state", "geometry")], by = "county_state")
-
-    county_geo <- st_as_sf(county_geo) %>%
-      sf::st_set_crs(4326) %>%
-      sf::st_transform('+proj=longlat +datum=WGS84')
-
-    #selected_county <- unique(county_geo$county_state)
-
-    # Remove empty geometries
-    valid_counties <- county_geo[!st_is_empty(county_geo$geometry), ]
-    
-    
-    selected_geom <- valid_counties %>%
-      filter(county_state == GRIDrv()) %>%
-      st_geometry()
-
-    # Filter counties within distance
-    valid_counties <- county_geo
-    valid_counties[st_distance(valid_counties, selected_geom) <= units::set_units(input$distance, "miles"), ]
-      
-    
-  })
   # 
   ######################################################
   
-  # pal_data_cache <- reactiveVal(NULL)
-  # 
-  # observe({
-  #   req(input$unit, input$toggle_map == TRUE)
-  #   
-  #   if (is.null(pal_data_cache())) {
-  #     pal_data_cache(
-  #       colorNumeric(
-  #         palette = color_pal,
-  #         domain = reactive_stat() + 1
-  #       )
-  #     )
-  #   }
-  # })
-  
-  ##########################################################
-  observe({
-    req(input$level == "County", input$toggle_map == TRUE)
+  output$map_counties <- renderUI({
+    req(input$level == "County", input$toggle_map == TRUE, filtered_counties())
     
-    if (input$update_map) {
-      req(filtered_counties())
+    #if (input$update_map) {
       
-      # # Validate filtered_counties() output
-      # validate(need("sf" %in% class(filtered_counties()), "filtered_counties() must return an sf object"))
-      # validate(need(!is.null(filtered_counties()$geometry), "Geometry column is missing in filtered_counties()"))
       
-      leafletProxy("map_pop") %>%
-        clearGroup("county") %>%  # Clear only the county group
+      selected_county <- unique(updated_data()$county_state)
+      
+      c_data <- filtered_counties() %>% 
+        filter(county_state == selected_county)
+      
+      # Initialize leaflet map (this part is common to both conditions)
+      map <- leaflet(width = "100%",
+                     options = leafletOptions(zoomSnap = 0,
+                                              zoomDelta = 0.25)) %>%
+        addProviderTiles(provider = "CartoDB.Positron") %>%
+        setView(lat = 41.550835, lng = -92.811029, zoom = 3.8) %>% # # 39.881612, -90.811029; 41.431141, -92.851743
+        addPolygons(data = states_map2(),
+                    group = "state",
+                    color = "black",
+                    fill = FALSE,
+                    weight = 3) %>% 
         addPolygons(
           data = filtered_counties(),
           group = "county",
@@ -1579,98 +1459,27 @@ server <- function(input, output,session) {
           color = "white",
           weight = 1,
           smoothFactor = 0,
-          fillOpacity = 0.7,
-          popup = ~paste("<strong>County:</strong>", county_state,
-                         "<br><strong>Year:</strong>", YEAR)
-        )
-    } else {
-      req(data_new4())
-      
-      # Merge geometry with data_new4()
-      county_geo <- data_new4() %>%
-        left_join(county_geometry()[, c("county_state", "geometry")], by = "county_state") %>%
-        st_as_sf() %>%
-        sf::st_set_crs(4326) %>%
-        sf::st_transform('+proj=longlat +datum=WGS84')
-      
-      # # Validate the merged sf object
-      # validate(need("sf" %in% class(county_geo), "Merged county_geo must be an sf object"))
-      # validate(need(!is.null(county_geo$geometry), "Geometry column is missing in county_geo"))
-      
-      leafletProxy("map_pop") %>%
-        clearGroup("county") %>%  # Clear only the county group
+          fillOpacity = 0.7) %>% 
         addPolygons(
-          data = county_geo,
+          data = c_data ,
           group = "county",
           layerId = ~county_state,
-          fillColor = ~pal_data()(reactive_stat()),
+          fillColor = "red",
           color = "white",
           weight = 1,
           smoothFactor = 0,
-          fillOpacity = 0.7,
-          popup = ~paste("<strong>County:</strong>", county_state,
-                         "<br><strong>Year:</strong>", YEAR)
-        )
-    }
+          fillOpacity = 0.7)
+      
+      # Return the leaflet map
+      map
+    #}
   })
   
-  
-  
-  ###########################################################
-  # observe({
-  #   req(input$level == "County", input$toggle_map == TRUE)
-  # 
-  #   if (input$update_map) {
-  #     # Update map to show only filtered counties
-  #     req(filtered_counties())
-  #     validate(
-  #       need(nrow(filtered_counties()) > 0, "No counties within the selected distance.")
-  #     )
-  # 
-  #     leafletProxy("map_pop") %>%
-  #       clearGroup("county") %>%
-  #       addPolygons(
-  #         data = filtered_counties(),
-  #         group = "county",
-  #         layerId = ~county_state,
-  #         color = "green",
-  #         weight = 1,
-  #         smoothFactor = 0,
-  #         fillOpacity = 0.7,
-  #         popup = ~paste("<strong>County:</strong>", county_state,
-  #                        "<br><strong>Year:</strong>", YEAR)
-  #       )
-  #   } else {
-  #     county_geo <- data_new4() %>%
-  #       left_join(county_geometry()[, c("county_state", "geometry")], by = "county_state")
-  # 
-  #     county_geo <- st_as_sf(county_geo) %>%
-  #       sf::st_set_crs(4326) %>%
-  #       sf::st_transform('+proj=longlat +datum=WGS84')
-  # 
-  #     # Restore the original map with all counties
-  #     leafletProxy("map_pop") %>%
-  #       clearGroup("county") %>%
-  #       addPolygons(
-  #         data = county_geo,
-  #         group = "county",
-  #         layerId = ~county_state,
-  #         fillColor = ~pal_data()(reactive_stat()),
-  #         color = "white",
-  #         weight = 1,
-  #         smoothFactor = 0,
-  #         fillOpacity = 0.7,
-  #         popup = ~paste("<strong>County:</strong>", county_state,
-  #                        "<br><strong>Year:</strong>", YEAR)
-  #       )
-  #   }
-  # })
-  ######################################################
-  
+  ##########################################################
+
   output$msg_pop_total <- renderTable({
     req(input$level == "County", input$toggle_map == TRUE, filtered_counties())
     if (input$update_map) {
-      filtered_counties()
       # Get column names containing "_"
       ttt <- grep("_", colnames(filtered_counties()[, -1]), value = TRUE)
       
@@ -1836,7 +1645,7 @@ server <- function(input, output,session) {
         selected_state <- unique(filtered_counties()$county_state)
         
         wheat_long <- data_new4() %>%#sf::st_drop_geometry(data_new4()) %>%
-          filter(county_state == selected_state) %>%
+          filter(county_state %in% selected_state) %>%
           #select(-geometry) %>% 
           pivot_longer(cols = -c(county_state, YEAR), 
                        names_to = "Category", values_to = "Value") %>%
@@ -2222,28 +2031,111 @@ server <- function(input, output,session) {
       #   filter(Category %in% c("PLANTED", "MILK", "DENTED", "MATURE"))  # Add any categories as needed
       
       # Plot using ggplot2 with colored labels
-      ggplot(data = df3_long, aes(x = Week_Num, y = Value, color = Category, linetype = Type)) +
-        geom_line(size = 1) +
-        geom_text(
-          data = df3_long %>%
-            filter(Week_Num == max(Week_Num)),  # Position the labels at the end of the lines
-          aes(label = Category),
-          hjust = -0.1,  # Adjust horizontal position to place labels just outside the plot
-          size = 3.5,
-          show.legend = FALSE  # Hide legend for the labels
-        ) +
-        labs(
-          title = "Progress of Crop by Category Over Weeks",
-          x = "Week Number (Wheat Adjusted to Begin Week 35)",
-          y = "Percentage",
-          color = "Category",
-          linetype = "Legend"
-        ) +
-        theme_minimal() +
-        scale_color_manual(values = c("PLANTED" = "darkolivegreen", "MILK" = "cyan3", "DENTED" = "chartreuse3", "MATURE" = "black",
-                                      "EMERGED" = "red" ,  "SILKING" = "gold" ,  "DOUGH" = 'purple', "HARVESTED" = "blue")) +
-        scale_linetype_manual(values = c("Current Year" = "solid", "Previous Year" = "dashed", "5 Year Avg" = "dotted")) +
-        theme(legend.position = "bottom")
+      if(input$crop == "Corn"){
+        
+        ggplot(data = df3_long, aes(x = Week_Num, y = Value, color = Category, linetype = Type)) +
+          geom_line(size = 1) +
+          geom_text(
+            data = df3_long %>%
+              filter(Week_Num == max(Week_Num)),  # Position the labels at the end of the lines
+            aes(label = Category),
+            hjust = -0.1,  # Adjust horizontal position to place labels just outside the plot
+            size = 3.5,
+            show.legend = FALSE  # Hide legend for the labels
+          ) +
+          labs(
+            title = "Progress of Crop by Category Over Weeks",
+            x = "Week Number (Wheat Adjusted to Begin Week 35)",
+            y = "Percentage",
+            color = "Category",
+            linetype = "Legend"
+          ) +
+          theme_minimal() +
+          scale_color_manual(values = c("PLANTED" = "darkolivegreen", "MILK" = "cyan3", "DENTED" = "chartreuse3", "MATURE" = "black",
+                                        "EMERGED" = "red" ,  "SILKING" = "gold" ,  "DOUGH" = 'purple', "HARVESTED" = "blue")) +
+          scale_linetype_manual(values = c("Current Year" = "solid", "Previous Year" = "dashed", "5 Year Avg" = "dotted")) +
+          theme(legend.position = "bottom")
+      }else if(input$crop == "Soybeans"){
+        df3_long <- df3_long %>% 
+          filter(Category %in% c("PLANTED" , "BLOOMING" , "EMERGED" ,  "SETTING PODS"  ,  "DROPPING LEAVES" , "HARVESTED" ))
+        
+        ggplot(data = df3_long, aes(x = Week_Num, y = Value, color = Category, linetype = Type)) +
+          geom_line(size = 1) +
+          geom_text(
+            data = df3_long %>%
+              filter(Week_Num == max(Week_Num)),  # Position the labels at the end of the lines
+            aes(label = Category),
+            hjust = -0.1,  # Adjust horizontal position to place labels just outside the plot
+            size = 3.5,
+            show.legend = FALSE  # Hide legend for the labels
+          ) +
+          labs(
+            title = "Progress of Crop by Category Over Weeks",
+            x = "Week Number (Wheat Adjusted to Begin Week 35)",
+            y = "Percentage",
+            color = "Category",
+            linetype = "Legend"
+          ) +
+          theme_minimal() +
+          scale_color_manual(values = c("PLANTED" = "green", "BLOOMING" = "purple",  
+                                        "EMERGED" = "red" ,  "SETTING PODS" = "gold" ,  "DROPPING LEAVES" = 'black', "HARVESTED" = "pink")) +
+          scale_linetype_manual(values = c("Current Year" = "solid", "Previous Year" = "dashed", "5 Year Avg" = "dotted")) +
+          theme(legend.position = "bottom")
+      }else if(input$crop == "Potatoes"){
+        
+        df3_long <- df3_long %>% 
+          filter(Category %in% c("PLANTED" , "EMERGED" ,  "HARVESTED" ))
+        
+        ggplot(data = df3_long, aes(x = Week_Num, y = Value, color = Category, linetype = Type)) +
+          geom_line(size = 1) +
+          geom_text(
+            data = df3_long %>%
+              filter(Week_Num == max(Week_Num)),  # Position the labels at the end of the lines
+            aes(label = Category),
+            hjust = -0.1,  # Adjust horizontal position to place labels just outside the plot
+            size = 3.5,
+            show.legend = FALSE  # Hide legend for the labels
+          ) +
+          labs(
+            title = "Progress of Crop by Category Over Weeks",
+            x = "Week Number (Wheat Adjusted to Begin Week 35)",
+            y = "Percentage",
+            color = "Category",
+            linetype = "Legend"
+          ) +
+          theme_minimal() +
+          scale_color_manual(values = c("PLANTED" = "green",   
+                                        "EMERGED" = "red" ,  "HARVESTED" = "pink")) +
+          scale_linetype_manual(values = c("Current Year" = "solid", "Previous Year" = "dashed", "5 Year Avg" = "dotted")) +
+          theme(legend.position = "bottom")
+      }else if(input$crop == "Wheat"){
+        df3_long <- df3_long %>% 
+          filter(Category %in% c("PLANTED", "EMERGED", "HEADED",  "HARVESTED"))
+
+        ggplot(data = df3_long, aes(x = Week_Num, y = Value, color = Category, linetype = Type)) +
+          geom_line(size = 1) +
+          geom_text(
+            data = df3_long %>%
+              filter(Week_Num == max(Week_Num)),  # Position the labels at the end of the lines
+            aes(label = Category),
+            hjust = -0.1,  # Adjust horizontal position to place labels just outside the plot
+            size = 3.5,
+            show.legend = FALSE  # Hide legend for the labels
+          ) +
+          labs(
+            title = "Progress of Crop by Category Over Weeks",
+            x = "Week Number (Wheat Adjusted to Begin Week 35)",
+            y = "Percentage",
+            color = "Category",
+            linetype = "Legend"
+          ) +
+          theme_minimal() +
+          scale_color_manual(values = c("PLANTED" = "green",   "HARVESTED" = "pink","EMERGED" = "red" ,
+                                        "HEADED" = 'black' )) +
+          scale_linetype_manual(values = c("Current Year" = "solid", "Previous Year" = "dashed", "5 Year Avg" = "dotted")) +
+          theme(legend.position = "bottom")
+      }
+      
       
       
     }
@@ -2329,7 +2221,7 @@ server <- function(input, output,session) {
     
   })
   
-  output$table_comparison <- renderTable({
+  output$tabel_comparison <- renderTable({
     if(length(strsplit(as.character(req(input$state1)), "")) != 0 &
        length(strsplit(as.character(req(input$state2)), "")) != 0 &
        length(strsplit(as.character(req(input$parameters)), "")) != 0 &
