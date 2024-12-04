@@ -804,6 +804,7 @@ This project has marked a crucial milestone in our educational journey, solidify
                                          br(),
                                          textOutput("main_states"),
                                          br(),
+                                         hr(),
                                          HTML(
                                            'This chart displays the percentage of the selected crop that was rated good or excellent 
                                            over several weeks for the selected state, comparing data from the past 4 years. 
@@ -813,6 +814,7 @@ This project has marked a crucial milestone in our educational journey, solidify
                                          br(),
                                          plotOutput("excellent_good"),
                                          br(),
+                                         hr(),
                                          HTML(
                                            'This plot displays crop condition. The colors represent the proportion of crop status between
                                            Excellent, Good, Fair, Poor, and Very Poor ratings over time. 
@@ -822,6 +824,7 @@ This project has marked a crucial milestone in our educational journey, solidify
                                          br(),
                                          plotOutput("condition"),
                                          br(),
+                                         hr(),
                                          HTML(
                                            'This plot provides a comprehensive look at crop progress throughout the stages of production, 
                                            showcasing the weekly development of each stage compared to previous years and the five year average. 
@@ -1425,7 +1428,7 @@ server <- function(input, output,session) {
   output$text_output_average <- renderUI({
     req(input$level == "County", input$toggle_map == TRUE, filtered_counties())
     if (input$update_map)  {
-      h4("The average values of parameters in all the selected counties:")
+      h4("Unweighted average values of parameters in the selected counties:")
     }
   })
 
@@ -1694,7 +1697,7 @@ server <- function(input, output,session) {
         Value = tt$Values               
       )
       
-      df_tt
+      df_tt[df_tt$STATISTICCAT_UNIT != "YIELD_BU / ACRE",]
       
     }
   }, striped = TRUE, hover = TRUE, bordered = TRUE)
@@ -1883,7 +1886,7 @@ server <- function(input, output,session) {
       Data = tab_data()
       names(Data) = c("Year", "a", "b")
       ggplot(Data) + 
-        geom_bar(aes(x = as.factor(Year), y = a), stat = "identity", position = "dodge") +
+        geom_bar(aes(x = as.factor(Year), y = a), stat = "identity", position = "dodge", color = "red") +
         labs(title = "Bar graph of the first selected variable",
              x = "Year", 
              y = names(tab_data()[2])) +
@@ -1899,7 +1902,7 @@ server <- function(input, output,session) {
       Data = tab_data()
       names(Data) = c("Year", "a", "b")
       ggplot(Data) + 
-        geom_bar(aes(x = as.factor(Year), y = b), stat = "identity", position = "dodge") +
+        geom_bar(aes(x = as.factor(Year), y = b), stat = "identity", position = "dodge", color = "blue") +
         labs(title = "Bar graph of the second selected variable",
              x = "Year", 
              y = names(tab_data()[3])) +
