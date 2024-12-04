@@ -534,12 +534,59 @@ This project has marked a crucial milestone in our educational journey, solidify
                           wellPanel(
                             helpText(
                               HTML(
-                                "<b style='font-family: \"Arial Black\", Gadget, sans-serif;'>Special thanks</b> to NASS employees who helped us in this project:<br /><br />"
+                                "This app was developed by students at the 
+                                <a href='https://www.evansville.edu/'><b style='font-family: \"Arial Black\", Gadget, sans-serif;'>University of Evansville</b></a>, led by <b>Dr. Omid Khormali</b>:<br /><br />"
                               ),
-                              column(2),
-                              column(2,
+                              column(4,
+                                     HTML(
+                                       "<table style='width: 100%; font-size: 12px; color: rgb(76, 38, 131); font-family: Arial, sans-serif; border-collapse: collapse; text-align: right;'>
+                                 <tr>
+                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Andrew Thompson,</td>
+                                 </tr>
+                                 <tr>
+                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Ethan John,</td>
+                                 </tr>
+                                 <tr>
+                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Abbie Jahn,</td>
+                                 </tr>
+                                 <tr>
+                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Josie Pagano,</td>
+                                 </tr>
+                                 <tr>
+                                 <td style='font-weight: bold; text-align: right; padding: 2px;'>Max Hansmann,</td>
+                                 </tr>
+                                 </table>"),
+                              ),
+                              column(8, 
                                      HTML(
                                        "<table style='width: 100%; font-size: 12px; color: rgb(76, 38, 131); font-family: Arial, sans-serif; border-collapse: collapse;'>
+                                   <tr>
+                                   <td style='padding: 2px;'>B.S. Statistics and Data Science, B.S. Computer Science, Class of 2027</td>
+                                   </tr>
+                                   <tr>
+                                   <td style='padding: 2px;'>B.S. Neuroscience, Class of 2026</td>
+                                   </tr>
+                                   <tr>
+                                   <td style='padding: 2px;'>B.S. Biology, Class of 2026</td>
+                                   </tr>
+                                   <tr>
+                                   <td style='padding: 2px;'>B.S. Biology, Class of 2024</td>
+                                   </tr>
+                                   <tr>
+                                   <td style='padding: 2px;'>B.S. Statistics and Data Science, Class of 2026</td>
+                                   </tr>
+                                   </table><br />"
+                                     )
+                              )
+                            ),
+                            br(),
+                            helpText(
+                              HTML(
+                                "<b style='font-family: \"Arial Black\", Gadget, sans-serif;'>Special thanks</b> to NASS employees who provided us with feedback in this project:<br /><br />"
+                              ),
+                              column(4,
+                                     HTML(
+                                       "<table style='width: 100%; font-size: 12px; color: rgb(76, 38, 131); font-family: Arial, sans-serif; border-collapse: collapse; text-align: right;'>
                                  <tr>
                                  <td style='font-weight: bold; text-align: right; padding: 2px;'>Virginia Harris,</td>
                                  </tr>
@@ -573,12 +620,7 @@ This project has marked a crucial milestone in our educational journey, solidify
                                      )
                               )
                             ),
-                            br(),
-                            HTML(
-                              'This app was developed by Andrew Thompson, Ethan John, Abbie Jahn, Josie Pagano, and Max Hansmann, students at the 
-                                <a href="https://www.evansville.edu/">University of Evansville</a>, led by Dr. Omid Khormali.'
-                            ),
-                            br(),
+                            
                             HTML(
                               "<p style='text-align: left; font-size: 12px; font-family: Arial, sans-serif; margin-top: 10px;'>* The images used in this application are sourced from <a href='https://pixabay.com/' target='_blank'>Pixabay</a>, a platform offering free, high-quality images. </p>"
                             )
@@ -586,7 +628,7 @@ This project has marked a crucial milestone in our educational journey, solidify
                         )
                         
                         
-                        ),
+                      ),
                         
                       
                       ),
@@ -775,18 +817,45 @@ This project has marked a crucial milestone in our educational journey, solidify
                                   
                            )
                          ),
-                         fluidRow(column(12,
-                                         h2("Crop Progress and Condition in the selected states"),
-                                         br(),
-                                         textOutput("main_states"),
-                                         br(),
-                                         plotOutput("excellent_good"),
-                                         br(),
-                                         plotOutput("condition"),
-                                         br(),
-                                         plotOutput("progress"),
-                                         
-                                         ))
+                         conditionalPanel(
+                           condition = "input.level == 'State'", 
+                           fluidRow(column(12,
+                                           h2("Crop Progress and Condition in the selected states"),
+                                           br(),
+                                           textOutput("main_states"),
+                                           br(),
+                                           hr(),
+                                           HTML(
+                                             'This chart displays the percentage of the selected crop that was rated good or excellent 
+                                           over several weeks for the selected state, comparing data from the past 4 years. 
+                                           This highlights variability in crop quality over time and and between subsequent years. '
+                                           ),
+                                           br(),
+                                           br(),
+                                           plotOutput("excellent_good"),
+                                           br(),
+                                           hr(),
+                                           HTML(
+                                             'This plot displays crop condition. The colors represent the proportion of crop status between
+                                           Excellent, Good, Fair, Poor, and Very Poor ratings over time. 
+                                           This can be used to determine the portion of healthy crop in a given year for the selected state. '
+                                           ),
+                                           br(),
+                                           br(),
+                                           plotOutput("condition"),
+                                           br(),
+                                           hr(),
+                                           HTML(
+                                             'This plot provides a comprehensive look at crop progress throughout the stages of production, 
+                                           showcasing the weekly development of each stage compared to previous years and the five year average. 
+                                           This can be used to highlight trends in crop development. '
+                                           ),
+                                           br(),
+                                           br(),
+                                           plotOutput("progress"),
+                                           
+                           ))
+                         )
 
                          ),
                      tabPanel('Parameter Comparison',
@@ -1503,7 +1572,7 @@ server <- function(input, output,session) {
         Value = tt$Values               
       )
       
-      df_tt
+      df_tt[df_tt$STATISTICCAT_UNIT != "YIELD_BU / ACRE",]
       
     }
   }, striped = TRUE, hover = TRUE, bordered = TRUE)
