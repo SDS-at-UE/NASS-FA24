@@ -526,7 +526,15 @@ This project has marked a crucial milestone in our educational journey, solidify
                         }
                       ")),
                       br(),
-                      
+                      fluidRow(
+                        column(8,
+                               div(
+                                 HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>')
+                               )),
+                        column(4,
+                        HTML("This video will provide introductory information about this data visualization portal. In the video, there will be instructions on how to interact with the portal, and discussions on the visualizations provided."),
+                      )
+                      ),
                       fluidRow(
                         div(
                           align = "center",
@@ -824,6 +832,13 @@ This project has marked a crucial milestone in our educational journey, solidify
                                            br(),
                                            textOutput("main_states"),
                                            br(),
+                                           HTML('These visualizations are based on development throughout the duration of the calendar year. 
+                                                When observing crop production and development in these plots, there are specific states that have a winter wheat season, 
+                                                meaning that the wheat is planted in fall or winter, at the end of the year, and is harvested in the beginning of the year in winter or spring. 
+                                                This means that the crop development spans calendar years. NASS collects development data using calendar week numbers. 
+                                                Because a plot of development over the year would show the end of one crop, emptiness during the off-season, 
+                                                and then the beginning of the next year’s crop, this plot displays winter wheat starting at week 35, and ending in the 
+                                                following year’s week 34. This provides accurate visualizations for the crop development over time. '),
                                            hr(),
                                            HTML(
                                              'This chart displays the percentage of the selected crop that was rated good or excellent 
@@ -879,7 +894,7 @@ This project has marked a crucial milestone in our educational journey, solidify
                                             ),
                                      column(3,
                                             selectInput(inputId = "level2", "Choose a level", 
-                                                        c("County", "State"),
+                                                        c("State"),
                                                         selected = "State"),
                                             
                                             selectInput(inputId = "crop2", "Choose a crop", 
@@ -910,7 +925,7 @@ This project has marked a crucial milestone in our educational journey, solidify
                 )
 )
 
-
+x
 server <- function(input, output,session) {
   ### Map Interface & Climate Grid Selection
   GRIDrv <- reactiveVal()
@@ -1564,7 +1579,7 @@ server <- function(input, output,session) {
       tt$Values[tt$Values == 0] <- "(D)"
       
       # Format values: Keep "(D)" as is, and apply formatting to numeric values
-      tt$Values <- ifelse(tt$Values == "(D)", "(D)", format(as.numeric(tt$Values), big.mark = ",", scientific = FALSE))
+      tt$Values <- ifelse(tt$Values == "(D)", "(D)", format(round(as.numeric(tt$Values)), big.mark = ",", scientific = FALSE))
       
       
       df_tt <- data.frame(
@@ -1598,7 +1613,7 @@ server <- function(input, output,session) {
       tt$Values[tt$Values == 0] <- "(D)"
       
       # Format values: Keep "(D)" as is, and apply formatting to numeric values
-      tt$Values <- ifelse(tt$Values == "(D)", "(D)", format(as.numeric(tt$Values), big.mark = ",", scientific = FALSE))
+      tt$Values <- ifelse(tt$Values == "(D)", "(D)", format(round(as.numeric(tt$Values)), big.mark = ",", scientific = FALSE))
       
       
       df_tt <- data.frame(
@@ -1917,6 +1932,7 @@ server <- function(input, output,session) {
     states <- unique(na.omit(data_condition()$STATE_NAME))
     paste("The following plots are available only for the following states:\n", 
           paste(states, collapse = ", "))
+    
   })
   
   
@@ -1933,13 +1949,13 @@ server <- function(input, output,session) {
         arrange(STATE_NAME, Week_Num)
       
      
-      if(input$crop == "Wheat"){
-        
+      if(input$crop == "Wheat" & !(name %in% c("MONTANA", "WASHINGTON"))){
+
         df1 <- df1 %>%
-          mutate(Year = ifelse(df1$Week_Num >= 35, Year+1, Year)) %>% 
+          mutate(Year = ifelse(df1$Week_Num >= 35, Year+1, Year)) %>%
           mutate(adjusted_week = ifelse(Week_Num >= 35, Week_Num - 34, Week_Num + 18))
         df1$Week_Num = df1$adjusted_week
-        df1 <- df1 %>% 
+        df1 <- df1 %>%
           filter(Year != max(Year, na.rm = TRUE) & Year != min(Year, na.rm = TRUE))
       }
       df1$Year <- as.factor(df1$Year) 
@@ -2340,70 +2356,90 @@ server <- function(input, output,session) {
   
   output$corn_intro <- renderTable({
     df <- corn_survey_final %>% 
-      select(YEAR, `YIELD_BU / ACRE`) %>% 
+      select(YEAR, `YIELD_BU / ACRE`, `AREA HARVESTED_ACRES`, `PRODUCTION_BU`) %>% 
       group_by(YEAR) %>% 
-      summarise(Total_YIELD = sum(`YIELD_BU / ACRE`, na.rm = T),
-                Average_YIELD = round(mean(`YIELD_BU / ACRE`, na.rm = T), digits = 0)) %>% 
+      summarise(
+        Average_YIELD = round(mean(`YIELD_BU / ACRE`, na.rm = TRUE), digits = 0),
+        Total_Production = round(sum(`PRODUCTION_BU`, na.rm = TRUE), digits = 0),
+        Total_Harvested_Acres = round(sum(`AREA HARVESTED_ACRES`, na.rm = TRUE))
+      ) %>% 
       arrange(desc(YEAR))
+    
+    df[] <- lapply(df, function(x) format(x, nsmall = 0, scientific = FALSE))
     df
   }, striped = TRUE, bordered = TRUE, align = "c")
   
   
   output$soybeans_intro <- renderTable({
     df <- soybeans_survey_final %>% 
-      select(YEAR, `YIELD_BU / ACRE`) %>% 
+      select(YEAR, `YIELD_BU / ACRE`, `AREA HARVESTED_ACRES`, `PRODUCTION_BU`) %>% 
       group_by(YEAR) %>% 
-      summarise(Total_YIELD = sum(`YIELD_BU / ACRE`, na.rm = T),
-                Average_YIELD = round(mean(`YIELD_BU / ACRE`, na.rm = T), digits = 0)) %>% 
+      summarise(
+        Average_YIELD = round(mean(`YIELD_BU / ACRE`, na.rm = TRUE), digits = 0),
+        Total_Production = round(sum(`PRODUCTION_BU`, na.rm = TRUE), digits = 0),
+        Total_Harvested_Acres = round(sum(`AREA HARVESTED_ACRES`, na.rm = TRUE))
+      ) %>% 
       arrange(desc(YEAR))
+    df[] <- lapply(df, function(x) format(x, nsmall = 0, scientific = FALSE))
     df
   }, striped = TRUE, bordered = TRUE, align = "c")
   
   output$wheat_intro <- renderTable({
     df <- wheat_survey_final %>% 
-      select(YEAR, `YIELD_BU / ACRE`) %>% 
+      select(YEAR, `YIELD_BU / ACRE`, `AREA HARVESTED_ACRES`, `PRODUCTION_BU`) %>% 
       group_by(YEAR) %>% 
-      summarise(Total_YIELD = sum(`YIELD_BU / ACRE`, na.rm = T),
-                Average_YIELD = round(mean(`YIELD_BU / ACRE`, na.rm = T), digits = 0)) %>% 
+      summarise(
+        Average_YIELD = round(mean(`YIELD_BU / ACRE`, na.rm = TRUE), digits = 0),
+        Total_Production = round(sum(`PRODUCTION_BU`, na.rm = TRUE), digits = 0),
+        Total_Harvested_Acres = round(sum(`AREA HARVESTED_ACRES`, na.rm = TRUE))
+      ) %>% 
       arrange(desc(YEAR))
+    df[] <- lapply(df, function(x) format(x, nsmall = 0, scientific = FALSE))
     df
   }, striped = TRUE, bordered = TRUE, align = "c")
   
   output$potatoes_intro <- renderTable({
     df <- potatoes_survey_final %>% 
-      select(YEAR, `YIELD_CWT / ACRE`) %>% 
+      select(YEAR, `YIELD_CWT / ACRE`, `AREA HARVESTED_ACRES`, `PRODUCTION_CWT`) %>% 
       group_by(YEAR) %>% 
-      summarise(Total_YIELD = sum(`YIELD_CWT / ACRE`, na.rm = T)*1.667,
-                Average_YIELD = round(mean(`YIELD_CWT / ACRE`, na.rm = T), digits = 0) * 1.667) %>% 
+      summarise(
+        Average_YIELD = round(mean(`YIELD_CWT / ACRE`, na.rm = TRUE), digits = 0),
+        Total_Production = round(sum(`PRODUCTION_CWT`, na.rm = TRUE), digits = 0),
+        Total_Harvested_Acres = round(sum(`AREA HARVESTED_ACRES`, na.rm = TRUE))
+      ) %>% 
       arrange(desc(YEAR))
+    df[] <- lapply(df, function(x) format(x, nsmall = 0, scientific = FALSE))
     df
   }, striped = TRUE, bordered = TRUE, align = "c")
   
   
   output$potatoes_plot <- renderPlot({
     df <- potatoes_survey_final %>% 
-      select(YEAR, `YIELD_CWT / ACRE`) %>% 
+      select(YEAR, `YIELD_CWT / ACRE`, `AREA HARVESTED_ACRES`, `PRODUCTION_CWT`) %>% 
       group_by(YEAR) %>% 
-      summarise(Total_YIELD = sum(`YIELD_CWT / ACRE`, na.rm = T)*1.667,
-                Average_YIELD = round(mean(`YIELD_CWT / ACRE`, na.rm = T), digits = 0) * 1.667) %>% 
+      summarise(
+        Average_YIELD = round(mean(`YIELD_CWT / ACRE`, na.rm = TRUE), digits = 0),
+        Total_Production = round(sum(`PRODUCTION_CWT`, na.rm = TRUE), digits = 0),
+        Total_Harvested_Acres = round(sum(`AREA HARVESTED_ACRES`, na.rm = TRUE))
+      ) %>% 
       arrange(desc(YEAR))
     
     data_long <- df %>%
-      pivot_longer(cols = c(Total_YIELD, Average_YIELD), 
+      pivot_longer(cols = c(Average_YIELD, Total_Production, Total_Harvested_Acres), 
                    names_to = "Parameter", 
                    values_to = "Value")
     
     ggplot(data_long, aes(x = YEAR, y = Value, color = Parameter)) +
       geom_line(linewidth = 1) +       # Use linewidth instead of size for lines
-      geom_point(size = 2) +          # Add points for both metrics
+      geom_point(size = 3) +          # Add points for both metrics
       labs(
-        title = "Total and Average Yields Over Years",
+        title = "Total Production and Average Yield Over Years",
         x = "Year",
-        y = "Yield",
+        y = "Value",
         color = "Parameters:"
       ) +
       scale_color_manual(
-        values = c("Total_YIELD" = "blue", "Average_YIELD" = "red")  # Match exact Metric names
+        values = c("Average_YIELD" = "blue", "Total_Production" = "red", "Total_Harvested_Acres" = "green")  # Match exact Metric names
       ) +
       theme_minimal() +
       theme(
@@ -2417,28 +2453,31 @@ server <- function(input, output,session) {
   
   output$corn_plot <- renderPlot({
     df <- corn_survey_final %>% 
-      select(YEAR, `YIELD_BU / ACRE`) %>% 
+      select(YEAR, `YIELD_BU / ACRE`, `AREA HARVESTED_ACRES`, `PRODUCTION_BU`) %>% 
       group_by(YEAR) %>% 
-      summarise(Total_YIELD = sum(`YIELD_BU / ACRE`, na.rm = T),
-                Average_YIELD = round(mean(`YIELD_BU / ACRE`, na.rm = T), digits = 0)) %>% 
+      summarise(
+        Average_YIELD = round(mean(`YIELD_BU / ACRE`, na.rm = TRUE), digits = 0),
+        Total_Production = round(sum(`PRODUCTION_BU`, na.rm = TRUE), digits = 0),
+        Total_Harvested_Acres = round(sum(`AREA HARVESTED_ACRES`, na.rm = TRUE))
+      ) %>% 
       arrange(desc(YEAR))
     
     data_long <- df %>%
-      pivot_longer(cols = c(Total_YIELD, Average_YIELD), 
+      pivot_longer(cols = c(Average_YIELD, Total_Production, Total_Harvested_Acres), 
                    names_to = "Parameter", 
                    values_to = "Value")
     
     ggplot(data_long, aes(x = YEAR, y = Value, color = Parameter)) +
       geom_line(linewidth = 1) +       # Use linewidth instead of size for lines
-      geom_point(size = 2) +          # Add points for both metrics
+      geom_point(size = 3) +          # Add points for both metrics
       labs(
-        title = "Total and Average Yields Over Years",
+        title = "Total Production and Average Yield Over Years",
         x = "Year",
-        y = "Yield",
+        y = "Value",
         color = "Parameters:"
       ) +
       scale_color_manual(
-        values = c("Total_YIELD" = "blue", "Average_YIELD" = "red")  # Match exact Metric names
+        values = c("Average_YIELD" = "blue", "Total_Production" = "red", "Total_Harvested_Acres" = "green")  # Match exact Metric names
       ) +
       theme_minimal() +
       theme(
@@ -2452,28 +2491,31 @@ server <- function(input, output,session) {
   
   output$soybeans_plot <- renderPlot({
     df <- soybeans_survey_final %>% 
-      select(YEAR, `YIELD_BU / ACRE`) %>% 
+      select(YEAR, `YIELD_BU / ACRE`, `AREA HARVESTED_ACRES`, `PRODUCTION_BU`) %>% 
       group_by(YEAR) %>% 
-      summarise(Total_YIELD = sum(`YIELD_BU / ACRE`, na.rm = T),
-                Average_YIELD = round(mean(`YIELD_BU / ACRE`, na.rm = T), digits = 0)) %>% 
+      summarise(
+        Average_YIELD = round(mean(`YIELD_BU / ACRE`, na.rm = TRUE), digits = 0),
+        Total_Production = round(sum(`PRODUCTION_BU`, na.rm = TRUE), digits = 0),
+        Total_Harvested_Acres = round(sum(`AREA HARVESTED_ACRES`, na.rm = TRUE))
+      ) %>% 
       arrange(desc(YEAR))
     
     data_long <- df %>%
-      pivot_longer(cols = c(Total_YIELD, Average_YIELD), 
+      pivot_longer(cols = c(Average_YIELD, Total_Production, Total_Harvested_Acres), 
                    names_to = "Parameter", 
                    values_to = "Value")
     
     ggplot(data_long, aes(x = YEAR, y = Value, color = Parameter)) +
       geom_line(linewidth = 1) +       # Use linewidth instead of size for lines
-      geom_point(size = 2) +          # Add points for both metrics
+      geom_point(size = 3) +          # Add points for both metrics
       labs(
-        title = "Total and Average Yields Over Years",
+        title = "Total Production and Average Yield Over Years",
         x = "Year",
-        y = "Yield",
+        y = "Value",
         color = "Parameters:"
       ) +
       scale_color_manual(
-        values = c("Total_YIELD" = "blue", "Average_YIELD" = "red")  # Match exact Metric names
+        values = c("Average_YIELD" = "blue", "Total_Production" = "red", "Total_Harvested_Acres" = "green")  # Match exact Metric names
       ) +
       theme_minimal() +
       theme(
@@ -2487,28 +2529,31 @@ server <- function(input, output,session) {
   
   output$wheat_plot <- renderPlot({
     df <- wheat_survey_final %>% 
-      select(YEAR, `YIELD_BU / ACRE`) %>% 
+      select(YEAR, `YIELD_BU / ACRE`, `AREA HARVESTED_ACRES`, `PRODUCTION_BU`) %>% 
       group_by(YEAR) %>% 
-      summarise(Total_YIELD = sum(`YIELD_BU / ACRE`, na.rm = T),
-                Average_YIELD = round(mean(`YIELD_BU / ACRE`, na.rm = T), digits = 0)) %>% 
+      summarise(
+        Average_YIELD = round(mean(`YIELD_BU / ACRE`, na.rm = TRUE), digits = 0),
+        Total_Production = round(sum(`PRODUCTION_BU`, na.rm = TRUE), digits = 0),
+        Total_Harvested_Acres = round(sum(`AREA HARVESTED_ACRES`, na.rm = TRUE))
+      ) %>% 
       arrange(desc(YEAR))
     
     data_long <- df %>%
-      pivot_longer(cols = c(Total_YIELD, Average_YIELD), 
+      pivot_longer(cols = c(Average_YIELD, Total_Production, Total_Harvested_Acres), 
                    names_to = "Parameter", 
                    values_to = "Value")
     
     ggplot(data_long, aes(x = YEAR, y = Value, color = Parameter)) +
       geom_line(linewidth = 1) +       # Use linewidth instead of size for lines
-      geom_point(size = 2) +          # Add points for both metrics
+      geom_point(size = 3) +          # Add points for both metrics
       labs(
-        title = "Total and Average Yields Over Years",
+        title = "Total Production and Average Yield Over Years",
         x = "Year",
-        y = "Yield",
+        y = "Value",
         color = "Parameters:"
       ) +
       scale_color_manual(
-        values = c("Total_YIELD" = "blue", "Average_YIELD" = "red")  # Match exact Metric names
+        values = c("Average_YIELD" = "blue", "Total_Production" = "red", "Total_Harvested_Acres" = "green")  # Match exact Metric names
       ) +
       theme_minimal() +
       theme(
